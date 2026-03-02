@@ -17,6 +17,8 @@ window.config = {
       );
     },
   },
+  // Keep default config backward-compatible; use `config/imaging-platform.js`
+  // to force the overlay mode/extension entrypoint.
   extensions: [],
   modes: [],
   customizationService: {},
@@ -30,6 +32,32 @@ window.config = {
   experimentalStudyBrowserSort: false,
   strictZSpacingForVolumeViewport: true,
   groupEnabledModesFirst: true,
+  imagingPlatform: {
+    brand: {
+      appName: 'Imaging Platform',
+      hideOHIFReferences: true,
+      supportUrl: 'https://support.imagingplatform.local',
+    },
+    uiThemePreset: 'meddreamLike',
+    studyBrowserDefaultView: 'thumbnails',
+    toolbar: {
+      responsiveOverflow: true,
+      overflowMinVisible: 8,
+      bufferToMoreCount: 0,
+      alwaysShowMore: true,
+      leftGuardPx: 12,
+      minRightActionsPx: 44,
+      rightReservationMode: 'measured',
+      maxVisibleButtons: null,
+      debug: true,
+    },
+    viewer: {
+      patientInfoSingleLine: true,
+      undoRedoPlacement: 'toolbar-responsive',
+      panelAutoFit: true,
+    },
+  },
+  // Backward-compatible flat keys; migration target is `imagingPlatform`.
   uiThemePreset: 'meddreamLike',
   studyBrowserDefaultView: 'thumbnails',
   studyBrowserPanelAutoFit: true,

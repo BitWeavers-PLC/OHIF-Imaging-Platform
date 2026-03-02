@@ -8,6 +8,7 @@ const PREFERRED_VISIBLE_IDS = new Set([
   'StackScroll',
   'Probe',
   'Reset',
+  'Layout',
   'MPRTools',
 ]);
 
@@ -24,7 +25,6 @@ const OVERFLOW_FIRST_IDS = [
   'ArrowAnnotate',
   'Bidirectional',
   'RectangleROI',
-  'Layout',
   'Magnify',
   'rotate-right',
   'flipHorizontal',
@@ -68,7 +68,10 @@ export function useResponsiveToolbarOverflow({
   bufferToMoreCount?: number;
   maxVisibleButtons?: number;
 }) {
-  const debug = (window as any)?.config?.toolbarOverflowDebug === true;
+  const appConfig = (window as any)?.config ?? {};
+  const productConfig = appConfig.imagingPlatform ?? {};
+  const toolbarConfig = productConfig.toolbar ?? {};
+  const debug = (toolbarConfig.debug ?? appConfig.toolbarOverflowDebug) === true;
   const containerRef = useRef<HTMLDivElement | null>(null);
   const itemRefs = useRef<Map<string, HTMLElement>>(new Map());
   const widthCacheRef = useRef<Map<string, number>>(new Map());

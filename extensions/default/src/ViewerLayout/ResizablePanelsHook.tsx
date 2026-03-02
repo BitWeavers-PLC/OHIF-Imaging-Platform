@@ -114,7 +114,8 @@ const useResizablePanels = (
 
   useLayoutEffect(() => {
     const appConfig = (window as any)?.config ?? {};
-    const autoFitEnabled = appConfig.studyBrowserPanelAutoFit !== false;
+    const viewerConfig = appConfig.imagingPlatform?.viewer ?? {};
+    const autoFitEnabled = (viewerConfig.panelAutoFit ?? appConfig.studyBrowserPanelAutoFit) !== false;
 
     if (!autoFitEnabled) {
       return;

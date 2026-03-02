@@ -37,7 +37,10 @@ export default function ToolButtonListWrapper({
   overflowItems = [],
 }: ToolButtonListWrapperProps) {
   const appConfig = (window as any)?.config ?? {};
-  const moreAlwaysVisible = appConfig.toolbarMoreAlwaysVisible !== false;
+  const productConfig = appConfig.imagingPlatform ?? {};
+  const toolbarConfig = productConfig.toolbar ?? {};
+  const moreAlwaysVisible =
+    (toolbarConfig.alwaysShowMore ?? appConfig.toolbarMoreAlwaysVisible) !== false;
   const isMoreTools = id === 'MoreTools';
   const { onInteraction, toolbarButtons } = useToolbar({
     buttonSection,

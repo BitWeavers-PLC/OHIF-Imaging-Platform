@@ -38,7 +38,8 @@ function ViewerHeader({ appConfig }: withAppTypes<{ appConfig: AppTypes.Config }
 
   const { t } = useTranslation();
   const { show } = useModal();
-  const undoRedoPlacement = appConfig.undoRedoPlacement ?? 'toolbar-responsive';
+  const viewerConfig = appConfig.imagingPlatform?.viewer ?? {};
+  const undoRedoPlacement = viewerConfig.undoRedoPlacement ?? appConfig.undoRedoPlacement ?? 'toolbar-responsive';
 
   const UserPreferencesModal = customizationService.getCustomization(
     'ohif.userPreferencesModal'

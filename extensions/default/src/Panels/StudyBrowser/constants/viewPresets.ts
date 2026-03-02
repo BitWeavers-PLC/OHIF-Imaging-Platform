@@ -1,5 +1,8 @@
 import type { viewPreset } from '../types/viewPreset';
-const defaultView = window?.config?.studyBrowserDefaultView === 'list' ? 'list' : 'thumbnails';
+const appConfig = (window as any)?.config ?? {};
+const productConfig = appConfig.imagingPlatform ?? {};
+const defaultViewSetting = productConfig.studyBrowserDefaultView ?? appConfig.studyBrowserDefaultView;
+const defaultView = defaultViewSetting === 'list' ? 'list' : 'thumbnails';
 
 const defaultViewPresets = [
   {

@@ -44,15 +44,26 @@ export function Toolbar({ buttonSection = 'primary', viewportId, location }: Too
   });
 
   const appConfig = (window as any)?.config ?? {};
+  const productConfig = appConfig.imagingPlatform ?? {};
+  const toolbarConfig = productConfig.toolbar ?? {};
   const isPrimarySection = buttonSection === 'primary';
   const responsiveOverflowEnabled =
-    isPrimarySection && appConfig.toolbarResponsiveOverflow !== false;
-  const minVisible = Number(appConfig.toolbarOverflowMinVisible ?? 8);
-  const bufferToMoreCount = Number(appConfig.toolbarBufferToMoreCount ?? 0);
-  const maxVisibleButtons = Number(appConfig.toolbarMaxVisibleButtons ?? Number.POSITIVE_INFINITY);
-  const minRightActionsPx = Number(appConfig.toolbarMinRightActionsPx ?? 44);
-  const rightReservationMode = appConfig.toolbarRightReservationMode ?? 'measured';
-  const moreAlwaysVisible = appConfig.toolbarMoreAlwaysVisible !== false;
+    isPrimarySection &&
+    (toolbarConfig.responsiveOverflow ?? appConfig.toolbarResponsiveOverflow) !== false;
+  const minVisible = Number(toolbarConfig.overflowMinVisible ?? appConfig.toolbarOverflowMinVisible ?? 8);
+  const bufferToMoreCount = Number(
+    toolbarConfig.bufferToMoreCount ?? appConfig.toolbarBufferToMoreCount ?? 0
+  );
+  const maxVisibleButtons = Number(
+    toolbarConfig.maxVisibleButtons ?? appConfig.toolbarMaxVisibleButtons ?? Number.POSITIVE_INFINITY
+  );
+  const minRightActionsPx = Number(
+    toolbarConfig.minRightActionsPx ?? appConfig.toolbarMinRightActionsPx ?? 44
+  );
+  const rightReservationMode =
+    toolbarConfig.rightReservationMode ?? appConfig.toolbarRightReservationMode ?? 'measured';
+  const moreAlwaysVisible =
+    (toolbarConfig.alwaysShowMore ?? appConfig.toolbarMoreAlwaysVisible) !== false;
   const hasMoreHost = toolbarButtons.some(button => button?.id === 'MoreTools');
   const toolbarButtonsForRender =
     isPrimarySection && moreAlwaysVisible && !hasMoreHost

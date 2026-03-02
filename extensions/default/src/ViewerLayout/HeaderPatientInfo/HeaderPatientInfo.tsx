@@ -17,7 +17,8 @@ const formatWithEllipsis = (str, maxLength) => {
 };
 
 function HeaderPatientInfo({ servicesManager, appConfig }: withAppTypes) {
-  const singleLine = appConfig.patientInfoSingleLine !== false;
+  const viewerConfig = appConfig.imagingPlatform?.viewer ?? {};
+  const singleLine = (viewerConfig.patientInfoSingleLine ?? appConfig.patientInfoSingleLine) !== false;
   const initialExpandedState =
     appConfig.showPatientInfo !== PatientInfoVisibility.VISIBLE_COLLAPSED &&
     appConfig.showPatientInfo !== PatientInfoVisibility.DISABLED;

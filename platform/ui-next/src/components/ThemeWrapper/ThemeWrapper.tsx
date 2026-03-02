@@ -10,7 +10,9 @@ export const ThemeWrapper = ({ children }) => {
   useEffect(() => {
     const root = document.documentElement;
     const body = document.body;
-    const preset = window?.config?.uiThemePreset || 'default';
+    const appConfig = (window as any)?.config ?? {};
+    const productConfig = appConfig.imagingPlatform ?? {};
+    const preset = productConfig.uiThemePreset || appConfig.uiThemePreset || 'default';
     const themeClass = PRESET_CLASS_MAP[preset];
 
     Object.values(PRESET_CLASS_MAP).forEach(className => {

@@ -57,9 +57,14 @@ function Header({
   };
 
   const appConfig = (window as any)?.config ?? {};
-  const fallbackBrandName = appConfig?.brand?.appName || 'Imaging Platform';
-  const toolbarLeftGuardPx = Number(appConfig.toolbarLeftGuardPx ?? 12);
-  const toolbarMinRightActionsPx = Number(appConfig.toolbarMinRightActionsPx ?? 44);
+  const productConfig = appConfig.imagingPlatform ?? {};
+  const brandConfig = productConfig.brand ?? appConfig.brand ?? {};
+  const toolbarConfig = productConfig.toolbar ?? {};
+  const fallbackBrandName = brandConfig.appName || 'Imaging Platform';
+  const toolbarLeftGuardPx = Number(toolbarConfig.leftGuardPx ?? appConfig.toolbarLeftGuardPx ?? 12);
+  const toolbarMinRightActionsPx = Number(
+    toolbarConfig.minRightActionsPx ?? appConfig.toolbarMinRightActionsPx ?? 44
+  );
 
   useEffect(() => {
     const element = rightSlotRef.current;
