@@ -33,7 +33,6 @@ import {
   useSessionStorage,
   Onboarding,
   ScrollArea,
-  InvestigationalUseDialog,
 } from '@ohif/ui-next';
 
 import { Types } from '@ohif/ui';
@@ -474,24 +473,11 @@ function WorkList({
 
   const hasStudies = numOfStudies > 0;
 
-  const AboutModal = customizationService.getCustomization(
-    'ohif.aboutModal'
-  ) as coreTypes.MenuComponentCustomization;
   const UserPreferencesModal = customizationService.getCustomization(
     'ohif.userPreferencesModal'
   ) as coreTypes.MenuComponentCustomization;
 
   const menuOptions = [
-    {
-      title: AboutModal?.menuTitle ?? t('Header:About'),
-      icon: 'info',
-      onClick: () =>
-        show({
-          content: AboutModal,
-          title: AboutModal?.title ?? t('AboutModal:About OHIF Viewer'),
-          containerClassName: AboutModal?.containerClassName ?? 'max-w-md',
-        }),
-    },
     {
       title: UserPreferencesModal.menuTitle ?? t('Header:Preferences'),
       icon: 'settings',
@@ -552,7 +538,7 @@ function WorkList({
   );
 
   return (
-    <div className="flex h-screen flex-col bg-black">
+    <div className="worklist-contrast flex h-screen flex-col bg-black">
       <Header
         isSticky
         menuOptions={menuOptions}
@@ -561,7 +547,6 @@ function WorkList({
         showPatientInfo={PatientInfoVisibility.DISABLED}
       />
       <Onboarding />
-      <InvestigationalUseDialog dialogConfiguration={appConfig?.investigationalUseDialog} />
       <div className="flex h-full flex-col overflow-y-auto">
         <ScrollArea>
           <div className="flex grow flex-col">

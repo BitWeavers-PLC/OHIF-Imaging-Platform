@@ -9,12 +9,15 @@ function AboutModalDefault() {
   const browser = `${name[0].toUpperCase()}${name.substr(1)} ${version}`;
   const versionNumber = process.env.VERSION_NUMBER;
   const commitHash = process.env.COMMIT_HASH;
+  const appName = (window as any)?.config?.brand?.appName || 'Imaging Platform';
+  const supportUrl =
+    (window as any)?.config?.brand?.supportUrl || 'https://support.imagingplatform.local';
 
   const [main, beta] = versionNumber.split('-');
 
   return (
     <AboutModal className="w-[400px]">
-      <AboutModal.ProductName>OHIF Viewer</AboutModal.ProductName>
+      <AboutModal.ProductName>{appName}</AboutModal.ProductName>
       <AboutModal.ProductVersion>{main}</AboutModal.ProductVersion>
       {beta && <AboutModal.ProductBeta>{beta}</AboutModal.ProductBeta>}
 
@@ -29,8 +32,8 @@ function AboutModalDefault() {
         />
         <AboutModal.SocialItem
           icon="SocialGithub"
-          url="OHIF/Viewers"
-          text="github.com/OHIF/Viewers"
+          url={supportUrl}
+          text={supportUrl}
         />
       </AboutModal.Body>
     </AboutModal>

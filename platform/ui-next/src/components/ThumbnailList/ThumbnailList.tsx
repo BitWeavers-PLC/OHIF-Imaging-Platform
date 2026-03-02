@@ -15,13 +15,14 @@ const ThumbnailList = ({
 }) => {
   // Use the dynamic height hook on the parent container
   const { ref, maxHeight } = useDynamicMaxHeight(thumbnails);
+  const normalizedThumbnails = Array.isArray(thumbnails) ? thumbnails : [];
 
   // Filter thumbnails into list items and thumbnail items
-  const listItems = thumbnails?.filter(
+  const listItems = normalizedThumbnails.filter(
     ({ componentType }) => componentType === 'thumbnailNoImage' || viewPreset === 'list'
   );
 
-  const thumbnailItems = thumbnails?.filter(
+  const thumbnailItems = normalizedThumbnails.filter(
     ({ componentType }) => componentType !== 'thumbnailNoImage' && viewPreset === 'thumbnails'
   );
 
@@ -34,7 +35,7 @@ const ThumbnailList = ({
         {thumbnailItems.length > 0 && (
           <div
             id="ohif-thumbnail-list"
-            className="bg-background grid grid-cols-[repeat(auto-fit,_minmax(0,135px))] place-items-start gap-[4px]"
+            className="bg-background grid grid-cols-1 place-items-stretch gap-[6px]"
           >
             {thumbnailItems.map(item => {
               const { displaySetInstanceUID, componentType, numInstances, ...rest } = item;

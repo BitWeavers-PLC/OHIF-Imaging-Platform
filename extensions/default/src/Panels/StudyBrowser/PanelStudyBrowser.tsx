@@ -4,7 +4,7 @@ import { useSystem, utils } from '@ohif/core';
 import { useNavigate } from 'react-router-dom';
 import { useViewportGrid, StudyBrowser, Separator } from '@ohif/ui-next';
 import { PanelStudyBrowserHeader } from './PanelStudyBrowserHeader';
-import { defaultActionIcons } from './constants';
+import { defaultActionIcons, defaultViewPresets } from './constants';
 import MoreDropdownMenu from '../../Components/MoreDropdownMenu';
 import { CallbackCustomization } from 'platform/core/src/types';
 import { type TabsProps } from '@ohif/core/src/utils/createStudyBrowserTabs';
@@ -50,7 +50,7 @@ function PanelStudyBrowser({
   const [jumpToDisplaySet, setJumpToDisplaySet] = useState(null);
 
   const [viewPresets, setViewPresets] = useState(
-    customizationService.getCustomization('studyBrowser.viewPresets')
+    customizationService.getCustomization('studyBrowser.viewPresets') || defaultViewPresets
   );
 
   const [actionIcons, setActionIcons] = useState(defaultActionIcons);

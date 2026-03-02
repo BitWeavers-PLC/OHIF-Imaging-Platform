@@ -17,9 +17,10 @@ const formatWithEllipsis = (str, maxLength) => {
 };
 
 function HeaderPatientInfo({ servicesManager, appConfig }: withAppTypes) {
+  const singleLine = appConfig.patientInfoSingleLine !== false;
   const initialExpandedState =
-    appConfig.showPatientInfo === PatientInfoVisibility.VISIBLE ||
-    appConfig.showPatientInfo === PatientInfoVisibility.VISIBLE_READONLY;
+    appConfig.showPatientInfo !== PatientInfoVisibility.VISIBLE_COLLAPSED &&
+    appConfig.showPatientInfo !== PatientInfoVisibility.DISABLED;
   const [expanded, setExpanded] = useState(initialExpandedState);
   const { patientInfo, isMixedPatients } = usePatientInfo(servicesManager);
 
@@ -40,7 +41,7 @@ function HeaderPatientInfo({ servicesManager, appConfig }: withAppTypes) {
 
   return (
     <div
-      className="hover:bg-muted flex cursor-pointer items-center justify-center gap-1 rounded-lg"
+      className="hover:bg-muted flex min-w-0 max-w-[250px] cursor-pointer items-center gap-1 rounded-lg px-1.5 py-1"
       onClick={handleOnClick}
     >
       {isMixedPatients ? (
@@ -48,20 +49,22 @@ function HeaderPatientInfo({ servicesManager, appConfig }: withAppTypes) {
       ) : (
         <Icons.Patient className="text-primary" />
       )}
-      <div className="flex flex-col justify-center">
+      <div className="min-w-0 flex flex-col justify-center">
         {expanded ? (
           <>
-            <div className="text-foreground self-start text-[13px] font-bold">
+            <div className="text-foreground self-start text-[13px] font-bold whitespace-nowrap overflow-hidden text-ellipsis">
               {formattedPatientName}
             </div>
-            <div className="text-muted-foreground flex gap-2 text-[11px]">
-              <div>{formattedPatientID}</div>
-              <div>{patientInfo.PatientSex}</div>
-              <div>{patientInfo.PatientDOB}</div>
+            <div
+              className={`text-muted-foreground flex min-w-0 gap-2 text-[11px] ${singleLine ? 'whitespace-nowrap overflow-hidden text-ellipsis' : ''}`}
+            >
+              <div className="shrink-0">{formattedPatientID}</div>
+              <div className="shrink-0">{patientInfo.PatientSex}</div>
+              <div className="shrink-0">{patientInfo.PatientDOB}</div>
             </div>
           </>
         ) : (
-          <div className="text-primary self-center text-[13px]">
+          <div className="text-primary self-center text-[13px] whitespace-nowrap overflow-hidden text-ellipsis">
             {isMixedPatients ? 'Multiple Patients' : 'Patient'}
           </div>
         )}

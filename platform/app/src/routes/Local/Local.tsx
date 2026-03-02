@@ -8,7 +8,7 @@ import filesToStudies from './filesToStudies';
 
 import { extensionManager } from '../../App';
 
-import { Button, Icons } from '@ohif/ui-next';
+import { Button } from '@ohif/ui-next';
 
 const getLoadButton = (onDrop, text, isDir) => {
   return (
@@ -59,6 +59,7 @@ function Local({ modePath }: LocalProps) {
   const LoadingIndicatorProgress = customizationService.getCustomization(
     'ui.loadingIndicatorProgress'
   );
+  const appName = (window as any)?.config?.brand?.appName || 'Imaging Platform';
 
   // Initializing the dicom local dataSource
   const dataSourceModules = extensionManager.modules[MODULE_TYPES.DATA_SOURCE];
@@ -134,7 +135,7 @@ function Local({ modePath }: LocalProps) {
           <div className="flex h-screen w-screen items-center justify-center">
             <div className="bg-muted border-primary/60 mx-auto space-y-2 rounded-xl border border-dashed py-12 px-12 drop-shadow-md">
               <div className="flex items-center justify-center">
-                <Icons.OHIFLogoColorDarkBackground className="h-18" />
+                <h1 className="text-white text-3xl font-semibold">{appName}</h1>
               </div>
               <div className="space-y-2 py-6 text-center">
                 {dropInitiated ? (

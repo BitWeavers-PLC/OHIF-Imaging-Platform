@@ -21,9 +21,19 @@ export { history } from './utils/history';
 export { preserveQueryParameters, preserveQueryStrings } from './utils/preserveQueryParameters';
 
 loadDynamicConfig(window.config).then(config_json => {
+  const query = new URLSearchParams(window.location.search);
+  const requestedConfigUrl = query.get('configUrl');
+  const hasDynamicOverride = config_json !== null;
+
   // Reset Dynamic config if defined
-  if (config_json !== null) {
+  if (hasDynamicOverride) {
     window.config = config_json;
+  }
+
+  if (window?.config?.toolbarOverflowDebug) {
+    const source = hasDynamicOverride ? requestedConfigUrl || 'dynamic-config' : 'default.js';
+    // Helps verify whether refresh is loading default config or a configUrl override.
+    console.info('[toolbar-overflow] active config source:', source);
   }
 
   /**

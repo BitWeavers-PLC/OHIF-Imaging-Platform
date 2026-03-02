@@ -38,26 +38,13 @@ function ViewerHeader({ appConfig }: withAppTypes<{ appConfig: AppTypes.Config }
 
   const { t } = useTranslation();
   const { show } = useModal();
-
-  const AboutModal = customizationService.getCustomization(
-    'ohif.aboutModal'
-  ) as Types.MenuComponentCustomization;
+  const undoRedoPlacement = appConfig.undoRedoPlacement ?? 'toolbar-responsive';
 
   const UserPreferencesModal = customizationService.getCustomization(
     'ohif.userPreferencesModal'
   ) as Types.MenuComponentCustomization;
 
   const menuOptions = [
-    {
-      title: AboutModal?.menuTitle ?? t('Header:About'),
-      icon: 'info',
-      onClick: () =>
-        show({
-          content: AboutModal,
-          title: AboutModal?.title ?? t('AboutModal:About OHIF Viewer'),
-          containerClassName: AboutModal?.containerClassName ?? 'max-w-md',
-        }),
-    },
     {
       title: UserPreferencesModal.menuTitle ?? t('Header:Preferences'),
       icon: 'settings',
@@ -97,29 +84,31 @@ function ViewerHeader({ appConfig }: withAppTypes<{ appConfig: AppTypes.Config }
         )
       }
       UndoRedo={
-        <div className="text-primary flex cursor-pointer items-center">
-          <Button
-            variant="ghost"
-            className="hover:bg-muted"
-            onClick={() => {
-              commandsManager.run('undo');
-            }}
-          >
-            <Icons.Undo className="" />
-          </Button>
-          <Button
-            variant="ghost"
-            className="hover:bg-muted"
-            onClick={() => {
-              commandsManager.run('redo');
-            }}
-          >
-            <Icons.Redo className="" />
-          </Button>
-        </div>
+        undoRedoPlacement === 'header-fixed' ? (
+          <div className="text-primary flex cursor-pointer items-center">
+            <Button
+              variant="ghost"
+              className="hover:bg-muted"
+              onClick={() => {
+                commandsManager.run('undo');
+              }}
+            >
+              <Icons.Undo className="" />
+            </Button>
+            <Button
+              variant="ghost"
+              className="hover:bg-muted"
+              onClick={() => {
+                commandsManager.run('redo');
+              }}
+            >
+              <Icons.Redo className="" />
+            </Button>
+          </div>
+        ) : null
       }
     >
-      <div className="relative flex justify-center gap-[4px]">
+      <div className="relative flex w-full justify-start gap-[2px] overflow-hidden">
         <Toolbar buttonSection="primary" />
       </div>
     </Header>

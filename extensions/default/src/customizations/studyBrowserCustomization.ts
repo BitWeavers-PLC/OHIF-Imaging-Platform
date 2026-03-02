@@ -1,6 +1,7 @@
 import { utils } from '@ohif/core';
 import i18n from '@ohif/i18n';
 const { formatDate } = utils;
+const defaultView = window?.config?.studyBrowserDefaultView === 'list' ? 'list' : 'thumbnails';
 
 export default {
   'studyBrowser.studyMenuItems': [],
@@ -38,12 +39,12 @@ export default {
     {
       id: 'list',
       iconName: 'ListView',
-      selected: false,
+      selected: defaultView === 'list',
     },
     {
       id: 'thumbnails',
       iconName: 'ThumbnailView',
-      selected: true,
+      selected: defaultView === 'thumbnails',
     },
   ],
   'studyBrowser.studyMode': 'all',

@@ -29,23 +29,23 @@ module.exports = {
       },
 
       primary: {
-        light: '#5acce6',
-        main: '#0944b3',
-        dark: '#090c29',
-        active: '#348cfd',
+        light: 'hsl(var(--primary))',
+        main: 'hsl(var(--primary))',
+        dark: 'hsl(var(--background))',
+        active: 'hsl(var(--primary-foreground))',
       },
       inputfield: {
-        main: '#3a3f99',
-        disabled: '#2b166b',
-        focus: '#5acce6',
-        placeholder: '#39383f',
+        main: 'hsl(var(--input))',
+        disabled: 'hsl(var(--muted))',
+        focus: 'hsl(var(--ring))',
+        placeholder: 'hsl(var(--muted-foreground))',
       },
 
       secondary: {
-        light: '#3a3f99',
-        main: '#2b166b',
-        dark: '#041c4a',
-        active: '#1f1f27',
+        light: 'hsl(var(--secondary))',
+        main: 'hsl(var(--secondary))',
+        dark: 'hsl(var(--background))',
+        active: 'hsl(var(--foreground))',
       },
 
       indigo: {
@@ -60,18 +60,18 @@ module.exports = {
         active: '#2c3074',
       },
       bkg: {
-        low: '#050615',
-        med: '#090C29',
-        full: '#041C4A',
+        low: 'hsl(var(--background))',
+        med: 'hsl(var(--card))',
+        full: 'hsl(var(--background))',
       },
       info: {
-        primary: '#FFFFFF',
-        secondary: '#7BB2CE',
+        primary: 'hsl(var(--foreground))',
+        secondary: 'hsl(var(--muted-foreground))',
       },
       actions: {
-        primary: '#348CFD',
-        highlight: '#5ACCE6',
-        hover: 'rgba(52, 140, 253, 0.2)',
+        primary: 'hsl(var(--primary))',
+        highlight: 'hsl(var(--foreground))',
+        hover: 'hsl(var(--primary) / 0.2)',
       },
       customgreen: {
         100: '#05D97C',

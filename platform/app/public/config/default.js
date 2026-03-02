@@ -3,11 +3,24 @@
 window.config = {
   name: 'config/default.js',
   routerBasename: null,
-  // whiteLabeling: {},
+  whiteLabeling: {
+    createLogoComponentFn: function (React) {
+      return React.createElement(
+        'a',
+        {
+          target: '_self',
+          rel: 'noopener noreferrer',
+          className: 'text-white text-lg font-semibold',
+          href: '/',
+        },
+        'Imaging Platform'
+      );
+    },
+  },
   extensions: [],
   modes: [],
   customizationService: {},
-  showStudyList: true,
+  showStudyList: false,
   // some windows systems have issues with more than 3 web workers
   maxNumberOfWebWorkers: 3,
   // below flag is for performance reasons, but it might not work for all servers
@@ -17,6 +30,28 @@ window.config = {
   experimentalStudyBrowserSort: false,
   strictZSpacingForVolumeViewport: true,
   groupEnabledModesFirst: true,
+  uiThemePreset: 'meddreamLike',
+  studyBrowserDefaultView: 'thumbnails',
+  studyBrowserPanelAutoFit: true,
+  toolbarResponsiveOverflow: true,
+  toolbarOverflowMinVisible: 8,
+  toolbarBufferToMoreCount: 0,
+  toolbarMoreAlwaysVisible: true,
+  toolbarOverflowDebug: true,
+  toolbarLeftGuardPx: 12,
+  toolbarMinRightActionsPx: 44,
+  toolbarRightReservationMode: 'measured',
+  patientInfoSingleLine: true,
+  undoRedoPlacement: 'toolbar-responsive',
+  toolbarOnlyMPRDropdown: true,
+  measurementPrimaryToolId: 'Length',
+  headerToolsFirstCollapse: true,
+  brand: {
+    appName: 'Imaging Platform',
+    hideOHIFReferences: true,
+    supportUrl: 'https://support.imagingplatform.local',
+  },
+  measurementTrackingMode: 'simplified',
   allowMultiSelectExport: false,
   maxNumRequests: {
     interaction: 100,
@@ -142,23 +177,6 @@ window.config = {
   //     labelColor: [255, 255, 0, 1], // must be an array
   //     hoverTimeout: 1,
   //     background: 'rgba(100, 100, 100, 0.5)', // can be any valid css color
-  //   },
-  // },
-  // whiteLabeling: {
-  //   createLogoComponentFn: function (React) {
-  //     return React.createElement(
-  //       'a',
-  //       {
-  //         target: '_self',
-  //         rel: 'noopener noreferrer',
-  //         className: 'text-purple-600 line-through',
-  //         href: '_X___IDC__LOGO__LINK___Y_',
-  //       },
-  //       React.createElement('img', {
-  //         src: './Logo.svg',
-  //         className: 'w-14 h-14',
-  //       })
-  //     );
   //   },
   // },
 };

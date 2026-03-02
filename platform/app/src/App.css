@@ -2,3 +2,12 @@ body {
   overscroll-behavior: none;
   touch-action: none;
 }
+
+/* WorkList contrast: force white text/icons on blue panels */
+.worklist-contrast .text-primary,
+.worklist-contrast .text-primary-light,
+.worklist-contrast .text-primary-active,
+.worklist-contrast .text-secondary-light,
+.worklist-contrast .text-muted-foreground {
+  color: #ffffff !important;
+}

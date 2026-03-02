@@ -4,15 +4,13 @@ import { Icons } from '@ohif/ui-next';
 // this is a debug component that is used to list various things that might
 // be useful for debugging such as cross origin errors, etc.
 function Debug() {
+  const appName = (window as any)?.config?.brand?.appName || 'Imaging Platform';
+
   return (
     <div style={{ width: '100%', height: '100%' }}>
       <div className="flex h-screen w-screen items-center justify-center">
         <div className="bg-popover mx-auto space-y-2 rounded-lg py-8 px-8 drop-shadow-md">
-          <img
-            className="mx-auto block h-14"
-            src="./ohif-logo.svg"
-            alt="OHIF"
-          />
+          <div className="text-white text-center text-3xl font-semibold">{appName}</div>
           <div className="space-y-2 pt-4 text-center">
             <div className="flex flex-col items-center justify-center">
               <p className="text-primary mt-4 text-xl font-semibold">Debug Information</p>

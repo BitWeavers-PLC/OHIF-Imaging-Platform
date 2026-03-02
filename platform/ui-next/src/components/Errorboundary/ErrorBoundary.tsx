@@ -142,6 +142,8 @@ const DefaultFallback = ({
   resetErrorBoundary = () => {},
   showErrorDetails,
 }: DefaultFallbackProps) => {
+  const supportUrl =
+    (window as any)?.config?.brand?.supportUrl || 'https://support.imagingplatform.local';
   const isShowDetailsButtonVisible =
     showErrorDetails == null ||
     showErrorDetails === ShowErrorDetails.always ||
@@ -242,12 +244,7 @@ const DefaultFallback = ({
           <Button
             variant="link"
             className="text-primary p-0"
-            onClick={() =>
-              window.open(
-                'https://github.com/OHIF/Viewers/issues/new?template=bug-report.yml',
-                '_blank'
-              )
-            }
+            onClick={() => window.open(supportUrl, '_blank')}
           >
             Report Issue
           </Button>
@@ -258,7 +255,7 @@ const DefaultFallback = ({
 };
 
 const ErrorBoundary = ({
-  context = 'OHIF',
+  context = (window as any)?.config?.brand?.appName || 'Imaging Platform',
   onReset = () => {},
   onError = _error => {},
   fallbackComponent: FallbackComponent = DefaultFallback,

@@ -1,5 +1,7 @@
 import React from 'react';
 import { useToolbar } from '@ohif/core';
+import { useResponsiveToolbarOverflow } from './useResponsiveToolbarOverflow';
+import ToolButtonListWrapper from './ToolButtonListWrapper';
 
 /**
  * Props for the Toolbar component that renders a collection of toolbar buttons and/or button sections.
@@ -41,18 +43,83 @@ export function Toolbar({ buttonSection = 'primary', viewportId, location }: Too
     buttonSection,
   });
 
-  if (!toolbarButtons.length) {
+  const appConfig = (window as any)?.config ?? {};
+  const isPrimarySection = buttonSection === 'primary';
+  const responsiveOverflowEnabled =
+    isPrimarySection && appConfig.toolbarResponsiveOverflow !== false;
+  const minVisible = Number(appConfig.toolbarOverflowMinVisible ?? 8);
+  const bufferToMoreCount = Number(appConfig.toolbarBufferToMoreCount ?? 0);
+  const maxVisibleButtons = Number(appConfig.toolbarMaxVisibleButtons ?? Number.POSITIVE_INFINITY);
+  const minRightActionsPx = Number(appConfig.toolbarMinRightActionsPx ?? 44);
+  const rightReservationMode = appConfig.toolbarRightReservationMode ?? 'measured';
+  const moreAlwaysVisible = appConfig.toolbarMoreAlwaysVisible !== false;
+  const hasMoreHost = toolbarButtons.some(button => button?.id === 'MoreTools');
+  const toolbarButtonsForRender =
+    isPrimarySection && moreAlwaysVisible && !hasMoreHost
+      ? [
+          ...toolbarButtons,
+          {
+            id: 'MoreTools',
+            Component: ToolButtonListWrapper,
+            componentProps: {
+              id: 'MoreTools',
+              buttonSection: 'MoreTools',
+            },
+          },
+        ]
+      : toolbarButtons;
+  // The primary toolbar is rendered inside the center slot, which already excludes the right slot width.
+  // Keep reservation configurable for legacy/future layouts, but default measured mode to no extra deduction.
+  const reservedRightPx =
+    isPrimarySection && rightReservationMode === 'fixed' ? minRightActionsPx : 0;
+
+  const { containerRef, registerItemRef, visibleIds, overflowIds } = useResponsiveToolbarOverflow({
+    toolbarButtons: toolbarButtonsForRender,
+    enabled: responsiveOverflowEnabled,
+    minVisible,
+    reservedRightPx,
+    bufferToMoreCount,
+    maxVisibleButtons,
+  });
+
+  if (!toolbarButtonsForRender.length) {
     return null;
   }
 
+  const finalVisibleIdSet = new Set(visibleIds);
+  if (isPrimarySection && moreAlwaysVisible) {
+    finalVisibleIdSet.add('MoreTools');
+  }
+  const overflowItems = overflowIds
+    .map(id => toolbarButtonsForRender.find(button => button.id === id))
+    .filter(Boolean)
+    .filter(button => button.componentProps?.commands)
+    .map(button => ({
+      id: button.id,
+      icon: button.componentProps?.icon,
+      label: button.componentProps?.label || button.componentProps?.tooltip || button.id,
+      tooltip: button.componentProps?.tooltip,
+      commands: button.componentProps?.commands,
+      disabled: button.componentProps?.disabled,
+      disabledText: button.componentProps?.disabledText,
+      isActive: button.componentProps?.isActive,
+    }));
+
   return (
-    <>
-      {toolbarButtons?.map(toolDef => {
+    <div
+      ref={containerRef}
+      className="flex w-full min-w-0 flex-nowrap items-center justify-start gap-1 overflow-hidden"
+    >
+      {toolbarButtonsForRender?.map(toolDef => {
         if (!toolDef) {
           return null;
         }
 
         const { id, Component, componentProps } = toolDef;
+
+        if (responsiveOverflowEnabled && !finalVisibleIdSet.has(id)) {
+          return null;
+        }
 
         // Enhanced props with state and actions - respecting viewport specificity
         const enhancedProps = {
@@ -63,6 +130,7 @@ export function Toolbar({ buttonSection = 'primary', viewportId, location }: Too
           onClose: () => closeItem(id, viewportId),
           onToggleLock: () => toggleLock(id, viewportId),
           viewportId,
+          ...(id === 'MoreTools' ? { overflowItems } : {}),
         };
 
         const tool = (
@@ -84,15 +152,13 @@ export function Toolbar({ buttonSection = 'primary', viewportId, location }: Too
         return (
           <div
             key={id}
-            // This wrapper div exists solely for React's key prop requirement during reconciliation.
-            // We use display:contents to make it transparent to the layout engine (children appear
-            // as direct children of the parent) while keeping it in the DOM for React's virtual DOM.
-            className="contents"
+            ref={registerItemRef(id)}
+            className="inline-flex shrink-0"
           >
             {tool}
           </div>
         );
       })}
-    </>
+    </div>
   );
 }

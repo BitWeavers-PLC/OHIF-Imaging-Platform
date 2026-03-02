@@ -13,6 +13,16 @@ interface ToolButtonListWrapperProps {
   buttonSection: string;
   onInteraction?: (details: { itemId: string; commands?: Record<string, unknown> }) => void;
   id: string;
+  overflowItems?: Array<{
+    id: string;
+    icon?: string;
+    label?: string;
+    tooltip?: string;
+    commands?: Record<string, unknown>;
+    disabled?: boolean;
+    disabledText?: string;
+    isActive?: boolean;
+  }>;
 }
 
 /**
@@ -21,20 +31,39 @@ interface ToolButtonListWrapperProps {
  * @returns Component
  * // test
  */
-export default function ToolButtonListWrapper({ buttonSection, id }: ToolButtonListWrapperProps) {
+export default function ToolButtonListWrapper({
+  buttonSection,
+  id,
+  overflowItems = [],
+}: ToolButtonListWrapperProps) {
+  const appConfig = (window as any)?.config ?? {};
+  const moreAlwaysVisible = appConfig.toolbarMoreAlwaysVisible !== false;
+  const isMoreTools = id === 'MoreTools';
   const { onInteraction, toolbarButtons } = useToolbar({
     buttonSection,
   });
 
-  if (!toolbarButtons?.length) {
+  if (!toolbarButtons?.length && !(isMoreTools && moreAlwaysVisible)) {
     return null;
   }
 
-  const primary =
-    toolbarButtons.find(button => button.componentProps.isActive)?.componentProps ||
-    toolbarButtons[0].componentProps;
+  const fallbackMorePrimary = {
+    id: 'MoreTools',
+    icon: 'tool-more-menu',
+    label: 'More',
+    tooltip: 'More',
+    isActive: false,
+  };
 
-  const items = toolbarButtons.map(button => button.componentProps);
+  const primary = isMoreTools
+    ? fallbackMorePrimary
+    : toolbarButtons.find(button => button.componentProps.isActive)?.componentProps ||
+      toolbarButtons[0]?.componentProps;
+
+  const items = (toolbarButtons || []).map(button => button.componentProps);
+  const mergedItems = [...items, ...overflowItems].filter(
+    (item, index, array) => array.findIndex(candidate => candidate.id === item.id) === index
+  );
 
   return (
     <ToolButtonList>
@@ -56,20 +85,29 @@ export default function ToolButtonListWrapper({ buttonSection, id }: ToolButtonL
       <ToolButtonListDivider className={primary.isActive ? 'opacity-0' : 'opacity-100'} />
       <div data-cy={`${id}-split-button-secondary`}>
         <ToolButtonListDropDown>
-          {items.map(item => {
-            return (
-              <ToolButtonListItem
-                key={item.id}
-                {...item}
-                data-cy={item.id}
-                data-tool={item.id}
-                data-active={item.isActive}
-                onSelect={() => onInteraction?.({ id, itemId: item.id, commands: item.commands })}
-              >
-                <span className="pl-1">{item.label || item.tooltip || item.id}</span>
-              </ToolButtonListItem>
-            );
-          })}
+          {mergedItems.length ? (
+            mergedItems.map(item => {
+              return (
+                <ToolButtonListItem
+                  key={item.id}
+                  {...item}
+                  data-cy={item.id}
+                  data-tool={item.id}
+                  data-active={item.isActive}
+                  onSelect={() => onInteraction?.({ id, itemId: item.id, commands: item.commands })}
+                >
+                  <span className="pl-1">{item.label || item.tooltip || item.id}</span>
+                </ToolButtonListItem>
+              );
+            })
+          ) : (
+            <ToolButtonListItem
+              key="no-more-tools"
+              disabled
+            >
+              <span className="pl-1">No additional tools</span>
+            </ToolButtonListItem>
+          )}
         </ToolButtonListDropDown>
       </div>
     </ToolButtonList>

@@ -8,29 +8,29 @@
 
 @layer base {
   :root {
-    --highlight: 191 74% 63%;
-    --neutral: 213 22% 59%;
-    --neutral-light: 214 69% 81%;
-    --neutral-dark: 214 16% 21%;
-    --background: 0 0% 0%;
+    --highlight: 200 52% 71%;
+    --neutral: 201 40% 50%;
+    --neutral-light: 201 63% 90%;
+    --neutral-dark: 202 62% 20%;
+    --background: 199 74% 9%;
     --foreground: 0 0% 98%;
-    --card: 234 64% 10%;
+    --card: 202 62% 20%;
     --card-foreground: 0 0% 98%;
-    --popover: 219 90% 15%;
+    --popover: 202 62% 20%;
     --popover-foreground: 0 0% 98%;
-    --primary: 214 98% 60%;
+    --primary: 200 52% 71%;
     --primary-foreground: 0 0% 98%;
-    --secondary: 214 65% 36%;
-    --secondary-foreground: 200 50% 84%;
-    --muted: 234 64% 10%;
-    --muted-foreground: 200 46% 65%;
-    --accent: 217 79% 24%;
+    --secondary: 202 62% 20%;
+    --secondary-foreground: 0 0% 96%;
+    --muted: 201 49% 32%;
+    --muted-foreground: 201 63% 90%;
+    --accent: 201 49% 32%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 14.9%;
-    --input: 236 52% 30%;
-    --ring: 214 98% 60%;
+    --input: 201 49% 32%;
+    --ring: 201 63% 90%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
@@ -55,30 +55,54 @@
   }
 
   .dark {
-    --background: 0 0% 3.9%;
+    --background: 199 74% 9%;
     --foreground: 0 0% 98%;
-    --card: 234 64% 10%;
+    --card: 202 62% 20%;
     --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
+    --popover: 202 62% 20%;
     --popover-foreground: 0 0% 98%;
-    --primary: 214 98% 60%;
+    --primary: 200 52% 71%;
     --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 14.9%;
+    --secondary: 202 62% 20%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
+    --muted: 201 49% 32%;
+    --muted-foreground: 201 63% 90%;
+    --accent: 201 49% 32%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 14.9%;
-    --input: 236 52% 30%;
-    --ring: 214 98% 60%;
+    --input: 201 49% 32%;
+    --ring: 201 63% 90%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+  }
+
+  .theme-meddream {
+    --highlight: 346 100% 59%;
+    --neutral: 219 15% 60%;
+    --neutral-light: 216 18% 74%;
+    --neutral-dark: 229 12% 22%;
+    --background: 230 13% 14%;
+    --foreground: 0 0% 100%;
+    --card: 230 12% 19%;
+    --card-foreground: 0 0% 100%;
+    --popover: 230 12% 19%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 346 100% 59%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 228 10% 24%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 228 11% 27%;
+    --muted-foreground: 217 18% 75%;
+    --accent: 346 100% 59%;
+    --accent-foreground: 0 0% 100%;
+    --border: 228 10% 28%;
+    --input: 228 11% 27%;
+    --ring: 346 100% 59%;
   }
 }
 

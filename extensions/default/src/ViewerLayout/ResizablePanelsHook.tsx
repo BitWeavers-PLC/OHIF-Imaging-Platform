@@ -62,6 +62,10 @@ const useResizablePanels = (
   const resizableLeftPanelAPIRef = useRef(null);
   const resizableRightPanelAPIRef = useRef(null);
   const isResizableHandleDraggingRef = useRef(false);
+  const leftPanelUserResizedRef = useRef(false);
+  const autoFitObserverRef = useRef<MutationObserver | null>(null);
+  const autoFitResizeObserverRef = useRef<ResizeObserver | null>(null);
+  const autoFitTimerRef = useRef<number | null>(null);
 
   // The total width of both handles.
   const resizableHandlesWidth = useRef(null);
@@ -107,6 +111,106 @@ const useResizablePanels = (
       setMinMaxWidth(rightPanelElem, panelGroupDefinition.right.initialExpandedOffsetWidth);
     }
   }, []); // no dependencies because this useLayoutEffect is only needed on the very first render
+
+  useLayoutEffect(() => {
+    const appConfig = (window as any)?.config ?? {};
+    const autoFitEnabled = appConfig.studyBrowserPanelAutoFit !== false;
+
+    if (!autoFitEnabled) {
+      return;
+    }
+
+    const scheduleAutoFit = (delay = 60) => {
+      if (autoFitTimerRef.current) {
+        window.clearTimeout(autoFitTimerRef.current);
+      }
+
+      autoFitTimerRef.current = window.setTimeout(() => {
+        if (
+          leftPanelUserResizedRef.current ||
+          !resizableLeftPanelAPIRef.current ||
+          resizableLeftPanelAPIRef.current.isCollapsed()
+        ) {
+          return;
+        }
+
+        const leftPanelElem = resizableLeftPanelElemRef.current;
+        if (!leftPanelElem) {
+          return;
+        }
+
+        const thumbnailList =
+          leftPanelElem.querySelector('#ohif-thumbnail-list') ||
+          document.querySelector('#ohif-thumbnail-list');
+
+        if (!thumbnailList) {
+          return;
+        }
+
+        const firstCard =
+          thumbnailList.querySelector('[data-cy="study-browser-thumbnail"]') ||
+          thumbnailList.querySelector('[data-cy="study-browser-thumbnail-no-image"]');
+
+        // Fit to thumbnail content (image/text block), not full card width.
+        const previewImage = firstCard?.querySelector('img');
+        const descriptionLabel = firstCard?.querySelector('[data-cy="series-description-label"]');
+        const contentWidth = firstCard
+          ? Math.max(
+              previewImage?.getBoundingClientRect?.().width || 0,
+              descriptionLabel?.getBoundingClientRect?.().width || 0,
+              128
+            )
+          : 128;
+        const panelStyle = getComputedStyle(leftPanelElem);
+        const panelHorizontalPadding =
+          parseFloat(panelStyle.paddingLeft || '0') + parseFloat(panelStyle.paddingRight || '0');
+        const scrollbarAllowance = 18;
+        const sideGutters = 28;
+        const maxReasonableWidth = 300;
+
+        const targetOffsetWidth = Math.max(
+          panelGroupDefinition.left.minimumExpandedOffsetWidth,
+          Math.min(
+            maxReasonableWidth,
+            Math.round(contentWidth + panelHorizontalPadding + scrollbarAllowance + sideGutters)
+          )
+        );
+
+        const expandedWidth =
+          targetOffsetWidth - panelGroupDefinition.shared.expandedInsideBorderSize;
+
+        setLeftPanelExpandedWidth(expandedWidth);
+        const percentageSize = getPercentageSize(targetOffsetWidth);
+        resizableLeftPanelAPIRef.current.resize(percentageSize);
+        setMinMaxWidth(leftPanelElem, targetOffsetWidth);
+      }, delay);
+    };
+
+    scheduleAutoFit(100);
+
+    autoFitObserverRef.current = new MutationObserver(() => scheduleAutoFit(40));
+    autoFitObserverRef.current.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: false,
+    });
+
+    const panelGroupElem = resizablePanelGroupElemRef.current;
+    if (panelGroupElem) {
+      autoFitResizeObserverRef.current = new ResizeObserver(() => scheduleAutoFit(30));
+      autoFitResizeObserverRef.current.observe(panelGroupElem);
+    }
+
+    return () => {
+      if (autoFitTimerRef.current) {
+        window.clearTimeout(autoFitTimerRef.current);
+      }
+      autoFitObserverRef.current?.disconnect();
+      autoFitResizeObserverRef.current?.disconnect();
+      autoFitObserverRef.current = null;
+      autoFitResizeObserverRef.current = null;
+    };
+  }, [leftPanelMinimumExpandedWidth]);
 
   // This useLayoutEffect follows the pattern prescribed by the react-resizable-panels
   // readme for converting between pixel values and percentages. An example of
@@ -226,6 +330,10 @@ const useResizablePanels = (
 
     const newExpandedWidth = getExpandedPixelWidth(size);
     setLeftPanelExpandedWidth(newExpandedWidth);
+
+    if (isResizableHandleDraggingRef.current) {
+      leftPanelUserResizedRef.current = true;
+    }
 
     if (!isResizableHandleDraggingRef.current) {
       // This typically gets executed when the left panel is expanded via one of the UI

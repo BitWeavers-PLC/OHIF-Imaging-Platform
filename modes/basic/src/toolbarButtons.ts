@@ -37,6 +37,13 @@ const toolbarButtons: Button[] = [
     },
   },
   {
+    id: 'MPRTools',
+    uiType: 'ohif.toolButtonList',
+    props: {
+      buttonSection: true,
+    },
+  },
+  {
     id: 'AdvancedRenderingControls',
     uiType: 'ohif.advancedRenderingControls',
     props: {
@@ -602,6 +609,38 @@ const toolbarButtons: Button[] = [
     },
   },
   {
+    id: 'MPR',
+    uiType: 'ohif.toolButton',
+    props: {
+      icon: 'icon-mpr',
+      label: i18n.t('Buttons:MPR'),
+      tooltip: i18n.t('Buttons:MPR'),
+      commands: {
+        commandName: 'toggleHangingProtocol',
+        commandOptions: {
+          protocolId: 'mpr',
+        },
+      },
+      evaluate: 'evaluate.displaySetIsReconstructable',
+    },
+  },
+  {
+    id: 'VolumeRendering3D',
+    uiType: 'ohif.toolButton',
+    props: {
+      icon: 'layout-advanced-3d-only',
+      label: '3D VR',
+      tooltip: '3D Volume Rendering',
+      commands: {
+        commandName: 'toggleHangingProtocol',
+        commandOptions: {
+          protocolId: '3d-only',
+        },
+      },
+      evaluate: 'evaluate.displaySetIsReconstructable',
+    },
+  },
+  {
     id: 'TrackballRotate',
     uiType: 'ohif.toolButton',
     props: {
@@ -677,32 +716,32 @@ const toolbarButtons: Button[] = [
       ],
     },
   },
-  // {
-  //   id: 'Undo',
-  //   uiType: 'ohif.toolButton',
-  //   props: {
-  //     type: 'tool',
-  //     icon: 'prev-arrow',
-  //     label: 'Undo',
-  //     commands: {
-  //       commandName: 'undo',
-  //     },
-  //     evaluate: 'evaluate.action',
-  //   },
-  // },
-  // {
-  //   id: 'Redo',
-  //   uiType: 'ohif.toolButton',
-  //   props: {
-  //     type: 'tool',
-  //     icon: 'next-arrow',
-  //     label: 'Redo',
-  //     commands: {
-  //       commandName: 'redo',
-  //     },
-  //     evaluate: 'evaluate.action',
-  //   },
-  // },
+  {
+    id: 'Undo',
+    uiType: 'ohif.toolButton',
+    props: {
+      type: 'tool',
+      icon: 'Undo',
+      label: i18n.t('Buttons:Undo'),
+      commands: {
+        commandName: 'undo',
+      },
+      evaluate: 'evaluate.action',
+    },
+  },
+  {
+    id: 'Redo',
+    uiType: 'ohif.toolButton',
+    props: {
+      type: 'tool',
+      icon: 'Redo',
+      label: i18n.t('Buttons:Redo'),
+      commands: {
+        commandName: 'redo',
+      },
+      evaluate: 'evaluate.action',
+    },
+  },
 ];
 
 export default toolbarButtons;

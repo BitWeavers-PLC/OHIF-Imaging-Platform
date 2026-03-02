@@ -2,7 +2,6 @@ import React from 'react';
 import classNames from 'classnames';
 
 import ProgressLoadingBar from '../ProgressLoadingBar';
-import { Icons } from '../Icons';
 /**
  *  A React component that renders a loading indicator.
  * if progress is not provided, it will render an infinite loading indicator
@@ -17,7 +16,7 @@ function LoadingIndicatorProgress({ className, textBlock, progress }) {
         className
       )}
     >
-      <Icons.LoadingOHIFMark className="text-foreground h-12 w-12" />
+      <div className="h-11 w-11 animate-spin rounded-full border-2 border-primary/40 border-t-primary" />
       <div className="w-48">
         <ProgressLoadingBar progress={progress} />
       </div>
