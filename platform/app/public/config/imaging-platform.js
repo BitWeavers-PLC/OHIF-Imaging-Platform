@@ -10,7 +10,7 @@ window.config = {
 
   imagingPlatform: {
     brand: {
-      appName: 'Imaging Platform',
+      appName: 'AxialScope',
       hideOHIFReferences: true,
       supportUrl: 'https://support.imagingplatform.local',
     },
@@ -35,7 +35,7 @@ window.config = {
 
   // Backward-compatible mirrors for components still reading legacy flat keys.
   brand: {
-    appName: 'Imaging Platform',
+    appName: 'AxialScope',
     hideOHIFReferences: true,
     supportUrl: 'https://support.imagingplatform.local',
   },
@@ -59,10 +59,15 @@ window.config = {
         {
           target: '_self',
           rel: 'noopener noreferrer',
-          className: 'text-white text-lg font-semibold',
+          className: 'inline-flex items-center gap-2 text-white text-lg font-semibold',
           href: '/',
         },
-        'Imaging Platform'
+        React.createElement('img', {
+          src: `${window.PUBLIC_URL || '/'}assets/favicon-32x32.png`,
+          alt: 'AxialScope logo',
+          className: 'h-5 w-5 shrink-0 rounded-sm',
+        }),
+        React.createElement('span', null, 'AxialScope')
       );
     },
   },

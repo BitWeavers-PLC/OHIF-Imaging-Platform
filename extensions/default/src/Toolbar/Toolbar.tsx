@@ -64,21 +64,27 @@ export function Toolbar({ buttonSection = 'primary', viewportId, location }: Too
     toolbarConfig.rightReservationMode ?? appConfig.toolbarRightReservationMode ?? 'measured';
   const moreAlwaysVisible =
     (toolbarConfig.alwaysShowMore ?? appConfig.toolbarMoreAlwaysVisible) !== false;
-  const hasMoreHost = toolbarButtons.some(button => button?.id === 'MoreTools');
-  const toolbarButtonsForRender =
-    isPrimarySection && moreAlwaysVisible && !hasMoreHost
-      ? [
-          ...toolbarButtons,
-          {
-            id: 'MoreTools',
-            Component: ToolButtonListWrapper,
-            componentProps: {
+  const hasMoreHost = React.useMemo(
+    () => toolbarButtons.some(button => button?.id === 'MoreTools'),
+    [toolbarButtons]
+  );
+  const toolbarButtonsForRender = React.useMemo(
+    () =>
+      isPrimarySection && moreAlwaysVisible && !hasMoreHost
+        ? [
+            ...toolbarButtons,
+            {
               id: 'MoreTools',
-              buttonSection: 'MoreTools',
+              Component: ToolButtonListWrapper,
+              componentProps: {
+                id: 'MoreTools',
+                buttonSection: 'MoreTools',
+              },
             },
-          },
-        ]
-      : toolbarButtons;
+          ]
+        : toolbarButtons,
+    [hasMoreHost, isPrimarySection, moreAlwaysVisible, toolbarButtons]
+  );
   // The primary toolbar is rendered inside the center slot, which already excludes the right slot width.
   // Keep reservation configurable for legacy/future layouts, but default measured mode to no extra deduction.
   const reservedRightPx =
@@ -97,24 +103,31 @@ export function Toolbar({ buttonSection = 'primary', viewportId, location }: Too
     return null;
   }
 
-  const finalVisibleIdSet = new Set(visibleIds);
-  if (isPrimarySection && moreAlwaysVisible) {
-    finalVisibleIdSet.add('MoreTools');
-  }
-  const overflowItems = overflowIds
-    .map(id => toolbarButtonsForRender.find(button => button.id === id))
-    .filter(Boolean)
-    .filter(button => button.componentProps?.commands)
-    .map(button => ({
-      id: button.id,
-      icon: button.componentProps?.icon,
-      label: button.componentProps?.label || button.componentProps?.tooltip || button.id,
-      tooltip: button.componentProps?.tooltip,
-      commands: button.componentProps?.commands,
-      disabled: button.componentProps?.disabled,
-      disabledText: button.componentProps?.disabledText,
-      isActive: button.componentProps?.isActive,
-    }));
+  const finalVisibleIdSet = React.useMemo(() => {
+    const nextSet = new Set(visibleIds);
+    if (isPrimarySection && moreAlwaysVisible) {
+      nextSet.add('MoreTools');
+    }
+    return nextSet;
+  }, [isPrimarySection, moreAlwaysVisible, visibleIds]);
+  const overflowItems = React.useMemo(
+    () =>
+      overflowIds
+        .map(id => toolbarButtonsForRender.find(button => button.id === id))
+        .filter(Boolean)
+        .filter(button => button.componentProps?.commands)
+        .map(button => ({
+          id: button.id,
+          icon: button.componentProps?.icon,
+          label: button.componentProps?.label || button.componentProps?.tooltip || button.id,
+          tooltip: button.componentProps?.tooltip,
+          commands: button.componentProps?.commands,
+          disabled: button.componentProps?.disabled,
+          disabledText: button.componentProps?.disabledText,
+          isActive: button.componentProps?.isActive,
+        })),
+    [overflowIds, toolbarButtonsForRender]
+  );
 
   return (
     <div

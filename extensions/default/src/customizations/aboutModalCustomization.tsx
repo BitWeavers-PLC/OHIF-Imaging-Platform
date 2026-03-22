@@ -9,7 +9,7 @@ function AboutModalDefault() {
   const browser = `${name[0].toUpperCase()}${name.substr(1)} ${version}`;
   const versionNumber = process.env.VERSION_NUMBER;
   const commitHash = process.env.COMMIT_HASH;
-  const appName = (window as any)?.config?.brand?.appName || 'Imaging Platform';
+  const appName = (window as any)?.config?.brand?.appName || 'AxialScope';
   const supportUrl =
     (window as any)?.config?.brand?.supportUrl || 'https://support.imagingplatform.local';
 

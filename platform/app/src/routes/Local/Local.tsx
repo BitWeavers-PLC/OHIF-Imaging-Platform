@@ -59,7 +59,7 @@ function Local({ modePath }: LocalProps) {
   const LoadingIndicatorProgress = customizationService.getCustomization(
     'ui.loadingIndicatorProgress'
   );
-  const appName = (window as any)?.config?.brand?.appName || 'Imaging Platform';
+  const appName = (window as any)?.config?.brand?.appName || 'AxialScope';
 
   // Initializing the dicom local dataSource
   const dataSourceModules = extensionManager.modules[MODULE_TYPES.DATA_SOURCE];

@@ -13,6 +13,8 @@ import { IconPresentationProvider } from '@ohif/ui-next';
 
 import NavBar from '../NavBar';
 
+const MEASUREMENT_TOLERANCE_PX = 1;
+
 // Todo: we should move this component to composition and remove props base
 
 interface HeaderProps {
@@ -60,7 +62,7 @@ function Header({
   const productConfig = appConfig.imagingPlatform ?? {};
   const brandConfig = productConfig.brand ?? appConfig.brand ?? {};
   const toolbarConfig = productConfig.toolbar ?? {};
-  const fallbackBrandName = brandConfig.appName || 'Imaging Platform';
+  const fallbackBrandName = brandConfig.appName || 'AxialScope';
   const toolbarLeftGuardPx = Number(toolbarConfig.leftGuardPx ?? appConfig.toolbarLeftGuardPx ?? 12);
   const toolbarMinRightActionsPx = Number(
     toolbarConfig.minRightActionsPx ?? appConfig.toolbarMinRightActionsPx ?? 44
@@ -73,7 +75,10 @@ function Header({
     }
 
     const update = () => {
-      setRightSlotWidth(Math.ceil(element.getBoundingClientRect().width || 0));
+      const nextWidth = Math.ceil(element.getBoundingClientRect().width || 0);
+      setRightSlotWidth(prev =>
+        Math.abs(prev - nextWidth) <= MEASUREMENT_TOLERANCE_PX ? prev : nextWidth
+      );
     };
 
     update();
@@ -98,14 +103,19 @@ function Header({
     const updateOffset = () => {
       const viewportPanel = resolveViewportPanel();
       if (!viewportPanel) {
-        setToolbarStartOffsetPx(null);
         return;
       }
 
       const centerRect = centerElement.getBoundingClientRect();
       const viewportRect = viewportPanel.getBoundingClientRect();
       const offset = Math.max(toolbarLeftGuardPx, Math.ceil(viewportRect.left - centerRect.left));
-      setToolbarStartOffsetPx(offset);
+      setToolbarStartOffsetPx(prev => {
+        if (prev === null) {
+          return offset;
+        }
+
+        return Math.abs(prev - offset) <= MEASUREMENT_TOLERANCE_PX ? prev : offset;
+      });
     };
 
     updateOffset();

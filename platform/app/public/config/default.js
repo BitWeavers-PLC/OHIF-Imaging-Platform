@@ -10,10 +10,15 @@ window.config = {
         {
           target: '_self',
           rel: 'noopener noreferrer',
-          className: 'text-white text-lg font-semibold',
+          className: 'inline-flex items-center gap-2 text-white text-lg font-semibold',
           href: '/',
         },
-        'Imaging Platform'
+        React.createElement('img', {
+          src: `${window.PUBLIC_URL || '/'}assets/favicon-32x32.png`,
+          alt: 'AxialScope logo',
+          className: 'h-5 w-5 shrink-0 rounded-sm',
+        }),
+        React.createElement('span', null, 'AxialScope')
       );
     },
   },
@@ -34,7 +39,7 @@ window.config = {
   groupEnabledModesFirst: true,
   imagingPlatform: {
     brand: {
-      appName: 'Imaging Platform',
+      appName: 'AxialScope',
       hideOHIFReferences: true,
       supportUrl: 'https://support.imagingplatform.local',
     },
@@ -75,7 +80,7 @@ window.config = {
   measurementPrimaryToolId: 'Length',
   headerToolsFirstCollapse: true,
   brand: {
-    appName: 'Imaging Platform',
+    appName: 'AxialScope',
     hideOHIFReferences: true,
     supportUrl: 'https://support.imagingplatform.local',
   },
@@ -169,9 +174,9 @@ window.config = {
       configuration: {
         friendlyName: 'AWS S3 Static wado server',
         name: 'aws',
-        wadoUriRoot: 'http://localhost:8081/pacs/api',
-        qidoRoot: 'http://localhost:8081/pacs/api',
-        wadoRoot: 'http://localhost:8081/pacs/api',
+        wadoUriRoot: '/pacs/api',
+        qidoRoot: '/pacs/api',
+        wadoRoot: '/pacs/api',
         qidoSupportsIncludeField: false,
         imageRendering: 'wadors',
         thumbnailRendering: 'wadors',

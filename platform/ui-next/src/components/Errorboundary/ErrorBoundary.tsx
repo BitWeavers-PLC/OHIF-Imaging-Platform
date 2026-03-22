@@ -255,7 +255,7 @@ const DefaultFallback = ({
 };
 
 const ErrorBoundary = ({
-  context = (window as any)?.config?.brand?.appName || 'Imaging Platform',
+  context = (window as any)?.config?.brand?.appName || 'AxialScope',
   onReset = () => {},
   onError = _error => {},
   fallbackComponent: FallbackComponent = DefaultFallback,

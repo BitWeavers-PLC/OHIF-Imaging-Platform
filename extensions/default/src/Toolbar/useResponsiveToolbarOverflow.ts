@@ -38,6 +38,7 @@ const OVERFLOW_FIRST_IDS = [
 const DEFAULT_BUTTON_WIDTH = 42;
 const BUTTON_GAP_PX = 4;
 const DEFAULT_BUFFER_TO_MORE_COUNT = 0;
+const WIDTH_CHANGE_TOLERANCE_PX = 1;
 
 function shallowArrayEqual(a: string[], b: string[]) {
   if (a.length !== b.length) {
@@ -110,17 +111,23 @@ export function useResponsiveToolbarOverflow({
     });
   }, []);
 
+  const updateLayoutState = useCallback(
+    (nextVisibleIds: string[], nextOverflowIds: string[]) => {
+      setVisibleIds(prev => (shallowArrayEqual(prev, nextVisibleIds) ? prev : nextVisibleIds));
+      setOverflowIds(prev => (shallowArrayEqual(prev, nextOverflowIds) ? prev : nextOverflowIds));
+    },
+    []
+  );
+
   const calculateLayout = useCallback(() => {
     if (!enabled || buttonIds.length === 0) {
-      setVisibleIds(buttonIds);
-      setOverflowIds([]);
+      updateLayoutState(buttonIds, []);
       return;
     }
 
     const hasMore = buttonIds.includes(PRIMARY_MORE_ID);
     if (!hasMore || containerWidth <= 0) {
-      setVisibleIds(buttonIds);
-      setOverflowIds([]);
+      updateLayoutState(buttonIds, []);
       return;
     }
 
@@ -257,12 +264,7 @@ export function useResponsiveToolbarOverflow({
       });
     }
 
-    setVisibleIds(prev =>
-      shallowArrayEqual(prev, computedVisibleIds) ? prev : computedVisibleIds
-    );
-    setOverflowIds(prev =>
-      shallowArrayEqual(prev, computedOverflowIds) ? prev : computedOverflowIds
-    );
+    updateLayoutState(computedVisibleIds, computedOverflowIds);
   }, [
     buttonIds,
     containerWidth,
@@ -275,6 +277,7 @@ export function useResponsiveToolbarOverflow({
     refreshMeasuredWidths,
     debug,
     toolbarButtons,
+    updateLayoutState,
   ]);
 
   useEffect(() => {
@@ -289,11 +292,14 @@ export function useResponsiveToolbarOverflow({
 
     let rafId: number | null = null;
     const updateContainerWidth = (nextWidth: number) => {
+      const roundedWidth = Math.floor(nextWidth);
       if (rafId !== null) {
         cancelAnimationFrame(rafId);
       }
       rafId = requestAnimationFrame(() => {
-        setContainerWidth(Math.floor(nextWidth));
+        setContainerWidth(prev =>
+          Math.abs(prev - roundedWidth) <= WIDTH_CHANGE_TOLERANCE_PX ? prev : roundedWidth
+        );
       });
     };
 

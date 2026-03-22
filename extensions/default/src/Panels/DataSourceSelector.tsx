@@ -8,7 +8,7 @@ import { Button, ButtonEnums } from '@ohif/ui';
 function DataSourceSelector() {
   const [appConfig] = useAppConfig();
   const navigate = useNavigate();
-  const appName = (window as any)?.config?.brand?.appName || 'Imaging Platform';
+  const appName = (window as any)?.config?.brand?.appName || 'AxialScope';
 
   // This is frowned upon, but the raw config is needed here to provide
   // the selector

@@ -18,7 +18,7 @@ const InvestigationalUseDialog = ({
   const { option, days } = dialogConfiguration;
   const [isHidden, setIsHidden] = useState(true);
   const { t } = useTranslation('InvestigationalUseDialog');
-  const appName = (window as any)?.config?.brand?.appName || 'Imaging Platform';
+  const appName = (window as any)?.config?.brand?.appName || 'AxialScope';
   const supportUrl = (window as any)?.config?.brand?.supportUrl || 'https://support.imagingplatform.local';
 
   useEffect(() => {

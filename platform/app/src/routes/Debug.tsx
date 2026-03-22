@@ -4,7 +4,7 @@ import { Icons } from '@ohif/ui-next';
 // this is a debug component that is used to list various things that might
 // be useful for debugging such as cross origin errors, etc.
 function Debug() {
-  const appName = (window as any)?.config?.brand?.appName || 'Imaging Platform';
+  const appName = (window as any)?.config?.brand?.appName || 'AxialScope';
 
   return (
     <div style={{ width: '100%', height: '100%' }}>

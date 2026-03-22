@@ -7,7 +7,7 @@ export default function getCustomizationModule() {
     {
       name: 'imagingPlatform',
       value: {
-        'imagingPlatform.brand.appName': productBrand.appName || 'Imaging Platform',
+        'imagingPlatform.brand.appName': productBrand.appName || 'AxialScope',
       },
     },
     {

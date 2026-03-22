@@ -18,7 +18,7 @@ export const modeInstance = {
   id,
   routeName: 'imaging-platform',
   hide: false,
-  displayName: i18n.t('Modes:Imaging Platform'),
+  displayName: i18n.t('Modes:AxialScope'),
   extensions: extensionDependencies,
 };
 
