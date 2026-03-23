@@ -32,6 +32,7 @@ const IS_COVERAGE = process.env.COVERAGE === 'true';
 const VERSION_NUMBER = fs.readFileSync(path.join(__dirname, '../version.txt'), 'utf8') || '';
 
 const COMMIT_HASH = fs.readFileSync(path.join(__dirname, '../commit.txt'), 'utf8') || '';
+const ONNX_RUNTIME_DIST_DIR = path.resolve(__dirname, '../node_modules/onnxruntime-web/dist/esm');
 
 //
 dotenv.config();
@@ -51,6 +52,8 @@ const defineValues = {
   'process.env.LOCIZE_API_KEY': JSON.stringify(process.env.LOCIZE_API_KEY || ''),
   'process.env.REACT_APP_I18N_DEBUG': JSON.stringify(process.env.REACT_APP_I18N_DEBUG || ''),
   'process.env.TEST_ENV': JSON.stringify(process.env.TEST_ENV || ''),
+  __filename: 'undefined',
+  __dirname: 'undefined',
 };
 
 // Only redefine updated values.  This avoids warning messages in the logs
@@ -201,6 +204,13 @@ module.exports = (env, argv, { SRC_DIR, ENTRY }) => {
         '@hooks': path.resolve(__dirname, '../platform/app/src/hooks'),
         '@routes': path.resolve(__dirname, '../platform/app/src/routes'),
         '@state': path.resolve(__dirname, '../platform/app/src/state'),
+        'onnxruntime-web$': path.resolve(ONNX_RUNTIME_DIST_DIR, 'ort.min.js'),
+        'onnxruntime-web/webgpu$': path.resolve(ONNX_RUNTIME_DIST_DIR, 'ort.webgpu.min.js'),
+        'onnxruntime-web/wasm$': path.resolve(ONNX_RUNTIME_DIST_DIR, 'ort.wasm.min.js'),
+        'onnxruntime-web/wasm-core$': path.resolve(ONNX_RUNTIME_DIST_DIR, 'ort.wasm-core.min.js'),
+        'onnxruntime-web/webgl$': path.resolve(ONNX_RUNTIME_DIST_DIR, 'ort.webgl.min.js'),
+        'onnxruntime-web/training$': path.resolve(ONNX_RUNTIME_DIST_DIR, 'ort.training.wasm.min.js'),
+        'onnxruntime-web/experimental$': path.resolve(ONNX_RUNTIME_DIST_DIR, 'ort.all.min.js'),
       },
       // Which directories to search when resolving modules
       modules: [

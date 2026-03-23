@@ -8,6 +8,7 @@ import fs from 'fs';
 const SRC_DIR = path.resolve(__dirname, './platform/app/src');
 const DIST_DIR = path.resolve(__dirname, './platform/app/dist');
 const PUBLIC_DIR = path.resolve(__dirname, './platform/app/public');
+const ONNX_RUNTIME_DIST_DIR = path.resolve(__dirname, 'node_modules/onnxruntime-web/dist/esm');
 
 // Environment variables (similar to webpack.pwa.js)
 const APP_CONFIG = process.env.APP_CONFIG || 'config/default.js';
@@ -44,6 +45,8 @@ export default defineConfig({
       'process.env.LOCIZE_PROJECTID': JSON.stringify(process.env.LOCIZE_PROJECTID || ''),
       'process.env.LOCIZE_API_KEY': JSON.stringify(process.env.LOCIZE_API_KEY || ''),
       'process.env.REACT_APP_I18N_DEBUG': JSON.stringify(process.env.REACT_APP_I18N_DEBUG || ''),
+      __filename: 'undefined',
+      __dirname: 'undefined',
     },
   },
   plugins: [pluginReact(), pluginNodePolyfill()],
@@ -94,6 +97,13 @@ export default defineConfig({
       '@hooks': path.resolve(__dirname, './platform/app/src/hooks'),
       '@routes': path.resolve(__dirname, './platform/app/src/routes'),
       '@state': path.resolve(__dirname, './platform/app/src/state'),
+      'onnxruntime-web$': path.resolve(ONNX_RUNTIME_DIST_DIR, 'ort.min.js'),
+      'onnxruntime-web/webgpu$': path.resolve(ONNX_RUNTIME_DIST_DIR, 'ort.webgpu.min.js'),
+      'onnxruntime-web/wasm$': path.resolve(ONNX_RUNTIME_DIST_DIR, 'ort.wasm.min.js'),
+      'onnxruntime-web/wasm-core$': path.resolve(ONNX_RUNTIME_DIST_DIR, 'ort.wasm-core.min.js'),
+      'onnxruntime-web/webgl$': path.resolve(ONNX_RUNTIME_DIST_DIR, 'ort.webgl.min.js'),
+      'onnxruntime-web/training$': path.resolve(ONNX_RUNTIME_DIST_DIR, 'ort.training.wasm.min.js'),
+      'onnxruntime-web/experimental$': path.resolve(ONNX_RUNTIME_DIST_DIR, 'ort.all.min.js'),
     },
   },
   output: {
