@@ -87,13 +87,17 @@ window.config = {
   measurementTrackingMode: 'simplified',
   allowMultiSelectExport: false,
   maxNumRequests: {
-    interaction: 100,
-    thumbnail: 75,
-    // Prefetch number is dependent on the http protocol. For http 2 or
-    // above, the number of requests can be go a lot higher.
-    prefetch: 25,
+    interaction: 20,
+    thumbnail: 5,
+    prefetch: 2,
   },
-  showErrorDetails: 'always', // 'always', 'dev', 'production'
+  studyPrefetcher: {
+    enabled: true,
+    displaySetsCount: 1,
+    maxNumPrefetchRequests: 2,
+    order: 'closest',
+  },
+  showErrorDetails: 'dev', // 'always', 'dev', 'production'
   // filterQueryParam: false,
   // Defines multi-monitor layouts
   multimonitor: [
