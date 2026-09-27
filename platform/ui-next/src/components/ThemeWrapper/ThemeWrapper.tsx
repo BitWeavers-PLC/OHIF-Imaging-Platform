@@ -12,7 +12,7 @@ export const ThemeWrapper = ({ children }) => {
     const body = document.body;
     const appConfig = (window as any)?.config ?? {};
     const productConfig = appConfig.imagingPlatform ?? {};
-    const preset = productConfig.uiThemePreset || appConfig.uiThemePreset || 'default';
+    const preset = productConfig.uiThemePreset || appConfig.uiThemePreset || 'meddreamLike'; // Fork: MedDream-style red is the default
     const themeClass = PRESET_CLASS_MAP[preset];
 
     Object.values(PRESET_CLASS_MAP).forEach(className => {

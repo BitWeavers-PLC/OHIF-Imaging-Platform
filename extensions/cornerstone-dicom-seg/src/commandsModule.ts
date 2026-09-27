@@ -156,7 +156,7 @@ const commandsModule = ({
           SegmentNumber: segmentIndex.toString(),
           SegmentLabel: label,
           SegmentAlgorithmType: segment?.algorithmType || 'MANUAL',
-          SegmentAlgorithmName: segment?.algorithmName || 'OHIF Brush',
+          SegmentAlgorithmName: segment?.algorithmName || 'Manual',
           RecommendedDisplayCIELabValue,
           SegmentedPropertyCategoryCodeSequence: {
             CodeValue: 'T-D0050',

@@ -209,41 +209,24 @@ export function onModeExit({ servicesManager }: withAppTypes) {
 }
 
 export const toolbarSections = {
+  // Fork: grouped so the row stays short; a list shows its active tool, else its first.
   [TOOLBAR_SECTIONS.primary]: [
-    'Length',
-    'RectangleROI',
-    'Bidirectional',
-    'ArrowAnnotate',
-    'EllipticalROI',
-    'CircleROI',
-    'PlanarFreehandROI',
-    'SplineROI',
-    'LivewireContour',
+    'MeasurementTools',
+    'WindowLevel',
     'Zoom',
     'Pan',
-    'WindowLevel',
     'StackScroll',
-    'Probe',
     'Magnify',
     'Reset',
-    'Angle',
-    'CobbAngle',
+    'Layout',
+    'MPRTools',
+    'SlabTools',
+    'OrientationTools',
+    'SyncTools',
     'Cine',
     'Capture',
-    'WindowLevelRegion',
-    'CalibrationLine',
-    'invert',
-    'ImageSliceSync',
-    'ReferenceLines',
-    'ImageOverlayViewer',
-    'AdvancedMagnify',
-    'TagBrowser',
-    'rotate-right',
-    'flipHorizontal',
-    'Layout',
     'Undo',
     'Redo',
-    'MPRTools',
     'MoreTools',
   ],
 
@@ -268,24 +251,38 @@ export const toolbarSections = {
   [TOOLBAR_SECTIONS.viewportActionMenu.bottomLeft]: ['windowLevelMenu'],
 
   MeasurementTools: [
-    'RectangleROI',
+    'Length',
     'Bidirectional',
-    'ArrowAnnotate',
     'EllipticalROI',
     'CircleROI',
+    'RectangleROI',
     'PlanarFreehandROI',
     'SplineROI',
     'LivewireContour',
+    'Angle',
+    'CobbAngle',
+    'Probe',
+    'ArrowAnnotate',
+    'CalibrationLine',
   ],
 
-  MPRTools: [
-    'MPR',
-    'VolumeRendering3D',
-    'Crosshairs',
-    'TrackballRotate',
-  ],
+  OrientationTools: ['rotate-right', 'flipHorizontal', 'invert'],
+
+  SyncTools: ['ImageSliceSync', 'VOISync', 'ReferenceLines'],
+
+  SlabTools: ['SlabMIP20', 'SlabMIP10', 'SlabMIPFull', 'SlabMinIP10', 'SlabAvgIP5', 'SlabOff'],
+
+  MPRTools: ['MPR', 'MIP', 'VolumeRendering3D', 'Crosshairs', 'TrackballRotate', 'VolumeCropping'],
 
   MoreTools: [
+    'FilterSharpenLow',
+    'FilterSharpenHigh',
+    'FilterSmooth',
+    'FilterOff',
+    'WindowLevelRegion',
+    'AdvancedMagnify',
+    'ImageOverlayViewer',
+    'TagBrowser',
     'UltrasoundDirectionalTool',
     'SegmentLabelTool',
   ],
@@ -367,8 +364,8 @@ export const modeInstance = {
   isValidMode,
   routes: [basicRoute],
   extensions: extensionDependencies,
-  // Default protocol gets self-registered by default in the init
-  hangingProtocol: 'default',
+  // Fork: best match wins; mammo and CR/DX need their modality, 'default' matches anything.
+  hangingProtocol: ['@ohif/hpMammo', '@ohif/dxTwoView', 'default'],
   // Order is important in sop class handlers when two handlers both use
   // the same sop class under different situations.  In that case, the more
   // general handler needs to come last.  For this case, the dicomvideo must

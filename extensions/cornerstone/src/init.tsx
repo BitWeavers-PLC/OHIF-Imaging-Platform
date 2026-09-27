@@ -112,9 +112,12 @@ export default async function init({
     segmentationService.EVENTS.SEGMENTATION_ANNOTATION_CUT_MERGE_PROCESS_COMPLETED,
   ]);
 
-  window.services = servicesManager.services;
-  window.extensionManager = extensionManager;
-  window.commandsManager = commandsManager;
+  // Fork: debugging globals only outside production (they expose the framework's internals).
+  if (process.env.NODE_ENV !== 'production') {
+    window.services = servicesManager.services;
+    window.extensionManager = extensionManager;
+    window.commandsManager = commandsManager;
+  }
 
   if (appConfig.showCPUFallbackMessage && cornerstone.getShouldUseCPURendering()) {
     _showCPURenderingModal(uiModalService, hangingProtocolService);
@@ -347,9 +350,10 @@ function CPUModal() {
   return (
     <div>
       <p>
-        Your computer does not have enough GPU power to support the default GPU rendering mode. OHIF
-        has switched to CPU rendering mode. Please note that CPU rendering does not support all
-        features such as Volume Rendering, Multiplanar Reconstruction, and Segmentation Overlays.
+        Your computer does not have enough GPU power to support the default GPU rendering mode. The
+        viewer has switched to CPU rendering mode. Please note that CPU rendering does not support
+        all features such as Volume Rendering, Multiplanar Reconstruction, and Segmentation
+        Overlays.
       </p>
     </div>
   );
@@ -360,7 +364,7 @@ function _showCPURenderingModal(uiModalService, hangingProtocolService) {
     if (progress === 100) {
       uiModalService.show({
         content: CPUModal,
-        title: 'OHIF Fell Back to CPU Rendering',
+        title: 'Switched to CPU Rendering',
       });
 
       return true;

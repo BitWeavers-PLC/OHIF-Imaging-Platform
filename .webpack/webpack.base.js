@@ -68,7 +68,8 @@ module.exports = (env, argv, { SRC_DIR, ENTRY }) => {
 
   const config = {
     mode: isProdBuild ? 'production' : 'development',
-    devtool: isProdBuild ? 'source-map' : 'cheap-module-source-map',
+    // Fork: no production source maps (they ship the full framework source).
+    devtool: isProdBuild ? false : 'cheap-module-source-map',
     entry: ENTRY,
     optimization: {
       // splitChunks: {
@@ -209,7 +210,10 @@ module.exports = (env, argv, { SRC_DIR, ENTRY }) => {
         'onnxruntime-web/wasm$': path.resolve(ONNX_RUNTIME_DIST_DIR, 'ort.wasm.min.js'),
         'onnxruntime-web/wasm-core$': path.resolve(ONNX_RUNTIME_DIST_DIR, 'ort.wasm-core.min.js'),
         'onnxruntime-web/webgl$': path.resolve(ONNX_RUNTIME_DIST_DIR, 'ort.webgl.min.js'),
-        'onnxruntime-web/training$': path.resolve(ONNX_RUNTIME_DIST_DIR, 'ort.training.wasm.min.js'),
+        'onnxruntime-web/training$': path.resolve(
+          ONNX_RUNTIME_DIST_DIR,
+          'ort.training.wasm.min.js'
+        ),
         'onnxruntime-web/experimental$': path.resolve(ONNX_RUNTIME_DIST_DIR, 'ort.all.min.js'),
       },
       // Which directories to search when resolving modules

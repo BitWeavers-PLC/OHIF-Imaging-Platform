@@ -117,6 +117,7 @@
   "Line Tool": "线工具",
   "3D Rotate": "3D旋转",
   "MPR": "MPR",
+  "MIP": "MIP",
   "Rectangle ROI Threshold": "矩形ROI阈值",
   "Select the PT Axial to enable this tool": "选择PT轴向以启用此工具",
   "Create new segmentation to enable this tool.": "创建新分割以启用此工具。",

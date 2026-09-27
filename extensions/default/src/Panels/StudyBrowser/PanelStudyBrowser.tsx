@@ -24,6 +24,8 @@ function PanelStudyBrowser({
   customMapDisplaySets,
   onClickUntrack,
   onDoubleClickThumbnailHandlerCallBack,
+  // Fork: replace the OHIF study browser view while keeping all data logic.
+  StudyBrowserComponent = null,
 }) {
   const { servicesManager, commandsManager, extensionManager } = useSystem();
   const { displaySetService, customizationService } = servicesManager.services;
@@ -399,6 +401,35 @@ function PanelStudyBrowser({
 
   const activeDisplaySetInstanceUIDs = viewports.get(activeViewportId)?.displaySetInstanceUIDs;
 
+  const menuItems = {
+    ThumbnailMenuItems: MoreDropdownMenu({
+      commandsManager,
+      servicesManager,
+      menuItemsKey: 'studyBrowser.thumbnailMenuItems',
+    }),
+    StudyMenuItems: MoreDropdownMenu({
+      commandsManager,
+      servicesManager,
+      menuItemsKey: 'studyBrowser.studyMenuItems',
+    }),
+  };
+
+  if (StudyBrowserComponent) {
+    return (
+      <StudyBrowserComponent
+        tabs={tabs}
+        activeTabName={activeTabName}
+        expandedStudyInstanceUIDs={expandedStudyInstanceUIDs}
+        primaryStudyInstanceUIDs={StudyInstanceUIDs}
+        onClickStudy={_handleStudyClick}
+        onClickUntrack={onClickUntrack}
+        onDoubleClickThumbnail={onDoubleClickThumbnailHandler}
+        activeDisplaySetInstanceUIDs={activeDisplaySetInstanceUIDs}
+        {...menuItems}
+      />
+    );
+  }
+
   return (
     <>
       <>
@@ -430,16 +461,7 @@ function PanelStudyBrowser({
         activeDisplaySetInstanceUIDs={activeDisplaySetInstanceUIDs}
         showSettings={actionIcons.find(icon => icon.id === 'settings')?.value}
         viewPresets={viewPresets}
-        ThumbnailMenuItems={MoreDropdownMenu({
-          commandsManager,
-          servicesManager,
-          menuItemsKey: 'studyBrowser.thumbnailMenuItems',
-        })}
-        StudyMenuItems={MoreDropdownMenu({
-          commandsManager,
-          servicesManager,
-          menuItemsKey: 'studyBrowser.studyMenuItems',
-        })}
+        {...menuItems}
       />
     </>
   );

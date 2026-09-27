@@ -29,6 +29,7 @@ import {
   annotation,
   ReferenceLinesTool,
   TrackballRotateTool,
+  VolumeCroppingTool,
   AdvancedMagnifyTool,
   UltrasoundDirectionalTool,
   UltrasoundPleuraBLineTool,
@@ -98,6 +99,7 @@ export default function initCornerstoneTools(configuration = {}) {
   addTool(ReferenceLinesTool);
   addTool(CalibrationLineTool);
   addTool(TrackballRotateTool);
+  addTool(VolumeCroppingTool);
   addTool(ImageOverlayViewerTool);
   addTool(AdvancedMagnifyTool);
   addTool(UltrasoundDirectionalTool);
@@ -157,6 +159,7 @@ const toolNames = {
   ReferenceLines: ReferenceLinesTool.toolName,
   CalibrationLine: CalibrationLineTool.toolName,
   TrackballRotateTool: TrackballRotateTool.toolName,
+  VolumeCropping: VolumeCroppingTool.toolName,
   CircleScissors: CircleScissorsTool.toolName,
   RectangleScissors: RectangleScissorsTool.toolName,
   SphereScissors: SphereScissorsTool.toolName,

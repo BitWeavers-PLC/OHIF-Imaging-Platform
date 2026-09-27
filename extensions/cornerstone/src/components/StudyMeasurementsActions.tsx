@@ -7,6 +7,8 @@ export function StudyMeasurementsActions({ items, StudyInstanceUID, measurementF
   const { commandsManager } = useSystem();
   const { t } = useTranslation('MeasurementTable');
   const disabled = !items?.length;
+  // Fork: hide SR save when the PACS route is read-only (no STOW).
+  const allowSRSave = (window as any).config?.imagingPlatform?.viewer?.allowSRSave !== false;
 
   if (disabled) {
     return null;
@@ -33,22 +35,37 @@ export function StudyMeasurementsActions({ items, StudyInstanceUID, measurementF
         <Button
           size="sm"
           variant="ghost"
-          className="pl-0.5"
+          className="pl-1.5"
+          title={t('Copy findings to paste into the report')}
           onClick={e => {
             e.stopPropagation();
-            if (actions?.createSR) {
-              actions.createSR({ StudyInstanceUID, measurementFilter });
-              return;
-            }
-            commandsManager.run('promptSaveReport', {
-              StudyInstanceUID,
-              measurementFilter,
-            });
+            commandsManager.runCommand('copyMeasurementsToClipboard', { measurementFilter });
           }}
         >
-          <Icons.Add />
-          {t('Create SR')}
+          <span>{t('Copy')}</span>
         </Button>
+
+        {allowSRSave && (
+          <Button
+            size="sm"
+            variant="ghost"
+            className="pl-0.5"
+            onClick={e => {
+              e.stopPropagation();
+              if (actions?.createSR) {
+                actions.createSR({ StudyInstanceUID, measurementFilter });
+                return;
+              }
+              commandsManager.run('promptSaveReport', {
+                StudyInstanceUID,
+                measurementFilter,
+              });
+            }}
+          >
+            <Icons.Add />
+            {t('Create SR')}
+          </Button>
+        )}
         <Button
           size="sm"
           variant="ghost"

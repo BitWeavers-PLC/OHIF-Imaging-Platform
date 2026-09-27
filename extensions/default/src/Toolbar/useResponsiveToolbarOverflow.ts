@@ -1,39 +1,28 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 const PREFERRED_VISIBLE_IDS = new Set([
-  'Length',
+  'MeasurementTools',
+  'WindowLevel',
   'Zoom',
   'Pan',
-  'WindowLevel',
   'StackScroll',
-  'Probe',
   'Reset',
   'Layout',
   'MPRTools',
+  'SlabTools',
 ]);
 
-const PINNED_IDS = new Set(['MPRTools']);
+// Lists and Layout have no `commands`, so the More menu can't host them: never overflow them.
+const PINNED_IDS = new Set([
+  'MeasurementTools',
+  'Layout',
+  'MPRTools',
+  'SlabTools',
+  'OrientationTools',
+  'SyncTools',
+]);
 const PRIMARY_MORE_ID = 'MoreTools';
-const OVERFLOW_FIRST_IDS = [
-  'Redo',
-  'Undo',
-  'LivewireContour',
-  'SplineROI',
-  'PlanarFreehandROI',
-  'CircleROI',
-  'EllipticalROI',
-  'ArrowAnnotate',
-  'Bidirectional',
-  'RectangleROI',
-  'Magnify',
-  'rotate-right',
-  'flipHorizontal',
-  'TagBrowser',
-  'AdvancedMagnify',
-  'ImageOverlayViewer',
-  'ReferenceLines',
-  'ImageSliceSync',
-];
+const OVERFLOW_FIRST_IDS = ['Redo', 'Undo', 'Capture', 'Cine', 'Magnify'];
 
 const DEFAULT_BUTTON_WIDTH = 42;
 const BUTTON_GAP_PX = 4;
@@ -111,13 +100,10 @@ export function useResponsiveToolbarOverflow({
     });
   }, []);
 
-  const updateLayoutState = useCallback(
-    (nextVisibleIds: string[], nextOverflowIds: string[]) => {
-      setVisibleIds(prev => (shallowArrayEqual(prev, nextVisibleIds) ? prev : nextVisibleIds));
-      setOverflowIds(prev => (shallowArrayEqual(prev, nextOverflowIds) ? prev : nextOverflowIds));
-    },
-    []
-  );
+  const updateLayoutState = useCallback((nextVisibleIds: string[], nextOverflowIds: string[]) => {
+    setVisibleIds(prev => (shallowArrayEqual(prev, nextVisibleIds) ? prev : nextVisibleIds));
+    setOverflowIds(prev => (shallowArrayEqual(prev, nextOverflowIds) ? prev : nextOverflowIds));
+  }, []);
 
   const calculateLayout = useCallback(() => {
     if (!enabled || buttonIds.length === 0) {

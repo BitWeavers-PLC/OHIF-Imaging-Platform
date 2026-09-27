@@ -120,6 +120,7 @@
   "3D Rotate": "3D Draaien",
   "Shape": "Vorm",
   "MPR": "MPR",
+  "MIP": "MIP",
   "Rectangle ROI Threshold": "Rechthoek ROI drempel",
   "Select the PT Axial to enable this tool": "Selecteer de PT Axiaal om dit gereedschap in te schakelen",
   "Create new segmentation to enable this tool.": "Maak een nieuwe segmentatie om dit gereedschap in te schakelen.",

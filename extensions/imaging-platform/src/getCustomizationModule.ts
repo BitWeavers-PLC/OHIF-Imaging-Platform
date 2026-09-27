@@ -12,7 +12,10 @@ export default function getCustomizationModule() {
     },
     {
       name: 'default',
-      value: {},
+      value: {
+        // No onboarding tour: it is recognisably OHIF.
+        'ohif.tours': { $set: [] },
+      },
     },
   ];
 }

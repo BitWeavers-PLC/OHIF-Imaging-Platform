@@ -82,10 +82,7 @@ function initDefaultToolGroup(extensionManager, toolGroupService, commandsManage
       { toolName: toolNames.LivewireContour },
       { toolName: toolNames.WindowLevelRegion },
     ],
-    enabled: [
-      { toolName: toolNames.ImageOverlayViewer },
-      { toolName: toolNames.ReferenceLines },
-    ],
+    enabled: [{ toolName: toolNames.ImageOverlayViewer }, { toolName: toolNames.ReferenceLines }],
     disabled: [
       {
         toolName: toolNames.AdvancedMagnify,
@@ -298,9 +295,57 @@ function initVolume3DToolGroup(extensionManager, toolGroupService) {
         bindings: [{ mouseButton: Enums.MouseBindings.Auxiliary }, { numTouchPoints: 3 }],
       },
     ],
+    // Crop box handles; also rotates when not dragging a handle (VolumeCropping button).
+    passive: [{ toolName: toolNames.VolumeCropping }],
+    enabled: [{ toolName: toolNames.OrientationMarker }],
   };
 
   toolGroupService.createToolGroupAndAddTools('volume3d', tools);
+}
+
+/** Rotating MIP viewport (as in tmtv): wheel rotates, click jumps the MPR viewports there. */
+export function initMIPToolGroup(extensionManager, toolGroupService) {
+  const utilityModule = extensionManager.getModuleEntry(
+    '@ohif/extension-cornerstone.utilityModule.tools'
+  );
+
+  const { toolNames, Enums } = utilityModule.exports;
+
+  const tools = {
+    active: [
+      {
+        toolName: toolNames.VolumeRotate,
+        bindings: [{ mouseButton: Enums.MouseBindings.Wheel }],
+        configuration: { rotateIncrementDegrees: 5 },
+      },
+      {
+        toolName: toolNames.MipJumpToClick,
+        bindings: [{ mouseButton: Enums.MouseBindings.Primary }],
+        configuration: { toolGroupId: 'mpr' },
+      },
+      {
+        // Shift+drag windows the MIP itself (plain click is jump-to-click).
+        toolName: toolNames.WindowLevel,
+        bindings: [
+          {
+            mouseButton: Enums.MouseBindings.Primary,
+            modifierKey: Enums.KeyboardBindings.Shift,
+          },
+        ],
+      },
+      {
+        toolName: toolNames.Zoom,
+        bindings: [{ mouseButton: Enums.MouseBindings.Secondary }, { numTouchPoints: 2 }],
+      },
+      {
+        toolName: toolNames.Pan,
+        bindings: [{ mouseButton: Enums.MouseBindings.Auxiliary }, { numTouchPoints: 3 }],
+      },
+    ],
+    enabled: [{ toolName: toolNames.OrientationMarker }],
+  };
+
+  toolGroupService.createToolGroupAndAddTools('mip', tools);
 }
 
 function initToolGroups(extensionManager, toolGroupService, commandsManager) {
@@ -308,6 +353,7 @@ function initToolGroups(extensionManager, toolGroupService, commandsManager) {
   initSRToolGroup(extensionManager, toolGroupService);
   initMPRToolGroup(extensionManager, toolGroupService, commandsManager);
   initVolume3DToolGroup(extensionManager, toolGroupService);
+  initMIPToolGroup(extensionManager, toolGroupService);
 }
 
 export default initToolGroups;

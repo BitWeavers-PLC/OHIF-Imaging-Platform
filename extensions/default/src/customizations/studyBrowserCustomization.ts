@@ -3,11 +3,19 @@ import i18n from '@ohif/i18n';
 const { formatDate } = utils;
 const appConfig = (window as any)?.config ?? {};
 const productConfig = appConfig.imagingPlatform ?? {};
-const defaultViewSetting = productConfig.studyBrowserDefaultView ?? appConfig.studyBrowserDefaultView;
+const defaultViewSetting =
+  productConfig.studyBrowserDefaultView ?? appConfig.studyBrowserDefaultView;
 const defaultView = defaultViewSetting === 'list' ? 'list' : 'thumbnails';
 
 export default {
-  'studyBrowser.studyMenuItems': [],
+  'studyBrowser.studyMenuItems': [
+    {
+      id: 'compareWithCurrent',
+      label: i18n.t('StudyBrowser:Compare with current'),
+      iconName: 'ViewportViews',
+      commands: 'compareWithStudy',
+    },
+  ],
   'studyBrowser.thumbnailMenuItems': [
     {
       id: 'tagBrowser',

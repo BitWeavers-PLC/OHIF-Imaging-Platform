@@ -21,7 +21,7 @@ function _getStudyForPatientUtility(extensionManager) {
  * @param {object} commandsManager
  * @param {object} extensionManager
  */
-function WrappedPanelStudyBrowserTracking() {
+function WrappedPanelStudyBrowserTracking({ StudyBrowserComponent = null } = {}) {
   const { extensionManager } = useSystem();
   const dataSource = extensionManager.getActiveDataSource()[0];
 
@@ -42,6 +42,7 @@ function WrappedPanelStudyBrowserTracking() {
       getImageSrc={_getImageSrcFromImageId}
       getStudiesForPatientByMRN={_getStudiesForPatientByMRN}
       requestDisplaySetCreationForStudy={_requestDisplaySetCreationForStudy}
+      StudyBrowserComponent={StudyBrowserComponent}
     />
   );
 }

@@ -7,6 +7,7 @@ import {
   Types as CoreTypes,
   BaseVolumeViewport,
   getRenderingEngines,
+  cache,
 } from '@cornerstonejs/core';
 import {
   ToolGroupManager,
@@ -38,6 +39,9 @@ import { getFirstAnnotationSelected } from './utils/measurementServiceMappings/u
 import { getViewportEnabledElement } from './utils/getViewportEnabledElement';
 import getActiveViewportEnabledElement from './utils/getActiveViewportEnabledElement';
 import toggleVOISliceSync from './utils/toggleVOISliceSync';
+import getWindowLevelPreset from './utils/getWindowLevelPreset';
+import setViewportSlab from './utils/setViewportSlab';
+import measurementsToFindings from './utils/measurementsToFindings';
 import {
   usePositionPresentationStore,
   useSegmentationPresentationStore,
@@ -773,6 +777,38 @@ function commandsModule({
       utils.downloadCSVReport(measurementService.getMeasurements(measurementFilter));
     },
 
+    /** Fork: copy measurements as a findings table to paste into the report. */
+    copyMeasurementsToClipboard: async ({ measurementFilter }) => {
+      const measurements = measurementService.getMeasurements(measurementFilter);
+      if (!measurements.length) {
+        return;
+      }
+      const { text, html } = measurementsToFindings(measurements);
+      try {
+        if (window.ClipboardItem) {
+          await navigator.clipboard.write([
+            new ClipboardItem({
+              'text/html': new Blob([html], { type: 'text/html' }),
+              'text/plain': new Blob([text], { type: 'text/plain' }),
+            }),
+          ]);
+        } else {
+          await navigator.clipboard.writeText(text);
+        }
+        uiNotificationService.show({
+          title: 'Findings copied',
+          message: `${measurements.length} measurement(s) ready to paste into the report.`,
+          type: 'success',
+        });
+      } catch (error) {
+        uiNotificationService.show({
+          title: 'Copy failed',
+          message: error?.message || 'Clipboard access was denied.',
+          type: 'error',
+        });
+      }
+    },
+
     downloadCSVSegmentationReport: ({ segmentationId }) => {
       const segmentation = segmentationService.getSegmentation(segmentationId);
 
@@ -932,21 +968,42 @@ function commandsModule({
         return;
       }
 
-      const windowLevelPresetForModality = windowLevelPresets[modality];
+      const windowLevelPreset = getWindowLevelPreset(
+        windowLevelPresets[modality],
+        presetName,
+        presetIndex
+      );
 
-      if (!windowLevelPresetForModality) {
+      if (!windowLevelPreset) {
         return;
       }
-
-      const windowLevelPreset =
-        windowLevelPresetForModality[presetName] ??
-        Object.values(windowLevelPresetForModality)[presetIndex];
 
       actions.setViewportWindowLevel({
         viewportId: activeViewport,
         windowWidth: windowLevelPreset.window,
         windowCenter: windowLevelPreset.level,
       });
+    },
+    /** MIP / MinIP / AvgIP slab on a volume viewport; no blendMode resets to thin slice. */
+    setViewportSlab: ({ viewportId, blendMode, slabThickness }) => {
+      const viewport = cornerstoneViewportService.getCornerstoneViewport(
+        viewportId ?? viewportGridService.getActiveViewportId()
+      );
+      if (!(viewport instanceof VolumeViewport)) {
+        return;
+      }
+      setViewportSlab(viewport, blendMode, slabThickness, volumeId => cache.getVolume(volumeId));
+    },
+    /** Fork: GPU sharpen / smooth filter on the active viewport; 0 for both turns it off. */
+    setViewportFilter: ({ viewportId, sharpening = 0, smoothing = 0 }) => {
+      const viewport = cornerstoneViewportService.getCornerstoneViewport(
+        viewportId ?? viewportGridService.getActiveViewportId()
+      );
+      if (!(viewport instanceof StackViewport || viewport instanceof VolumeViewport)) {
+        return;
+      }
+      viewport.setProperties({ sharpening, smoothing });
+      viewport.render();
     },
     getVolumeIdForDisplaySet: ({ viewportId, displaySetInstanceUID }) => {
       const viewport = cornerstoneViewportService.getCornerstoneViewport(viewportId);
@@ -2481,6 +2538,9 @@ function commandsModule({
     downloadCSVMeasurementsReport: {
       commandFn: actions.downloadCSVMeasurementsReport,
     },
+    copyMeasurementsToClipboard: {
+      commandFn: actions.copyMeasurementsToClipboard,
+    },
     setViewportWindowLevel: {
       commandFn: actions.setViewportWindowLevel,
     },
@@ -2583,6 +2643,12 @@ function commandsModule({
     },
     setViewportColormap: {
       commandFn: actions.setViewportColormap,
+    },
+    setViewportSlab: {
+      commandFn: actions.setViewportSlab,
+    },
+    setViewportFilter: {
+      commandFn: actions.setViewportFilter,
     },
     setViewportForToolConfiguration: {
       commandFn: actions.setViewportForToolConfiguration,

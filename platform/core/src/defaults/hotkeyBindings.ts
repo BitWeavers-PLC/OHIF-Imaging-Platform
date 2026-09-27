@@ -163,6 +163,36 @@ const bindings = [
     keys: ['4'],
   },
   {
+    commandName: 'setWindowLevelPreset',
+    commandOptions: { presetName: 'ct-liver', presetIndex: 4 },
+    label: 'W/L Preset 5',
+    keys: ['5'],
+  },
+  {
+    commandName: 'setWindowLevelPreset',
+    commandOptions: { presetName: 'ct-mediastinum', presetIndex: 5 },
+    label: 'W/L Preset 6',
+    keys: ['6'],
+  },
+  {
+    commandName: 'setWindowLevelPreset',
+    commandOptions: { presetName: 'ct-abdomen', presetIndex: 6 },
+    label: 'W/L Preset 7',
+    keys: ['7'],
+  },
+  {
+    commandName: 'setWindowLevelPreset',
+    commandOptions: { presetName: 'ct-stroke', presetIndex: 7 },
+    label: 'W/L Preset 8',
+    keys: ['8'],
+  },
+  {
+    commandName: 'setWindowLevelPreset',
+    commandOptions: { presetName: 'ct-subdural', presetIndex: 8 },
+    label: 'W/L Preset 9',
+    keys: ['9'],
+  },
+  {
     commandName: 'deleteActiveAnnotation',
     label: 'Delete Annotation',
     keys: ['backspace'],

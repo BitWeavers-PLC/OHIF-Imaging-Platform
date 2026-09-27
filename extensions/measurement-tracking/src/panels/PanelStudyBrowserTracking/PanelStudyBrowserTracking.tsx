@@ -15,6 +15,7 @@ export default function PanelStudyBrowserTracking({
   getStudiesForPatientByMRN,
   requestDisplaySetCreationForStudy,
   dataSource,
+  StudyBrowserComponent = null,
 }) {
   const { servicesManager } = useSystem();
   const { displaySetService, uiModalService, measurementService, viewportGridService } =
@@ -135,6 +136,7 @@ export default function PanelStudyBrowserTracking({
       customMapDisplaySets={mapDisplaySetsWithTracking}
       onClickUntrack={onClickUntrack}
       onDoubleClickThumbnailHandlerCallBack={checkDirtyMeasurements}
+      StudyBrowserComponent={StudyBrowserComponent}
     />
   );
 }

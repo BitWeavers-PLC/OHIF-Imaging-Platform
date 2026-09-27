@@ -23,5 +23,7 @@
   "Measurements cannot span across multiple studies. Do you want to save your tracked measurements?": "Measurements cannot span across multiple studies. Do you want to save your tracked measurements?",
   "Do you want to continue tracking measurements for this study?": "Do you want to continue tracking measurements for this study?",
   "Do you want to open this Segmentation?": "Do you want to open this Segmentation?",
-  "There are unsaved measurements. Do you want to save it?": "There are unsaved measurements. Do you want to save it?"
+  "There are unsaved measurements. Do you want to save it?": "There are unsaved measurements. Do you want to save it?",
+  "Copy": "Copy",
+  "Copy findings to paste into the report": "Copy findings to paste into the report"
 }

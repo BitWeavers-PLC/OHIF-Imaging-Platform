@@ -250,6 +250,29 @@ const commandsModule = ({
     },
 
     /**
+     * Fork: side-by-side comparison of the current study with another study of the patient
+     * (from the study browser menu), without leaving the viewer.
+     * ponytail: @ohif/hpCompare shows the 2nd study ever loaded as the prior; comparing a
+     * different prior later needs a reload (or reordering hangingProtocolService.studies).
+     */
+    compareWithStudy: async ({ StudyInstanceUID }) => {
+      const currentStudyUID = hangingProtocolService.getState().activeStudyUID;
+      if (!StudyInstanceUID || StudyInstanceUID === currentStudyUID) {
+        uiNotificationService.show({
+          title: 'Compare',
+          message: 'Choose a different study of this patient to compare with.',
+          type: 'info',
+        });
+        return;
+      }
+      await actions.loadStudy({ StudyInstanceUID });
+      actions.setHangingProtocol({
+        activeStudyUID: currentStudyUID,
+        protocolId: '@ohif/hpCompare',
+      });
+    },
+
+    /**
      * Show the context menu.
      * @param options.menuId defines the menu name to lookup, from customizationService
      * @param options.defaultMenu contains the default menu set to use
@@ -395,7 +418,17 @@ const commandsModule = ({
             StudyInstanceUID: toUseStudyInstanceUID,
             displaySets,
           };
-          hangingProtocolService.run(activeStudy, protocolId);
+          // Fork: keep the series the reader is looking at (e.g. CT, not PET, in a PET/CT)
+          // when toggling MPR / MIP / 3D; upstream re-matched and took the first volume.
+          const activeKey = `${toUseStudyInstanceUID || hpInfo.activeStudyUID}:activeDisplaySet:0`;
+          const activeUIDs = displaySetSelectorMap[activeKey]?.filter(
+            uid => displaySetService.getDisplaySetByUID(uid)?.isReconstructable
+          );
+          hangingProtocolService.run(
+            activeStudy,
+            protocolId,
+            activeUIDs?.length ? { displaySetSelectorMap: { [activeKey]: activeUIDs } } : {}
+          );
         } else if (
           protocolId === hpInfo.protocolId &&
           useStageIdx === hpInfo.stageIndex &&
@@ -774,6 +807,7 @@ const commandsModule = ({
     multimonitor: actions.multimonitor,
     promptSaveReport: actions.promptSaveReport,
     loadStudy: actions.loadStudy,
+    compareWithStudy: actions.compareWithStudy,
     showContextMenu: actions.showContextMenu,
     closeContextMenu: actions.closeContextMenu,
     clearMeasurements: actions.clearMeasurements,

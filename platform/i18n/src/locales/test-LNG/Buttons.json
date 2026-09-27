@@ -120,6 +120,7 @@
   "3D Rotate": "Test 3D Rotate",
   "Shape": "Test Shape",
   "MPR": "Test MPR",
+  "MIP": "Test MIP",
   "Rectangle ROI Threshold": "Test Rectangle ROI Threshold",
   "Select the PT Axial to enable this tool": "Test Select the PT Axial to enable this tool",
   "Create new segmentation to enable this tool.": "Test Create new segmentation to enable this tool.",

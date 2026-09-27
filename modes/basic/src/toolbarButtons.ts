@@ -44,6 +44,20 @@ const toolbarButtons: Button[] = [
     },
   },
   {
+    id: 'OrientationTools',
+    uiType: 'ohif.toolButtonList',
+    props: {
+      buttonSection: true,
+    },
+  },
+  {
+    id: 'SyncTools',
+    uiType: 'ohif.toolButtonList',
+    props: {
+      buttonSection: true,
+    },
+  },
+  {
     id: 'AdvancedRenderingControls',
     uiType: 'ohif.advancedRenderingControls',
     props: {
@@ -248,6 +262,28 @@ const toolbarButtons: Button[] = [
         [EVENTS.VIEWPORT_NEW_IMAGE_SET]: {
           commandName: 'toggleImageSliceSync',
           commandOptions: { toggledState: true },
+        },
+      },
+      evaluate: [
+        'evaluate.cornerstone.synchronizer',
+        {
+          name: 'evaluate.viewport.supported',
+          unsupportedViewportTypes: ['video', 'volume3d'],
+        },
+      ],
+    },
+  },
+  {
+    id: 'VOISync',
+    uiType: 'ohif.toolButton',
+    props: {
+      icon: 'tool-window-level',
+      label: i18n.t('Buttons:Window Level Sync'),
+      tooltip: i18n.t('Buttons:Link window/level across viewports of the same modality'),
+      commands: {
+        commandName: 'toggleSynchronizer',
+        commandOptions: {
+          type: 'voi',
         },
       },
       evaluate: [
@@ -625,6 +661,57 @@ const toolbarButtons: Button[] = [
     },
   },
   {
+    id: 'MIP',
+    uiType: 'ohif.toolButton',
+    props: {
+      icon: 'layout-advanced-mpr',
+      label: i18n.t('Buttons:MIP'),
+      tooltip: i18n.t(
+        'Buttons:MIP: wheel rotates, click jumps, Shift+drag adjusts brightness/contrast'
+      ),
+      commands: {
+        commandName: 'toggleHangingProtocol',
+        commandOptions: {
+          protocolId: 'mip',
+        },
+      },
+      evaluate: 'evaluate.displaySetIsReconstructable',
+    },
+  },
+  {
+    id: 'SlabTools',
+    uiType: 'ohif.toolButtonList',
+    props: {
+      buttonSection: true,
+    },
+  },
+  // Slab projections on the active MPR viewport (setViewportSlab). Thin slice = normal MPR.
+  ...[
+    ['SlabMIP10', 'MIP 10 mm', 'mip', 10, 'layout-advanced-mpr'],
+    ['SlabMIP20', 'MIP 20 mm', 'mip', 20, 'layout-advanced-mpr'],
+    ['SlabMIPFull', 'MIP full volume', 'mip', 'fullVolume', 'layout-advanced-mpr'],
+    ['SlabMinIP10', 'MinIP 10 mm (airways)', 'minip', 10, 'icon-mpr'],
+    ['SlabAvgIP5', 'AvgIP 5 mm', 'avg', 5, 'icon-mpr'],
+    ['SlabOff', 'Thin slice (slab off)', undefined, undefined, 'tool-reset'],
+  ].map(([id, label, blendMode, slabThickness, icon]) => ({
+    id,
+    uiType: 'ohif.toolButton',
+    props: {
+      icon,
+      label: i18n.t(`Buttons:${label}`),
+      tooltip: i18n.t(`Buttons:${label}`),
+      commands: { commandName: 'setViewportSlab', commandOptions: { blendMode, slabThickness } },
+      evaluate: [
+        'evaluate.action',
+        {
+          name: 'evaluate.viewport.supported',
+          unsupportedViewportTypes: ['stack', 'video', 'volume3d', 'wholeSlide'],
+          disabledText: i18n.t('Buttons:Open MPR to use slab projections'),
+        },
+      ],
+    },
+  })),
+  {
     id: 'VolumeRendering3D',
     uiType: 'ohif.toolButton',
     props: {
@@ -634,7 +721,7 @@ const toolbarButtons: Button[] = [
       commands: {
         commandName: 'toggleHangingProtocol',
         commandOptions: {
-          protocolId: '3d-only',
+          protocolId: 'only3D',
         },
       },
       evaluate: 'evaluate.displaySetIsReconstructable',
@@ -654,6 +741,49 @@ const toolbarButtons: Button[] = [
       },
     },
   },
+  {
+    id: 'VolumeCropping',
+    uiType: 'ohif.toolButton',
+    props: {
+      type: 'tool',
+      icon: 'tool-3d-rotate',
+      label: i18n.t('Buttons:3D Crop'),
+      tooltip: i18n.t('Buttons:Drag the coloured handles to crop the 3D volume'),
+      commands: setToolActiveToolbar,
+      evaluate: {
+        name: 'evaluate.cornerstoneTool',
+        disabledText: i18n.t('Buttons:Select a 3D viewport to enable this tool'),
+      },
+    },
+  },
+  // Image filters on the active viewport (setViewportFilter).
+  ...[
+    ['FilterSharpenLow', 'Sharpen (low)', { sharpening: 0.2 }],
+    ['FilterSharpenHigh', 'Sharpen (high)', { sharpening: 0.5 }],
+    ['FilterSmooth', 'Smooth', { smoothing: 2 }],
+    ['FilterOff', 'Filter off', {}],
+  ].map(([id, label, commandOptions]) => ({
+    id,
+    uiType: 'ohif.toolButton',
+    props: {
+      icon:
+        id === 'FilterOff'
+          ? 'tool-reset'
+          : id === 'FilterSmooth'
+            ? 'filter-smooth'
+            : 'filter-sharpen',
+      label: i18n.t(`Buttons:${label}`),
+      tooltip: i18n.t(`Buttons:${label}`),
+      commands: { commandName: 'setViewportFilter', commandOptions },
+      evaluate: [
+        'evaluate.action',
+        {
+          name: 'evaluate.viewport.supported',
+          unsupportedViewportTypes: ['video', 'volume3d', 'wholeSlide'],
+        },
+      ],
+    },
+  })),
   {
     id: 'Capture',
     uiType: 'ohif.toolButton',
@@ -686,6 +816,9 @@ const toolbarButtons: Button[] = [
       type: 'tool',
       icon: 'tool-crosshair',
       label: i18n.t('Buttons:Crosshairs'),
+      tooltip: i18n.t(
+        'Buttons:Crosshairs: drag a line to rotate, drag its end handles for a slab MIP'
+      ),
       commands: {
         commandName: 'setToolActiveToolbar',
         commandOptions: {

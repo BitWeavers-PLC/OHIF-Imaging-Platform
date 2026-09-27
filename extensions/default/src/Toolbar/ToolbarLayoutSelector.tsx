@@ -68,42 +68,42 @@ function ToolbarLayoutSelectorWithServices({
           title: '3D four up',
           icon: 'layout-four-up',
           commandOptions: {
-            protocolId: '3d-four-up',
+            protocolId: 'fourUp',
           },
         },
         {
           title: '3D main',
           icon: 'layout-three-row',
           commandOptions: {
-            protocolId: '3d-main',
+            protocolId: 'main3D',
           },
         },
         {
           title: 'Axial Primary',
           icon: 'layout-side-by-side',
           commandOptions: {
-            protocolId: 'axial-primary',
+            protocolId: 'primaryAxial',
           },
         },
         {
           title: '3D only',
           icon: 'layout-single',
           commandOptions: {
-            protocolId: '3d-only',
+            protocolId: 'only3D',
           },
         },
         {
           title: '3D primary',
           icon: 'layout-side-by-side',
           commandOptions: {
-            protocolId: '3d-primary',
+            protocolId: 'primary3D',
           },
         },
         {
           title: 'Frame View',
           icon: 'icon-stack',
           commandOptions: {
-            protocolId: 'frame-view',
+            protocolId: '@ohif/frameView',
           },
         },
       ];
@@ -176,7 +176,7 @@ function ToolbarLayoutSelectorWithServices({
           )}
 
           {/* Right Side - Grid Layout */}
-          <div className="bg-muted flex flex-col gap-2.5 border-l-2 border-solid border-background p-2">
+          <div className="bg-muted border-background flex flex-col gap-2.5 border-l-2 border-solid p-2">
             <div className="text-muted-foreground text-xs">{t('Custom')}</div>
             <LayoutSelector.GridSelector
               rows={rows}

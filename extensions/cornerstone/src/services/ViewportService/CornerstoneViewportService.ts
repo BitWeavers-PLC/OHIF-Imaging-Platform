@@ -39,6 +39,7 @@ import { useSynchronizersStore } from '../../stores/useSynchronizersStore';
 import { useSegmentationPresentationStore } from '../../stores/useSegmentationPresentationStore';
 import getClosestOrientationFromIOP from '../../utils/isReferenceViewable';
 import { BlendModes } from '@cornerstonejs/core/enums';
+import { getFullVolumeSlabThickness } from '../../utils/setViewportSlab';
 
 const EVENTS = {
   VIEWPORT_DATA_CHANGED: 'event::cornerstoneViewportService:viewportDataChanged',
@@ -1287,16 +1288,7 @@ class CornerstoneViewportService extends PubSubService implements IViewportServi
 
     if (displaySetOptions.slabThickness.toLowerCase() === 'fullvolume') {
       // calculate the slab thickness based on the volume dimensions
-      const imageVolume = cache.getVolume(volumeId);
-
-      const { dimensions, spacing } = imageVolume;
-      const slabThickness = Math.sqrt(
-        Math.pow(dimensions[0] * spacing[0], 2) +
-          Math.pow(dimensions[1] * spacing[1], 2) +
-          Math.pow(dimensions[2] * spacing[2], 2)
-      );
-
-      return slabThickness;
+      return getFullVolumeSlabThickness(cache.getVolume(volumeId));
     }
   }
 

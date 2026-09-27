@@ -54,12 +54,14 @@ window.config = {
       minRightActionsPx: 44,
       rightReservationMode: 'measured',
       maxVisibleButtons: null,
-      debug: true,
+      debug: false,
     },
     viewer: {
       patientInfoSingleLine: true,
       undoRedoPlacement: 'toolbar-responsive',
       panelAutoFit: true,
+      // /pacs/api is read-only (GET/HEAD), so SR save would always fail.
+      allowSRSave: false,
     },
   },
   // Backward-compatible flat keys; migration target is `imagingPlatform`.
@@ -70,7 +72,7 @@ window.config = {
   toolbarOverflowMinVisible: 8,
   toolbarBufferToMoreCount: 0,
   toolbarMoreAlwaysVisible: true,
-  toolbarOverflowDebug: true,
+  toolbarOverflowDebug: false,
   toolbarLeftGuardPx: 12,
   toolbarMinRightActionsPx: 44,
   toolbarRightReservationMode: 'measured',
@@ -201,13 +203,6 @@ window.config = {
       },
     },
   ],
-  httpErrorHandler: error => {
-    // This is 429 when rejected from the public idc sandbox too often.
-    console.warn(error.status);
-
-    // Could use services manager here to bring up a dialog/modal if needed.
-    console.warn('test, navigate to https://ohif.org/');
-  },
   // segmentation: {
   //   segmentLabel: {
   //     enabledByDefault: true,

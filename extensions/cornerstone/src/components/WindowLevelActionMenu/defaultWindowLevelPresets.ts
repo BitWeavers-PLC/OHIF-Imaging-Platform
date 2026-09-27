@@ -7,6 +7,11 @@ const defaultWindowLevelPresets = {
     { id: 'ct-liver', description: 'Liver', window: '150', level: '90' },
     { id: 'ct-bone', description: 'Bone', window: '2500', level: '480' },
     { id: 'ct-brain', description: 'Brain', window: '80', level: '40' },
+    // Fork: common additional CT windows.
+    { id: 'ct-mediastinum', description: 'Mediastinum', window: '350', level: '50' },
+    { id: 'ct-abdomen', description: 'Abdomen', window: '400', level: '50' },
+    { id: 'ct-stroke', description: 'Stroke', window: '40', level: '40' },
+    { id: 'ct-subdural', description: 'Subdural', window: '200', level: '75' },
   ],
 
   PT: [
