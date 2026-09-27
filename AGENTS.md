@@ -53,7 +53,8 @@ Rules for anyone (human or agent) changing this repo. This is a fork of OHIF v3.
 - **Volume / MPR:** use the helpers in `extensions/cornerstone/src/utils/`: `setViewportSlab` (MIP/MinIP/AvgIP + thickness), `getFullVolumeSlabThickness`, `getCornerstoneBlendMode`. Slab UI is `Viewport/Overlays/ViewportSlabControl.tsx`.
 - **Keep the series being viewed:** toggling MPR/MIP/3D must reuse the active series (fork fix in `extensions/default/src/commandsModule.ts` `setHangingProtocol`). Don't reintroduce a fresh re-match.
 - **Priors:** must match PatientID **and** patient name (`getStudiesForPatientByMRN.js`), because the PACS is shared across facilities. Real tenancy-safe priors need a backend endpoint.
-- **Cornerstone mouse bindings:** a tool with `mouseClickCallback` (e.g. MIPJumpToClick) fires on *any* click, ignoring modifiers. Use a modifier-bound tool for drag actions (the MIP view uses Shift+drag for W/L).
+- **Cornerstone mouse bindings:** a tool with `mouseClickCallback` (e.g. MIPJumpToClick) fires on *any* click, ignoring modifiers. Use a modifier-bound tool for drag actions (the MIP view uses middle or Ctrl+drag for W/L).
+- **Mouse and keys follow RadiAnt:** 2D mouse map is `radiantActiveTools` in `modes/basic/src/initToolGroups.ts`; the keymap is `extensions/imaging-platform/src/radiantHotkeys.ts` (one key combo per definition; aliases need distinct `commandOptions`). Don't list `StackScroll` as passive: passive runs after active and strips its left-button binding.
 - **Overlays:** components in `Viewport/Overlays` are siblings of the cornerstone element, so pointer interaction there does not trigger tools. Keep new on-image controls there, clear of the corner text rows.
 
 ## 6. Tests
@@ -77,7 +78,7 @@ yarn --cwd platform/app cross-env NODE_ENV=development APP_CONFIG=config/netlify
 npx jest
 
 # production build (what Docker runs via `bun run build` -> lerna build:viewer)
-QUICK_BUILD=true yarn --cwd platform/app run build:viewer
+yarn --cwd platform/app run build:viewer   # QUICK_BUILD=true skips minification (faster, 15 MB bundle)
 ```
 - **Build commands:** plain `yarn run build` in `platform/app` is a *development* build, which leaks HMR code and path-named chunks. Always verify with `build:viewer`. Clear `platform/app/dist` before a manual deploy, because webpack does not clean it.
 - **Dev-server restarts:** restart after changing `pluginConfig.json` or adding a package, because plugin imports are generated at startup. If a new workspace package can't be resolved, run the install again.
@@ -96,6 +97,7 @@ QUICK_BUILD=true yarn --cwd platform/app run build:viewer
   - DICOMweb has no per-user auth; Traefik injects fixed credentials, which is a backend/Traefik fix.
   - QIDO responses are cached `immutable`.
   - Saving SR, KOS or segmentations needs a STOW route.
-- **Compare with prior:** the compare layout shows the first prior loaded in the session.
+- **Compare with prior:** current and prior link at the positions they open on; to re-align, scroll both to the same anatomy and toggle sync (F5) off and on. Reference lines don't cross studies (different frame of reference).
+- **DCE curves** need the phases in one series (split by TemporalPositionIdentifier/TriggerTime); one series per phase isn't supported.
 - **Not built:** curved planar reformation (Cornerstone has no support).
 - **Visible framework traces:** the `/viewer?StudyInstanceUIDs=` URL shape is OHIF's, and `@ohif/*` package names remain in the minified bundle. Changing either needs backend URL changes or package renames.

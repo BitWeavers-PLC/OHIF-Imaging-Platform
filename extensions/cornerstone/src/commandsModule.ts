@@ -35,6 +35,7 @@ import {
 } from '@ohif/extension-default';
 import { vec3, mat4 } from 'gl-matrix';
 import toggleImageSliceSync from './utils/imageSliceSync/toggleImageSliceSync';
+import linkViewportsAtCurrentPosition from './utils/imageSliceSync/linkViewportsAtCurrentPosition';
 import { getFirstAnnotationSelected } from './utils/measurementServiceMappings/utils/selection';
 import { getViewportEnabledElement } from './utils/getViewportEnabledElement';
 import getActiveViewportEnabledElement from './utils/getActiveViewportEnabledElement';
@@ -1393,6 +1394,51 @@ function commandsModule({
      * @param options.syncId - The synchronization group ID
      * @param options.type - The type of synchronization to perform
      */
+    /**
+     * Fork: once every viewport of the (comparison) layout shows an image, register the
+     * cross-study offsets so current and prior scroll together from where they opened.
+     */
+    linkComparisonViewports: async ({ StudyInstanceUID }: { StudyInstanceUID?: string } = {}) => {
+      const ids = () => [...viewportGridService.getState().viewports.keys()];
+      const studyOf = id =>
+        displaySetService.getDisplaySetByUID(
+          viewportGridService.getDisplaySetsUIDsForViewport(id)?.[0]
+        )?.StudyInstanceUID;
+      // Wait for the new layout (showing the chosen study), not the one it replaces.
+      const ready = () =>
+        (!StudyInstanceUID || ids().some(id => studyOf(id) === StudyInstanceUID)) &&
+        ids().every(id =>
+          cornerstoneViewportService.getCornerstoneViewport(id)?.getCurrentImageId?.()
+        );
+      for (let tries = 0; tries < 60 && !ready(); tries++) {
+        await new Promise(resolve => setTimeout(resolve, 250));
+      }
+      linkViewportsAtCurrentPosition(ids());
+
+      // A shared window only makes sense within one modality (CT vs MR prior: each keeps its
+      // own). Viewports can be reused between comparisons, so (re)apply either way.
+      const modalityOf = id =>
+        displaySetService.getDisplaySetByUID(
+          viewportGridService.getDisplaySetsUIDsForViewport(id)?.[0]
+        )?.Modality;
+      const mixedModalities = new Set(ids().map(modalityOf)).size > 1;
+      const renderingEngineId = cornerstoneViewportService.getRenderingEngine().id;
+      ids().forEach(id => {
+        const voiGroups = (
+          viewportGridService.getState().viewports.get(id)?.viewportOptions?.syncGroups ?? []
+        ).filter(group => group.type === 'voi' && group.id?.startsWith('compareVoi'));
+        voiGroups.forEach(group =>
+          mixedModalities
+            ? syncGroupService.removeViewportFromSyncGroup(id, renderingEngineId, group.id)
+            : syncGroupService.addViewportToSyncGroup(id, renderingEngineId, group)
+        );
+        if (mixedModalities) {
+          const viewport = cornerstoneViewportService.getCornerstoneViewport(id);
+          viewport?.resetProperties();
+          viewport?.render();
+        }
+      });
+    },
     toggleSynchronizer: ({ type, viewports, syncId }) => {
       const synchronizer = syncGroupService.getSynchronizer(syncId);
 
@@ -2673,6 +2719,9 @@ function commandsModule({
     },
     resetCrosshairs: {
       commandFn: actions.resetCrosshairs,
+    },
+    linkComparisonViewports: {
+      commandFn: actions.linkComparisonViewports,
     },
     toggleSynchronizer: {
       commandFn: actions.toggleSynchronizer,

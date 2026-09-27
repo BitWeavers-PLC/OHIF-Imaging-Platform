@@ -4,5 +4,13 @@
   "Something went wrong": "Something went wrong",
   "in": "in",
   "Sorry, something went wrong there. Try again.": "Sorry, something went wrong there. Try again.",
-  "Stack Trace": "Stack Trace"
+  "Stack Trace": "Stack Trace",
+  "That action could not be completed": "That action could not be completed",
+  "The viewer is still usable. Please try again.": "The viewer is still usable. Please try again.",
+  "Details": "Details",
+  "Error stack": "Error stack",
+  "Report issue": "Report issue",
+  "Copy": "Copy",
+  "Close": "Close",
+  "Copy error": "Copy error"
 }

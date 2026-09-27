@@ -239,21 +239,18 @@ const commandsModule = ({
       const { StudyInstanceUID } = options;
       const displaySets = displaySetService.getActiveDisplaySets();
       const isActive = displaySets.find(ds => ds.StudyInstanceUID === StudyInstanceUID);
-      if (isActive) {
-        return;
+      if (!isActive) {
+        const [dataSource] = extensionManager.getActiveDataSource();
+        await requestDisplaySetCreationForStudy(dataSource, displaySetService, StudyInstanceUID);
       }
-      const [dataSource] = extensionManager.getActiveDataSource();
-      await requestDisplaySetCreationForStudy(dataSource, displaySetService, StudyInstanceUID);
-
-      const study = DicomMetadataStore.getStudy(StudyInstanceUID);
-      hangingProtocolService.addStudy(study);
+      // Fork: also when the study was already expanded in the strip; upstream returned early,
+      // so a prior opened there was never known to the hanging protocols (empty compare panes).
+      hangingProtocolService.addStudy(DicomMetadataStore.getStudy(StudyInstanceUID));
     },
 
     /**
-     * Fork: side-by-side comparison of the current study with another study of the patient
-     * (from the study browser menu), without leaving the viewer.
-     * ponytail: @ohif/hpCompare shows the 2nd study ever loaded as the prior; comparing a
-     * different prior later needs a reload (or reordering hangingProtocolService.studies).
+     * Fork: side-by-side comparison of the current study with the chosen study of the patient
+     * (study menu "Compare with current"), current | prior, scrolling together.
      */
     compareWithStudy: async ({ StudyInstanceUID }) => {
       const currentStudyUID = hangingProtocolService.getState().activeStudyUID;
@@ -266,10 +263,23 @@ const commandsModule = ({
         return;
       }
       await actions.loadStudy({ StudyInstanceUID });
+      // @ohif/hpCompare reads the prior as studies[1]: put the chosen study there.
+      const { studies } = hangingProtocolService;
+      const byUID = uid => studies.find(study => study.StudyInstanceUID === uid);
+      hangingProtocolService.studies = [
+        byUID(currentStudyUID),
+        byUID(StudyInstanceUID),
+        ...studies.filter(
+          study => ![currentStudyUID, StudyInstanceUID].includes(study.StudyInstanceUID)
+        ),
+      ].filter(Boolean);
+      // reset: skip layouts cached from an earlier comparison (they'd bring the old prior back).
       actions.setHangingProtocol({
         activeStudyUID: currentStudyUID,
         protocolId: '@ohif/hpCompare',
+        reset: true,
       });
+      commandsManager.runCommand('linkComparisonViewports', { StudyInstanceUID });
     },
 
     /**

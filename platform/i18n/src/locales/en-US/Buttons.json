@@ -174,5 +174,21 @@
   "Sharpen (high)": "Sharpen (high)",
   "Smooth": "Smooth",
   "Filter off": "Filter off",
-  "MIP: wheel rotates, click jumps, Shift+drag adjusts brightness/contrast": "MIP: wheel rotates, click jumps, Shift+drag adjusts brightness/contrast"
+  "MIP: wheel rotates, click jumps, middle or Ctrl+drag adjusts brightness/contrast, Shift+drag pans": "MIP: wheel rotates, click jumps, middle or Ctrl+drag adjusts brightness/contrast, Shift+drag pans",
+  "Default window": "Default window",
+  "Full dynamic range": "Full dynamic range",
+  "Abdomen": "Abdomen",
+  "Angio": "Angio",
+  "Chest": "Chest",
+  "Stroke": "Stroke",
+  "Subdural": "Subdural",
+  "No additional tools": "No additional tools",
+  "Browse": "Browse",
+  "Rotate Left": "Rotate Left",
+  "Rotate -90": "Rotate -90",
+  "Flip Vertical": "Flip Vertical",
+  "Flip Vertically": "Flip Vertically",
+  "Subtraction": "Subtraction",
+  "Post minus pre contrast (MR)": "Post minus pre contrast (MR)",
+  "ADC (MR)": "ADC (MR)"
 }

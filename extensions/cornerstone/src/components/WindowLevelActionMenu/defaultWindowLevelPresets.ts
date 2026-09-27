@@ -12,7 +12,11 @@ const defaultWindowLevelPresets = {
     { id: 'ct-abdomen', description: 'Abdomen', window: '400', level: '50' },
     { id: 'ct-stroke', description: 'Stroke', window: '40', level: '40' },
     { id: 'ct-subdural', description: 'Subdural', window: '200', level: '75' },
+    { id: 'ct-angio', description: 'Angio', window: '600', level: '300' },
   ],
+
+  // Fork: MR has no absolute units except ADC maps (×10⁻⁶ mm²/s).
+  MR: [{ id: 'mr-adc', description: 'ADC', window: '2000', level: '1000' }],
 
   PT: [
     { id: 'pt-default', description: 'Default', window: '5', level: '2.5' },

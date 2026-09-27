@@ -5,9 +5,10 @@ import {
   ToolButtonListDefault,
   ToolButtonListDropDown,
   ToolButtonListItem,
-  ToolButtonListDivider,
 } from '@ohif/ui-next';
-import { useToolbar } from '@ohif/core/src';
+import { useToolbar, useSystem } from '@ohif/core/src';
+import i18n from '@ohif/i18n';
+import getShortcut from './getShortcut';
 
 interface ToolButtonListWrapperProps {
   buttonSection: string;
@@ -45,6 +46,8 @@ export default function ToolButtonListWrapper({
   const { onInteraction, toolbarButtons } = useToolbar({
     buttonSection,
   });
+  const { hotkeysManager } = useSystem();
+  const shortcutOf = item => getShortcut(hotkeysManager?.hotkeyDefinitions, item);
 
   if (!toolbarButtons?.length && !(isMoreTools && moreAlwaysVisible)) {
     return null;
@@ -53,8 +56,7 @@ export default function ToolButtonListWrapper({
   const fallbackMorePrimary = {
     id: 'MoreTools',
     icon: 'tool-more-menu',
-    label: 'More',
-    tooltip: 'More',
+    label: i18n.t('Buttons:More'),
     isActive: false,
   };
 
@@ -69,7 +71,11 @@ export default function ToolButtonListWrapper({
   );
 
   return (
-    <ToolButtonList>
+    <ToolButtonList
+      className={
+        primary.isActive ? 'bg-primary text-primary-foreground hover:bg-primary/90' : undefined
+      }
+    >
       <ToolButtonListDefault>
         <div
           data-cy={`${id}-split-button-primary`}
@@ -78,6 +84,7 @@ export default function ToolButtonListWrapper({
         >
           <ToolButton
             {...primary}
+            shortcut={shortcutOf(primary)}
             onInteraction={({ itemId }) =>
               onInteraction?.({ id, itemId, commands: primary.commands })
             }
@@ -85,7 +92,6 @@ export default function ToolButtonListWrapper({
           />
         </div>
       </ToolButtonListDefault>
-      <ToolButtonListDivider className={primary.isActive ? 'opacity-0' : 'opacity-100'} />
       <div data-cy={`${id}-split-button-secondary`}>
         <ToolButtonListDropDown>
           {mergedItems.length ? (
@@ -99,7 +105,15 @@ export default function ToolButtonListWrapper({
                   data-active={item.isActive}
                   onSelect={() => onInteraction?.({ id, itemId: item.id, commands: item.commands })}
                 >
-                  <span className="pl-1">{item.label || item.tooltip || item.id}</span>
+                  {/* Text-only items (e.g. W/L presets) line up with the ones that have an icon. */}
+                  <span className={item.icon ? 'pl-1' : 'pl-9'}>
+                    {item.label || item.tooltip || item.id}
+                  </span>
+                  {shortcutOf(item) && (
+                    <kbd className="text-muted-foreground !ml-auto pl-6 font-mono text-xs">
+                      {shortcutOf(item)}
+                    </kbd>
+                  )}
                 </ToolButtonListItem>
               );
             })
@@ -108,7 +122,7 @@ export default function ToolButtonListWrapper({
               key="no-more-tools"
               disabled
             >
-              <span className="pl-1">No additional tools</span>
+              <span className="pl-1">{i18n.t('Buttons:No additional tools')}</span>
             </ToolButtonListItem>
           )}
         </ToolButtonListDropDown>

@@ -63,7 +63,12 @@ function Header({
   const brandConfig = productConfig.brand ?? appConfig.brand ?? {};
   const toolbarConfig = productConfig.toolbar ?? {};
   const fallbackBrandName = brandConfig.appName || 'AxialScope';
-  const toolbarLeftGuardPx = Number(toolbarConfig.leftGuardPx ?? appConfig.toolbarLeftGuardPx ?? 12);
+  const toolbarLeftGuardPx = Number(
+    toolbarConfig.leftGuardPx ?? appConfig.toolbarLeftGuardPx ?? 12
+  );
+  // Fork: the toolbar starts right after the logo (full-width bar); `alignToViewport: true`
+  // restores starting it at the viewport grid's left edge.
+  const alignToolbarToViewport = toolbarConfig.alignToViewport === true;
   const toolbarMinRightActionsPx = Number(
     toolbarConfig.minRightActionsPx ?? appConfig.toolbarMinRightActionsPx ?? 44
   );
@@ -90,7 +95,7 @@ function Header({
 
   useEffect(() => {
     const centerElement = centerSlotRef.current;
-    if (!centerElement) {
+    if (!centerElement || !alignToolbarToViewport) {
       return;
     }
 
@@ -137,7 +142,7 @@ function Header({
       centerObserver.disconnect();
       viewportObserver.disconnect();
     };
-  }, [toolbarLeftGuardPx]);
+  }, [toolbarLeftGuardPx, alignToolbarToViewport]);
 
   return (
     <IconPresentationProvider
@@ -161,18 +166,18 @@ function Header({
               {isReturnEnabled && <Icons.ArrowLeft className="text-primary ml-1 h-7 w-7" />}
               <div className="ml-1 max-w-[150px] truncate sm:max-w-[220px] lg:max-w-[260px]">
                 {WhiteLabeling?.createLogoComponentFn?.(React, props) || (
-                  <span className="text-white block truncate text-lg font-semibold">
+                  <span className="text-foreground block truncate text-lg font-semibold">
                     {fallbackBrandName}
                   </span>
                 )}
               </div>
             </div>
-            <div className="hidden xl:flex h-8 items-center">{Secondary}</div>
+            <div className="hidden h-8 items-center xl:flex">{Secondary}</div>
           </div>
 
           <div
             ref={centerSlotRef}
-            className="min-w-0 flex flex-1 items-center justify-start overflow-hidden pr-1"
+            className="flex min-w-0 flex-1 items-center justify-start overflow-hidden pr-1"
             style={{
               paddingLeft: `${toolbarStartOffsetPx ?? toolbarLeftGuardPx}px`,
               maxWidth: rightSlotWidth ? `calc(100% - ${rightSlotWidth}px)` : undefined,
@@ -191,7 +196,9 @@ function Header({
           >
             <div className="hidden md:flex">{UndoRedo}</div>
             <div className="border-muted mx-1.5 hidden h-[25px] border-r xl:block"></div>
-            <div className="hidden min-w-0 max-w-[260px] overflow-hidden xl:flex">{PatientInfo}</div>
+            <div className="hidden min-w-0 max-w-[260px] overflow-hidden xl:flex">
+              {PatientInfo}
+            </div>
             <div className="border-muted mx-1.5 hidden h-[25px] border-r md:block"></div>
             <div className="flex-shrink-0">
               <DropdownMenu>

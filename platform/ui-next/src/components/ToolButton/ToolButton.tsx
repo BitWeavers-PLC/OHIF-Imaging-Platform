@@ -39,6 +39,8 @@ interface ToolButtonProps {
   onInteraction?: (details: { itemId: string; commands?: Record<string, unknown> }) => void;
   className?: string;
   children?: React.ReactNode;
+  /** Fork: key bound to this button, shown in the tooltip. */
+  shortcut?: string;
 }
 
 function ToolButton(props: ToolButtonProps) {
@@ -55,6 +57,7 @@ function ToolButton(props: ToolButtonProps) {
     onInteraction,
     className,
     children,
+    shortcut,
   } = props;
 
   const { className: iconClassName } = useIconPresentation();
@@ -114,7 +117,14 @@ function ToolButton(props: ToolButtonProps) {
       >
         {showTooltip && (
           <div className="space-y-1">
-            {defaultTooltip && <div className="text-sm">{defaultTooltip}</div>}
+            {defaultTooltip && (
+              <div className="flex items-center justify-between gap-4 text-sm">
+                <span>{defaultTooltip}</span>
+                {shortcut && (
+                  <kbd className="text-muted-foreground font-mono text-xs">{shortcut}</kbd>
+                )}
+              </div>
+            )}
             {disabledTooltip ? (
               <div className="text-muted-foreground text-xs">{disabledTooltip}</div>
             ) : (

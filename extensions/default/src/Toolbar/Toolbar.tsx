@@ -50,12 +50,16 @@ export function Toolbar({ buttonSection = 'primary', viewportId, location }: Too
   const responsiveOverflowEnabled =
     isPrimarySection &&
     (toolbarConfig.responsiveOverflow ?? appConfig.toolbarResponsiveOverflow) !== false;
-  const minVisible = Number(toolbarConfig.overflowMinVisible ?? appConfig.toolbarOverflowMinVisible ?? 8);
+  const minVisible = Number(
+    toolbarConfig.overflowMinVisible ?? appConfig.toolbarOverflowMinVisible ?? 8
+  );
   const bufferToMoreCount = Number(
     toolbarConfig.bufferToMoreCount ?? appConfig.toolbarBufferToMoreCount ?? 0
   );
   const maxVisibleButtons = Number(
-    toolbarConfig.maxVisibleButtons ?? appConfig.toolbarMaxVisibleButtons ?? Number.POSITIVE_INFINITY
+    toolbarConfig.maxVisibleButtons ??
+      appConfig.toolbarMaxVisibleButtons ??
+      Number.POSITIVE_INFINITY
   );
   const minRightActionsPx = Number(
     toolbarConfig.minRightActionsPx ?? appConfig.toolbarMinRightActionsPx ?? 44
@@ -129,6 +133,8 @@ export function Toolbar({ buttonSection = 'primary', viewportId, location }: Too
     [overflowIds, toolbarButtonsForRender]
   );
 
+  let previousGroup: string | undefined;
+
   return (
     <div
       ref={containerRef}
@@ -144,6 +150,12 @@ export function Toolbar({ buttonSection = 'primary', viewportId, location }: Too
         if (responsiveOverflowEnabled && !finalVisibleIdSet.has(id)) {
           return null;
         }
+
+        // Fork: separator where the group changes between *visible* items, so it stays
+        // right when part of a group overflows into More.
+        const group = componentProps?.group;
+        const startsGroup = previousGroup !== undefined && group !== previousGroup;
+        previousGroup = group;
 
         // Enhanced props with state and actions - respecting viewport specificity
         const enhancedProps = {
@@ -177,7 +189,11 @@ export function Toolbar({ buttonSection = 'primary', viewportId, location }: Too
           <div
             key={id}
             ref={registerItemRef(id)}
-            className="inline-flex shrink-0"
+            className={
+              startsGroup
+                ? 'border-muted-foreground/35 ml-1 inline-flex shrink-0 border-l pl-2'
+                : 'inline-flex shrink-0'
+            }
           >
             {tool}
           </div>

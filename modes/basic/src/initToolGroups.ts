@@ -10,6 +10,54 @@ const colorsByOrientation = {
   coronal: 'rgb(0, 200, 0)',
 };
 
+/**
+ * RadiAnt-style mouse map for 2D viewports: left browse, middle W/L, right zoom,
+ * back pan, forward length, wheel browse, Ctrl+wheel zoom, Ctrl+left W/L, Shift+left pan.
+ * Toolbar tools replace only the plain left binding.
+ */
+export function radiantActiveTools(toolNames, Enums, { lengthToolName = toolNames.Length } = {}) {
+  const { MouseBindings, KeyboardBindings } = Enums;
+  const tools = [
+    {
+      toolName: toolNames.StackScroll,
+      bindings: [
+        { mouseButton: MouseBindings.Primary },
+        { mouseButton: MouseBindings.Wheel },
+        { numTouchPoints: 3 },
+      ],
+    },
+    {
+      toolName: toolNames.WindowLevel,
+      bindings: [
+        { mouseButton: MouseBindings.Auxiliary },
+        { mouseButton: MouseBindings.Primary, modifierKey: KeyboardBindings.Ctrl },
+      ],
+    },
+    {
+      toolName: toolNames.Zoom,
+      bindings: [
+        { mouseButton: MouseBindings.Secondary },
+        { mouseButton: MouseBindings.Wheel, modifierKey: KeyboardBindings.Ctrl },
+        { numTouchPoints: 2 },
+      ],
+    },
+    {
+      toolName: toolNames.Pan,
+      bindings: [
+        { mouseButton: MouseBindings.Fourth_Button },
+        { mouseButton: MouseBindings.Primary, modifierKey: KeyboardBindings.Shift },
+      ],
+    },
+  ];
+  if (lengthToolName) {
+    tools.push({
+      toolName: lengthToolName,
+      bindings: [{ mouseButton: MouseBindings.Fifth_Button }],
+    });
+  }
+  return tools;
+}
+
 function initDefaultToolGroup(extensionManager, toolGroupService, commandsManager, toolGroupId) {
   const utilityModule = extensionManager.getModuleEntry(
     '@ohif/extension-cornerstone.utilityModule.tools'
@@ -18,26 +66,8 @@ function initDefaultToolGroup(extensionManager, toolGroupService, commandsManage
   const { toolNames, Enums } = utilityModule.exports;
 
   const tools = {
-    active: [
-      {
-        toolName: toolNames.WindowLevel,
-        bindings: [{ mouseButton: Enums.MouseBindings.Primary }],
-      },
-      {
-        toolName: toolNames.Pan,
-        bindings: [{ mouseButton: Enums.MouseBindings.Auxiliary }],
-      },
-      {
-        toolName: toolNames.Zoom,
-        bindings: [{ mouseButton: Enums.MouseBindings.Secondary }, { numTouchPoints: 2 }],
-      },
-      {
-        toolName: toolNames.StackScroll,
-        bindings: [{ mouseButton: Enums.MouseBindings.Wheel }, { numTouchPoints: 3 }],
-      },
-    ],
+    active: radiantActiveTools(toolNames, Enums),
     passive: [
-      { toolName: toolNames.Length },
       {
         toolName: toolNames.ArrowAnnotate,
         configuration: {
@@ -65,7 +95,6 @@ function initDefaultToolGroup(extensionManager, toolGroupService, commandsManage
       { toolName: toolNames.EllipticalROI },
       { toolName: toolNames.CircleROI },
       { toolName: toolNames.RectangleROI },
-      { toolName: toolNames.StackScroll },
       { toolName: toolNames.Angle },
       { toolName: toolNames.CobbAngle },
       { toolName: toolNames.Magnify },
@@ -111,37 +140,8 @@ function initSRToolGroup(extensionManager, toolGroupService) {
   const { toolNames: SRToolNames } = SRUtilityModule.exports;
   const { toolNames, Enums } = CS3DUtilityModule.exports;
   const tools = {
-    active: [
-      {
-        toolName: toolNames.WindowLevel,
-        bindings: [
-          {
-            mouseButton: Enums.MouseBindings.Primary,
-          },
-        ],
-      },
-      {
-        toolName: toolNames.Pan,
-        bindings: [
-          {
-            mouseButton: Enums.MouseBindings.Auxiliary,
-          },
-        ],
-      },
-      {
-        toolName: toolNames.Zoom,
-        bindings: [
-          {
-            mouseButton: Enums.MouseBindings.Secondary,
-          },
-          { numTouchPoints: 2 },
-        ],
-      },
-      {
-        toolName: toolNames.StackScroll,
-        bindings: [{ mouseButton: Enums.MouseBindings.Wheel }, { numTouchPoints: 3 }],
-      },
-    ],
+    // SR group has no plain Length tool; the forward button stays unbound.
+    active: radiantActiveTools(toolNames, Enums, { lengthToolName: null }),
     passive: [
       { toolName: SRToolNames.SRLength },
       { toolName: SRToolNames.SRArrowAnnotate },
@@ -175,26 +175,8 @@ function initMPRToolGroup(extensionManager, toolGroupService, commandsManager) {
   const { toolNames, Enums } = utilityModule.exports;
 
   const tools = {
-    active: [
-      {
-        toolName: toolNames.WindowLevel,
-        bindings: [{ mouseButton: Enums.MouseBindings.Primary }],
-      },
-      {
-        toolName: toolNames.Pan,
-        bindings: [{ mouseButton: Enums.MouseBindings.Auxiliary }],
-      },
-      {
-        toolName: toolNames.Zoom,
-        bindings: [{ mouseButton: Enums.MouseBindings.Secondary }, { numTouchPoints: 2 }],
-      },
-      {
-        toolName: toolNames.StackScroll,
-        bindings: [{ mouseButton: Enums.MouseBindings.Wheel }, { numTouchPoints: 3 }],
-      },
-    ],
+    active: radiantActiveTools(toolNames, Enums),
     passive: [
-      { toolName: toolNames.Length },
       {
         toolName: toolNames.ArrowAnnotate,
         configuration: {
@@ -219,7 +201,6 @@ function initMPRToolGroup(extensionManager, toolGroupService, commandsManager) {
       { toolName: toolNames.EllipticalROI },
       { toolName: toolNames.CircleROI },
       { toolName: toolNames.RectangleROI },
-      { toolName: toolNames.StackScroll },
       { toolName: toolNames.Angle },
       { toolName: toolNames.CobbAngle },
       { toolName: toolNames.PlanarFreehandROI },
@@ -291,8 +272,12 @@ function initVolume3DToolGroup(extensionManager, toolGroupService) {
         bindings: [{ mouseButton: Enums.MouseBindings.Secondary }, { numTouchPoints: 2 }],
       },
       {
+        toolName: toolNames.WindowLevel,
+        bindings: [{ mouseButton: Enums.MouseBindings.Auxiliary }],
+      },
+      {
         toolName: toolNames.Pan,
-        bindings: [{ mouseButton: Enums.MouseBindings.Auxiliary }, { numTouchPoints: 3 }],
+        bindings: [{ mouseButton: Enums.MouseBindings.Fourth_Button }, { numTouchPoints: 3 }],
       },
     ],
     // Crop box handles; also rotates when not dragging a handle (VolumeCropping button).
@@ -324,12 +309,13 @@ export function initMIPToolGroup(extensionManager, toolGroupService) {
         configuration: { toolGroupId: 'mpr' },
       },
       {
-        // Shift+drag windows the MIP itself (plain click is jump-to-click).
+        // Middle or Ctrl+drag windows the MIP itself (plain click is jump-to-click).
         toolName: toolNames.WindowLevel,
         bindings: [
+          { mouseButton: Enums.MouseBindings.Auxiliary },
           {
             mouseButton: Enums.MouseBindings.Primary,
-            modifierKey: Enums.KeyboardBindings.Shift,
+            modifierKey: Enums.KeyboardBindings.Ctrl,
           },
         ],
       },
@@ -339,7 +325,14 @@ export function initMIPToolGroup(extensionManager, toolGroupService) {
       },
       {
         toolName: toolNames.Pan,
-        bindings: [{ mouseButton: Enums.MouseBindings.Auxiliary }, { numTouchPoints: 3 }],
+        bindings: [
+          { mouseButton: Enums.MouseBindings.Fourth_Button },
+          {
+            mouseButton: Enums.MouseBindings.Primary,
+            modifierKey: Enums.KeyboardBindings.Shift,
+          },
+          { numTouchPoints: 3 },
+        ],
       },
     ],
     enabled: [{ toolName: toolNames.OrientationMarker }],

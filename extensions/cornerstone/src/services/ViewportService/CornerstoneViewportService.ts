@@ -56,6 +56,14 @@ export const WITH_ORIENTATION = { withNavigation: true, withOrientation: true };
  * Handles cornerstone viewport logic including enabling, disabling, and
  * updating the viewport.
  */
+
+function enableStackPrefetchOnNewImageSet(evt) {
+  const { element } = evt.detail;
+  if (element === evt.currentTarget) {
+    csToolsUtils.stackContextPrefetch.enable(element);
+  }
+}
+
 class CornerstoneViewportService extends PubSubService implements IViewportService {
   static REGISTRATION = {
     name: 'cornerstoneViewportService',
@@ -832,15 +840,11 @@ class CornerstoneViewportService extends PubSubService implements IViewportServi
       properties.colormap = colormap ?? properties.colormap;
     }
 
-    viewport.element.addEventListener(csEnums.Events.VIEWPORT_NEW_IMAGE_SET, evt => {
-      const { element } = evt.detail;
-
-      if (element !== viewport.element) {
-        return;
-      }
-
-      csToolsUtils.stackContextPrefetch.enable(element);
-    });
+    // Fork: one shared handler, so re-setting a stack doesn't stack up listeners.
+    viewport.element.addEventListener(
+      csEnums.Events.VIEWPORT_NEW_IMAGE_SET,
+      enableStackPrefetchOnNewImageSet
+    );
 
     const overlayProcessingResults = this._processExtraDisplaySetsForViewport(viewport);
 

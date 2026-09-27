@@ -154,8 +154,10 @@ const DefaultFallback = ({
   const [showDetails, setShowDetails] = useState(false);
   const { show } = useNotification();
 
-  const title = `${t('Something went wrong')}${!isProduction && ` ${t('in')} ${context}`}.`;
-  const subtitle = t('Sorry, something went wrong there. Try again.');
+  // Fork: plain wording for readers (no internal route/context names); details stay behind
+  // "Show Details" (dev only by default, see showErrorDetails).
+  const title = t('That action could not be completed');
+  const subtitle = t('The viewer is still usable. Please try again.');
 
   const { errorTitle, code, firstFilename } = parseErrorStack(error);
 
@@ -180,11 +182,12 @@ const DefaultFallback = ({
       title,
       message: subtitle,
       type: 'error',
-      duration: 0,
+      // Fork: fades after a few seconds instead of staying over the images.
+      duration: 6000,
       id: errorId,
       action: isShowDetailsButtonVisible
         ? {
-            label: t('Show Details'),
+            label: t('Details'),
             onClick: () => setShowDetails(true),
           }
         : undefined,
@@ -197,35 +200,25 @@ const DefaultFallback = ({
       onOpenChange={setShowDetails}
     >
       <DialogTitle className="invisible">{errorTitle}</DialogTitle>
+      {/* Fork: plain title bar + stack + actions, matching the viewer's dialogs. */}
       <DialogContent
-        className="bg-muted max-w-3xl overflow-hidden border-0 p-0"
+        className="bg-popover max-w-3xl gap-0 overflow-hidden rounded-sm border p-0"
         onInteractOutside={e => e.preventDefault()}
       >
-        <div className="p-5 pb-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-highlight text-xl font-normal">
-              {errorTitle || error.message || title}
-            </h2>
-          </div>
+        <div className="border-border border-b border-l-4 !border-l-[hsl(var(--error-text))] px-5 py-3">
+          <h2 className="text-foreground text-base font-medium">{title}</h2>
+          <p className="text-muted-foreground mt-0.5 break-words text-sm">
+            {errorTitle || error.message}
+          </p>
         </div>
 
-        {/* Code block */}
         {code && (
-          <>
-            <ScrollArea className="bg-background text-foreground mx-6 h-[321px] rounded-b-md">
-              <div className="bg-background border-input flex items-center justify-between rounded-t-md border-b px-4 py-2">
-                <div className="text-muted-foreground text-base">
-                  {firstFilename || 'Error Stack'}
-                </div>
-                <Button
-                  className="w-20"
-                  onClick={copyErrorToClipboard}
-                  title={t('Copy error')}
-                >
-                  Copy
-                </Button>
-              </div>
-              <div className="p-4 font-mono text-sm">
+          <div className="px-5 pt-4">
+            <div className="text-muted-foreground mb-1 flex items-center justify-between text-xs">
+              <span className="truncate">{firstFilename || t('Error stack')}</span>
+            </div>
+            <ScrollArea className="bg-background text-foreground h-[300px] rounded-sm border">
+              <div className="p-3 font-mono text-xs">
                 {code.split('\n').map((line, index) => (
                   <div
                     key={index}
@@ -236,17 +229,32 @@ const DefaultFallback = ({
                 ))}
               </div>
             </ScrollArea>
-          </>
+          </div>
         )}
 
-        {/* Footer */}
-        <div className="flex items-center justify-end p-6 pt-2">
+        <div className="flex items-center justify-end gap-2 px-5 py-4">
           <Button
             variant="link"
-            className="text-primary p-0"
+            className="text-primary mr-auto p-0"
             onClick={() => window.open(supportUrl, '_blank')}
           >
-            Report Issue
+            {t('Report issue')}
+          </Button>
+          {code && (
+            <Button
+              variant="secondary"
+              className="!rounded-sm"
+              onClick={copyErrorToClipboard}
+              title={t('Copy error')}
+            >
+              {t('Copy')}
+            </Button>
+          )}
+          <Button
+            className="!rounded-sm"
+            onClick={() => setShowDetails(false)}
+          >
+            {t('Close')}
           </Button>
         </div>
       </DialogContent>

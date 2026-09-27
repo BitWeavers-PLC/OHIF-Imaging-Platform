@@ -46,7 +46,12 @@ describe('basic MIP toolbar action', () => {
 describe('basic hanging protocol selection', () => {
   it('prefers modality-specific layouts, falling back to default', () => {
     const { hangingProtocol } = require('../../../modes/basic/src/index').default.modeInstance;
-    expect(hangingProtocol).toEqual(['@ohif/hpMammo', '@ohif/dxTwoView', 'default']);
+    expect(hangingProtocol[0]).toBe('@ohif/hpMammo'); // filterSeriesRequiredForRun reads [0]
+    expect(hangingProtocol.at(-1)).toBe('default');
+    const registered = require('./getHangingProtocolModule')
+      .default()
+      .map(p => p.name);
+    expect(hangingProtocol.filter(id => id !== 'default' && !registered.includes(id))).toEqual([]);
   });
 
   it('registers the CR/DX two-view protocol', () => {
@@ -58,11 +63,11 @@ describe('basic hanging protocol selection', () => {
 });
 
 describe('basic MIP tool group', () => {
-  it('rotates on wheel, jumps on click and windows on Shift+drag', () => {
+  it('rotates on wheel, jumps on click, windows on middle/Ctrl+drag, pans on Shift+drag', () => {
     const { initMIPToolGroup } = require('../../../modes/basic/src/initToolGroups');
     const Enums = {
-      MouseBindings: { Primary: 1, Secondary: 2, Auxiliary: 4, Wheel: 524288 },
-      KeyboardBindings: { Shift: 16 },
+      MouseBindings: { Primary: 1, Secondary: 2, Auxiliary: 4, Fourth_Button: 8, Wheel: 524288 },
+      KeyboardBindings: { Shift: 16, Ctrl: 17 },
     };
     const toolNames = new Proxy({}, { get: (_, name) => name });
     const groups = {};
@@ -75,7 +80,30 @@ describe('basic MIP tool group', () => {
     expect(bindingsOf('VolumeRotate')).toEqual([{ mouseButton: Enums.MouseBindings.Wheel }]);
     expect(bindingsOf('MipJumpToClick')).toEqual([{ mouseButton: Enums.MouseBindings.Primary }]);
     expect(bindingsOf('WindowLevel')).toEqual([
-      { mouseButton: Enums.MouseBindings.Primary, modifierKey: Enums.KeyboardBindings.Shift },
+      { mouseButton: Enums.MouseBindings.Auxiliary },
+      { mouseButton: Enums.MouseBindings.Primary, modifierKey: Enums.KeyboardBindings.Ctrl },
     ]);
+    expect(bindingsOf('Pan')).toContainEqual({
+      mouseButton: Enums.MouseBindings.Primary,
+      modifierKey: Enums.KeyboardBindings.Shift,
+    });
+  });
+});
+
+describe('basic toolbar grouping', () => {
+  it('gives every primary item a group, in contiguous runs', () => {
+    const groups = toolbarSections.primary.map(id => byId(id)?.props?.group);
+    expect(groups.filter(g => !g)).toEqual([]);
+    // A group never reappears after another one starts (one separator per group).
+    const runs = groups.filter((g, i) => g !== groups[i - 1]);
+    expect(new Set(runs).size).toBe(runs.length);
+  });
+
+  it('puts window presets under the W/L split button', () => {
+    expect(toolbarSections.WindowLevelTools[0]).toBe('WindowLevel');
+    expect(byId('WLBone').props.commands).toEqual({
+      commandName: 'setWindowLevelPreset',
+      commandOptions: { presetName: 'ct-bone' },
+    });
   });
 });

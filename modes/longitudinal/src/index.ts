@@ -19,6 +19,7 @@ export const tracked = {
   thumbnailList: '@ohif/extension-measurement-tracking.panelModule.seriesList',
   // Fork: our own series strip (same logic, non-OHIF look).
   seriesStrip: '@ohif/extension-imaging-platform.panelModule.seriesStrip',
+  timeIntensity: '@ohif/extension-imaging-platform.panelModule.timeIntensity',
   viewport: '@ohif/extension-measurement-tracking.viewportModule.cornerstone-tracked',
 };
 
@@ -36,7 +37,7 @@ export const longitudinalInstance = {
     ...basicLayout.props,
     leftPanels: [tracked.seriesStrip],
     leftPanelInitialExpandedWidth: 200,
-    rightPanels: [cornerstone.segmentation, tracked.measurements],
+    rightPanels: [cornerstone.segmentation, tracked.measurements, tracked.timeIntensity],
     viewports: [
       {
         namespace: tracked.viewport,

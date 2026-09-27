@@ -35,7 +35,8 @@ const NotificationProvider = ({
     title: '',
     message: '',
     duration: 5000,
-    position: 'bottom-right',
+    // Fork: top-right card (see Sonner.tsx), clear of the bottom-corner image overlays.
+    position: 'top-right',
     type: 'info',
     visible: true,
   };
@@ -219,7 +220,7 @@ const NotificationProvider = ({
       {CustomNotification ? (
         <CustomNotification options={options} />
       ) : (
-        <Toaster position="bottom-right" />
+        <Toaster position="top-right" />
       )}
       {children}
     </NotificationContext.Provider>

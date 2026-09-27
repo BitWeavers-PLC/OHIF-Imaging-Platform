@@ -1,29 +1,35 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 const PREFERRED_VISIBLE_IDS = new Set([
-  'MeasurementTools',
-  'WindowLevel',
-  'Zoom',
-  'Pan',
   'StackScroll',
+  'WindowLevelTools',
+  'Pan',
+  'Zoom',
   'Reset',
+  'Length',
+  'Angle',
+  'EllipticalROI',
+  'MeasurementTools',
   'Layout',
-  'MPRTools',
+  'MPR',
   'SlabTools',
 ]);
 
 // Lists and Layout have no `commands`, so the More menu can't host them: never overflow them.
-const PINNED_IDS = new Set([
-  'MeasurementTools',
-  'Layout',
-  'MPRTools',
-  'SlabTools',
-  'OrientationTools',
-  'SyncTools',
-]);
+const PINNED_IDS = new Set(['WindowLevelTools', 'MeasurementTools', 'Layout', 'SlabTools']);
 const PRIMARY_MORE_ID = 'MoreTools';
-const OVERFLOW_FIRST_IDS = ['Redo', 'Undo', 'Capture', 'Cine', 'Magnify'];
-
+// Least-used bar items go to More first when the window is narrow.
+const OVERFLOW_FIRST_IDS = [
+  'TagBrowser',
+  'ImageOverlayViewer',
+  'Redo',
+  'Undo',
+  'Capture',
+  'VOISync',
+  'ImageSliceSync',
+  'Probe',
+  'Magnify',
+];
 const DEFAULT_BUTTON_WIDTH = 42;
 const BUTTON_GAP_PX = 4;
 const DEFAULT_BUFFER_TO_MORE_COUNT = 0;

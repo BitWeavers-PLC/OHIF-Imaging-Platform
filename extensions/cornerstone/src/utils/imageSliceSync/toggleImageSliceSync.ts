@@ -1,4 +1,5 @@
 import { DisplaySetService, ViewportGridService } from '@ohif/core';
+import linkViewportsAtCurrentPosition from './linkViewportsAtCurrentPosition';
 
 const IMAGE_SLICE_SYNC_NAME = 'IMAGE_SLICE_SYNC';
 
@@ -46,6 +47,8 @@ export default function toggleImageSliceSync({
       target: true,
     });
   });
+  // Fork: series from other studies (priors) stay aligned at the anatomy shown now.
+  linkViewportsAtCurrentPosition(viewports.map(viewport => viewport.viewportOptions.viewportId));
 }
 
 function disableSync(syncName, servicesManager: AppTypes.ServicesManager) {

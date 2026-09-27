@@ -27,7 +27,8 @@ function ViewportDataOverlayMenu({ viewportId }: withAppTypes<{ viewportId: stri
   const [pendingSegmentations, setPendingSegmentations] = useState<string[]>([]);
   const { toggleColorbar } = useViewportRendering(viewportId);
 
-  const { hangingProtocolService, toolbarService } = servicesManager.services;
+  const { hangingProtocolService, toolbarService, uiNotificationService } =
+    servicesManager.services;
 
   const {
     backgroundDisplaySet,
@@ -47,10 +48,23 @@ function ViewportDataOverlayMenu({ viewportId }: withAppTypes<{ viewportId: stri
    * Change the background display set
    */
   const handleBackgroundSelection = (newBackgroundDisplaySet: AppTypes.DisplaySet) => {
-    const updatedViewports = hangingProtocolService.getViewportsRequireUpdate(
-      viewportId,
-      newBackgroundDisplaySet.displaySetInstanceUID
-    );
+    let updatedViewports;
+    try {
+      updatedViewports = hangingProtocolService.getViewportsRequireUpdate(
+        viewportId,
+        newBackgroundDisplaySet.displaySetInstanceUID
+      );
+    } catch (error) {
+      // Fork: the layout rejects this series here (e.g. a CT-only pane); say so instead of crashing.
+      console.warn(error);
+      uiNotificationService.show({
+        title: t('Messages:Series not allowed here'),
+        message: t("Messages:This series can't be shown in this viewport of the current layout."),
+        type: 'info',
+        duration: 4000,
+      });
+      return;
+    }
 
     commandsManager.run('setDisplaySetsForViewports', {
       viewportsToUpdate: updatedViewports,

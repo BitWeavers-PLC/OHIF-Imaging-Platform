@@ -53,6 +53,23 @@ import * as polySeg from '@cornerstonejs/polymorphic-segmentation';
 import CalibrationLineTool from './tools/CalibrationLineTool';
 import ImageOverlayViewerTool from './tools/ImageOverlayViewerTool';
 
+/**
+ * Fork: RadiAnt zoom direction (drag up = zoom in). Only the mouse drag is flipped;
+ * `invert` would also flip Ctrl+wheel and pinch. Keeps the 'Zoom' tool name.
+ */
+class DragUpZoomTool extends ZoomTool {
+  constructor(...args) {
+    super(...args);
+    const drag = this.mouseDragCallback;
+    this.mouseDragCallback = evt => {
+      const { deltaPoints } = evt.detail;
+      const [x, y] = deltaPoints.canvas;
+      evt.detail.deltaPoints = { ...deltaPoints, canvas: [x, -y] };
+      return drag(evt);
+    };
+  }
+}
+
 export default function initCornerstoneTools(configuration = {}) {
   CrosshairsTool.isAnnotation = false;
   LabelmapSlicePropagationTool.isAnnotation = false;
@@ -76,7 +93,7 @@ export default function initCornerstoneTools(configuration = {}) {
   addTool(WindowLevelTool);
   addTool(StackScrollTool);
   addTool(VolumeRotateTool);
-  addTool(ZoomTool);
+  addTool(DragUpZoomTool);
   addTool(ProbeTool);
   addTool(MIPJumpToClickTool);
   addTool(LengthTool);

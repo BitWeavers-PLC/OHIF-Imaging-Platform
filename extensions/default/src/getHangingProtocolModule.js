@@ -3,6 +3,7 @@ import hpMNCompare from './hangingprotocols/hpCompare';
 import hpMammography from './hangingprotocols/hpMammo';
 import hpScale from './hangingprotocols/hpScale';
 import hpDxTwoView from './hangingprotocols/hpDxTwoView';
+import crossSectionalProtocols from './hangingprotocols/hpCrossSectional';
 
 const defaultProtocol = {
   id: 'default',
@@ -145,6 +146,8 @@ function getHangingProtocolModule() {
       name: hpDxTwoView.id,
       protocol: hpDxTwoView,
     },
+    // Fork: CT/MR layouts (hpCrossSectional.ts)
+    ...crossSectionalProtocols.map(protocol => ({ name: protocol.id, protocol })),
     // Create a MxN hanging protocol available by default
     {
       name: hpMN.id,

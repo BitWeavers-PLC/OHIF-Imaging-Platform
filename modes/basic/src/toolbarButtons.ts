@@ -20,6 +20,30 @@ export const setToolActiveToolbar = {
   },
 };
 
+/**
+ * Fork: primary toolbar, grouped like RadiAnt. Common tools sit directly on the bar;
+ * lists only hold presets and rarer tools. Each group is separated by a divider (Toolbar.tsx
+ * reads the `group` prop set below); overflow goes to More from the right.
+ */
+export const primaryToolbarGroups = {
+  navigate: ['StackScroll', 'WindowLevelTools', 'Pan', 'Zoom', 'Magnify', 'Reset'],
+  measure: [
+    'Length',
+    'Angle',
+    'EllipticalROI',
+    'RectangleROI',
+    'Bidirectional',
+    'ArrowAnnotate',
+    'Probe',
+    'MeasurementTools',
+  ],
+  image: ['rotate-left', 'rotate-right', 'flipHorizontal', 'flipVertical', 'invert', 'Subtract'],
+  layout: ['Layout', 'MPR', 'MIP', 'VolumeRendering3D', 'Crosshairs', 'SlabTools'],
+  sync: ['ImageSliceSync', 'VOISync', 'ReferenceLines'],
+  output: ['Cine', 'Capture', 'ImageOverlayViewer', 'TagBrowser'],
+  edit: ['Undo', 'Redo', 'MoreTools'],
+};
+
 const toolbarButtons: Button[] = [
   // sections
   {
@@ -30,28 +54,14 @@ const toolbarButtons: Button[] = [
     },
   },
   {
+    id: 'WindowLevelTools',
+    uiType: 'ohif.toolButtonList',
+    props: {
+      buttonSection: true,
+    },
+  },
+  {
     id: 'MoreTools',
-    uiType: 'ohif.toolButtonList',
-    props: {
-      buttonSection: true,
-    },
-  },
-  {
-    id: 'MPRTools',
-    uiType: 'ohif.toolButtonList',
-    props: {
-      buttonSection: true,
-    },
-  },
-  {
-    id: 'OrientationTools',
-    uiType: 'ohif.toolButtonList',
-    props: {
-      buttonSection: true,
-    },
-  },
-  {
-    id: 'SyncTools',
     uiType: 'ohif.toolButtonList',
     props: {
       buttonSection: true,
@@ -212,6 +222,23 @@ const toolbarButtons: Button[] = [
     },
   },
   {
+    id: 'rotate-left',
+    uiType: 'ohif.toolButton',
+    props: {
+      icon: 'tool-rotate-left',
+      label: i18n.t('Buttons:Rotate Left'),
+      tooltip: i18n.t('Buttons:Rotate -90'),
+      commands: 'rotateViewportCCW',
+      evaluate: [
+        'evaluate.action',
+        {
+          name: 'evaluate.viewport.supported',
+          unsupportedViewportTypes: ['video'],
+        },
+      ],
+    },
+  },
+  {
     id: 'rotate-right',
     uiType: 'ohif.toolButton',
     props: {
@@ -224,6 +251,23 @@ const toolbarButtons: Button[] = [
         {
           name: 'evaluate.viewport.supported',
           unsupportedViewportTypes: ['video'],
+        },
+      ],
+    },
+  },
+  {
+    id: 'flipVertical',
+    uiType: 'ohif.toolButton',
+    props: {
+      icon: 'tool-flip-vertical',
+      label: i18n.t('Buttons:Flip Vertical'),
+      tooltip: i18n.t('Buttons:Flip Vertically'),
+      commands: 'flipViewportVertical',
+      evaluate: [
+        'evaluate.viewportProperties.toggle',
+        {
+          name: 'evaluate.viewport.supported',
+          unsupportedViewportTypes: ['video', 'volume3d'],
         },
       ],
     },
@@ -277,7 +321,7 @@ const toolbarButtons: Button[] = [
     id: 'VOISync',
     uiType: 'ohif.toolButton',
     props: {
-      icon: 'tool-window-level',
+      icon: 'tool-voi-sync',
       label: i18n.t('Buttons:Window Level Sync'),
       tooltip: i18n.t('Buttons:Link window/level across viewports of the same modality'),
       commands: {
@@ -338,8 +382,7 @@ const toolbarButtons: Button[] = [
     uiType: 'ohif.toolButton',
     props: {
       icon: 'tool-stack-scroll',
-      label: i18n.t('Buttons:Stack Scroll'),
-      tooltip: i18n.t('Buttons:Stack Scroll'),
+      label: i18n.t('Buttons:Browse'),
       commands: setToolActiveToolbar,
       evaluate: 'evaluate.cornerstoneTool',
     },
@@ -605,6 +648,46 @@ const toolbarButtons: Button[] = [
       evaluate: 'evaluate.cornerstoneTool',
     },
   },
+  // Fork: RadiAnt-style window presets under the W/L split button (keys 0-9).
+  ...(
+    [
+      ['WLDefault', 'Default window', 'resetWindowLevel', {}],
+      ['WLFull', 'Full dynamic range', 'fullDynamicRange', {}],
+      ['WLAbdomen', 'Abdomen', 'setWindowLevelPreset', { presetName: 'ct-abdomen' }],
+      ['WLAngio', 'Angio', 'setWindowLevelPreset', { presetName: 'ct-angio' }],
+      ['WLBone', 'Bone', 'setWindowLevelPreset', { presetName: 'ct-bone' }],
+      ['WLBrain', 'Brain', 'setWindowLevelPreset', { presetName: 'ct-brain' }],
+      ['WLChest', 'Chest', 'setWindowLevelPreset', { presetName: 'ct-mediastinum' }],
+      ['WLLung', 'Lung', 'setWindowLevelPreset', { presetName: 'ct-lung' }],
+      ['WLStroke', 'Stroke', 'setWindowLevelPreset', { presetName: 'ct-stroke' }],
+      ['WLSubdural', 'Subdural', 'setWindowLevelPreset', { presetName: 'ct-subdural' }],
+      ['WLADC', 'ADC (MR)', 'setWindowLevelPreset', { presetName: 'mr-adc' }],
+    ] as const
+  ).map(([id, label, commandName, commandOptions]) => ({
+    id,
+    uiType: 'ohif.toolButton',
+    // No icon: a plain text list, like RadiAnt's presets menu.
+    props: {
+      label: i18n.t(`Buttons:${label}`),
+      commands: { commandName, commandOptions },
+      evaluate: 'evaluate.action',
+    },
+  })),
+  {
+    // Fork: MR post − pre contrast (imaging-platform subtractSeries).
+    id: 'Subtract',
+    uiType: 'ohif.toolButton',
+    props: {
+      icon: 'tool-subtract',
+      label: i18n.t('Buttons:Subtraction'),
+      tooltip: i18n.t('Buttons:Post minus pre contrast (MR)'),
+      commands: 'subtractSeries',
+      evaluate: [
+        'evaluate.action',
+        { name: 'evaluate.modality.supported', supportedModalities: ['MR'] },
+      ],
+    },
+  },
   // Window Level
   {
     id: 'WindowLevel',
@@ -667,7 +750,7 @@ const toolbarButtons: Button[] = [
       icon: 'layout-advanced-mpr',
       label: i18n.t('Buttons:MIP'),
       tooltip: i18n.t(
-        'Buttons:MIP: wheel rotates, click jumps, Shift+drag adjusts brightness/contrast'
+        'Buttons:MIP: wheel rotates, click jumps, middle or Ctrl+drag adjusts brightness/contrast, Shift+drag pans'
       ),
       commands: {
         commandName: 'toggleHangingProtocol',
@@ -876,5 +959,14 @@ const toolbarButtons: Button[] = [
     },
   },
 ];
+
+for (const [group, ids] of Object.entries(primaryToolbarGroups)) {
+  for (const id of ids) {
+    const button = toolbarButtons.find(b => b.id === id);
+    if (button) {
+      button.props = { ...button.props, group };
+    }
+  }
+}
 
 export default toolbarButtons;

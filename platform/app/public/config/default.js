@@ -28,8 +28,10 @@ window.config = {
   modes: [],
   customizationService: {},
   showStudyList: false,
-  // some windows systems have issues with more than 3 web workers
-  maxNumberOfWebWorkers: 3,
+  // Decode workers (J2K decode is the slowest step); capped at hardwareConcurrency - 1.
+  maxNumberOfWebWorkers: 6,
+  // RadiAnt-style: the first click/drag on a viewport acts, instead of only activating it.
+  activateViewportBeforeInteraction: false,
   // below flag is for performance reasons, but it might not work for all servers
   showWarningMessageForCrossOrigin: true,
   showCPUFallbackMessage: true,
@@ -51,6 +53,8 @@ window.config = {
       bufferToMoreCount: 0,
       alwaysShowMore: true,
       leftGuardPx: 12,
+      // Full-width bar: tools start right after the logo, not at the image area.
+      alignToViewport: false,
       minRightActionsPx: 44,
       rightReservationMode: 'measured',
       maxVisibleButtons: null,
@@ -91,10 +95,13 @@ window.config = {
   maxNumRequests: {
     interaction: 20,
     thumbnail: 5,
-    prefetch: 2,
+    // Also the pool for MPR/MIP/3D volume slices and stack prefetch; 2 starved them.
+    prefetch: 8,
   },
   studyPrefetcher: {
-    enabled: true,
+    // Off: it restarts on every display-set change and clears the shared prefetch queue
+    // (StudyPrefetcherService clearRequestStack), cancelling volume and stack loads.
+    enabled: false,
     displaySetsCount: 1,
     maxNumPrefetchRequests: 2,
     order: 'closest',

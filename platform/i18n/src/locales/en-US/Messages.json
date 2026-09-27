@@ -14,5 +14,22 @@
   "12": "Display set has inconsistent position information.",
   "13": "Unsupported display set.",
   "14": "SOP Class UID {{ sopClassUid }} is not supported.",
-  "15": "Display Set is missing a SOP Class UID. Please check the file."
+  "15": "Display Set is missing a SOP Class UID. Please check the file.",
+  "Series not allowed here": "Series not allowed here",
+  "This series can't be shown in this viewport of the current layout.": "This series can't be shown in this viewport of the current layout.",
+  "Subtraction": "Subtraction",
+  "Computing…": "Computing…",
+  "The two series don't line up slice for slice.": "The two series don't line up slice for slice.",
+  "Phase": "Phase",
+  "No series of this study has the same slices as this one, so nothing can be subtracted.": "No series of this study has the same slices as this one, so nothing can be subtracted.",
+  "Subtract from the series in the active viewport:": "Subtract from the series in the active viewport:",
+  "Show a dynamic (multi-phase) series in the active viewport.": "Show a dynamic (multi-phase) series in the active viewport.",
+  "Loading the series…": "Loading the series…",
+  "Draw an ellipse, rectangle or circle ROI on the series.": "Draw an ellipse, rectangle or circle ROI on the series.",
+  "Time–intensity curve": "Time–intensity curve",
+  "Signal": "Signal",
+  "Refresh": "Refresh",
+  "Time (s)": "Time (s)",
+  "Enhancement (%)": "Enhancement (%)",
+  "Still loading; the curve updates as phases arrive.": "Still loading; the curve updates as phases arrive."
 }

@@ -6,6 +6,9 @@ import { Icons } from '@ohif/ui-next';
 import toolbarButtons from '../../../modes/basic/src/toolbarButtons';
 import registerIcons, { iconOverrides } from './icons';
 
+// Captured before any test registers the overrides.
+const originalClose = Icons.Close;
+
 describe('imaging-platform icon overrides', () => {
   it('replaces the OHIF icons by name', () => {
     const originals = Object.fromEntries(Object.keys(iconOverrides).map(n => [n, Icons[n]]));
@@ -25,5 +28,13 @@ describe('imaging-platform icon overrides', () => {
     expect(
       missing.filter(i => !['Status', 'Navigation', 'TrackingStatus', 'WindowLevel'].includes(i))
     ).toEqual([]);
+  });
+
+  it('keeps the replaced chrome icon size so menus do not reflow', () => {
+    const original = originalClose({}).props;
+    registerIcons();
+    expect(Icons.Close).not.toBe(originalClose);
+    const replaced = Icons.Close({}).props;
+    expect([replaced.width, replaced.height]).toEqual([original.width, original.height]);
   });
 });

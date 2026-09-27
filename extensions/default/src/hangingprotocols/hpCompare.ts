@@ -21,6 +21,9 @@ const defaultDisplaySetSelector = {
         greaterThan: { value: 0 },
       },
     },
+    // Fork: real image series (not the scout/dose sheet) first.
+    { attribute: 'isLocalizer', weight: 10, constraint: { equals: { value: false } } },
+    { attribute: 'isReconstructable', weight: 2, constraint: { equals: { value: true } } },
     // This display set will select the specified items by preference
     // It has no affect if nothing is specified in the URL.
     {
@@ -53,6 +56,11 @@ const priorDisplaySetSelector = {
         greaterThan: { value: 0 },
       },
     },
+    // Fork: the prior's series that matches one of the current study's (e.g. same CT recon).
+    { attribute: 'sameSeriesAsCurrent', weight: 15, constraint: { equals: { value: true } } },
+    // Fork: real image series (not the scout/dose sheet) first.
+    { attribute: 'isLocalizer', weight: 10, constraint: { equals: { value: false } } },
+    { attribute: 'isReconstructable', weight: 2, constraint: { equals: { value: true } } },
     // This display set will select the specified items by preference
     // It has no affect if nothing is specified in the URL.
     {
@@ -73,38 +81,24 @@ const priorDisplaySet = {
   id: 'priorDisplaySetId',
 };
 
-const currentViewport0 = {
+// Fork: current and prior scroll together (by position, see linkViewportsAtCurrentPosition)
+// and each current/prior pair shares window/level.
+const compareViewport = (displaySet, pair: number) => ({
   viewportOptions: {
     toolGroupId: 'default',
     allowUnmatchedView: true,
+    syncGroups: [
+      { type: 'imageSlice', id: 'compareSlice', source: true, target: true },
+      { type: 'voi', id: `compareVoi${pair}`, source: true, target: true },
+    ],
   },
-  displaySets: [currentDisplaySet],
-};
+  displaySets: [{ ...displaySet, matchedDisplaySetsIndex: pair }],
+});
 
-const currentViewport1 = {
-  ...currentViewport0,
-  displaySets: [
-    {
-      ...currentDisplaySet,
-      matchedDisplaySetsIndex: 1,
-    },
-  ],
-};
-
-const priorViewport0 = {
-  ...currentViewport0,
-  displaySets: [priorDisplaySet],
-};
-
-const priorViewport1 = {
-  ...priorViewport0,
-  displaySets: [
-    {
-      ...priorDisplaySet,
-      matchedDisplaySetsIndex: 1,
-    },
-  ],
-};
+const currentViewport0 = compareViewport(currentDisplaySet, 0);
+const currentViewport1 = compareViewport(currentDisplaySet, 1);
+const priorViewport0 = compareViewport(priorDisplaySet, 0);
+const priorViewport1 = compareViewport(priorDisplaySet, 1);
 
 /**
  * This hanging protocol can be activated on the primary mode by directly
@@ -149,24 +143,8 @@ const hpMNCompare: Types.HangingProtocol.Protocol = {
       },
     ],
   },
+  // Fork: current | prior first; '.' (next stage) shows two series of each.
   stages: [
-    {
-      name: '2x2',
-      stageActivation: {
-        enabled: {
-          minViewportsMatched: 4,
-        },
-      },
-      viewportStructure: {
-        layoutType: 'grid',
-        properties: {
-          rows: 2,
-          columns: 2,
-        },
-      },
-      viewports: [currentViewport0, priorViewport0, currentViewport1, priorViewport1],
-    },
-
     {
       name: '2x1',
       stageActivation: {
@@ -182,6 +160,22 @@ const hpMNCompare: Types.HangingProtocol.Protocol = {
         },
       },
       viewports: [currentViewport0, priorViewport0],
+    },
+    {
+      name: '2x2',
+      stageActivation: {
+        enabled: {
+          minViewportsMatched: 4,
+        },
+      },
+      viewportStructure: {
+        layoutType: 'grid',
+        properties: {
+          rows: 2,
+          columns: 2,
+        },
+      },
+      viewports: [currentViewport0, priorViewport0, currentViewport1, priorViewport1],
     },
   ],
 };

@@ -166,6 +166,8 @@ interface HotkeyProps {
   label: string;
   placeholder?: string;
   className?: string;
+  /** Fork: e.g. a wider key box for long names ("Page Down"). */
+  inputClassName?: string;
   value?: string;
   onChange?: (value: string) => void;
   hotkeys?: {
@@ -176,7 +178,15 @@ interface HotkeyProps {
   };
 }
 
-function Hotkey({ label, placeholder, className, value, onChange, hotkeys }: HotkeyProps) {
+function Hotkey({
+  label,
+  placeholder,
+  className,
+  inputClassName,
+  value,
+  onChange,
+  hotkeys,
+}: HotkeyProps) {
   const [isRecording, setIsRecording] = React.useState(false);
   const { t } = useTranslation('UserPreferencesModal');
   const translatedValue = React.useMemo(() => translateHotkeyValue(value, t), [value, t]);
@@ -212,6 +222,7 @@ function Hotkey({ label, placeholder, className, value, onChange, hotkeys }: Hot
       <Input
         className={cn(
           'w-16 text-center transition-colors',
+          inputClassName,
           isRecording && 'bg-accent text-accent-foreground caret-accent-foreground'
         )}
         placeholder={isRecording ? t('Press keys') : translatedPlaceholder || ''}

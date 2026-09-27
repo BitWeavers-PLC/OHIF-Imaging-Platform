@@ -66,7 +66,8 @@ COPY --link --exclude=yarn.lock --exclude=package.json --exclude=Dockerfile . .
 
 # Build here
 # After install it should hopefully be stable until the local directory changes
-ENV QUICK_BUILD true
+# Minified production build (prod source maps stay off in webpack.base.js).
+ENV QUICK_BUILD false
 # ENV GENERATE_SOURCEMAP=false
 ARG APP_CONFIG=config/default.js
 ARG PUBLIC_URL=/

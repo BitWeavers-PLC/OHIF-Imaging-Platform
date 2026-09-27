@@ -151,7 +151,8 @@ module.exports = (env, argv) => {
       open,
       port: OHIF_PORT,
       client: {
-        overlay: { errors: true, warnings: false },
+        // Fork: runtime errors show as the app's own toast (showUncaughtErrors), not a full-screen overlay.
+        overlay: { errors: true, warnings: false, runtimeErrors: false },
       },
       proxy: [
         {

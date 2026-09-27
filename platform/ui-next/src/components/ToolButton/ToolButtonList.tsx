@@ -24,7 +24,8 @@ const ToolButtonList = React.forwardRef<HTMLDivElement, ToolButtonListProps>(
     return (
       <div
         ref={ref}
-        className={cn('flex items-center', className)}
+        // Fork: button and arrow read as one control (shared hover), no divider line.
+        className={cn('hover:bg-muted flex items-center rounded-sm', className)}
         {...props}
       >
         {children}
@@ -97,8 +98,8 @@ const ToolButtonListDropDown = React.forwardRef<HTMLDivElement, ToolButtonListDr
           variant="ghost"
           size="icon"
           className={cn(
-            'text-foreground/80 hover:bg-muted hover:text-foreground border-primary/40',
-            'inline-flex h-9 w-5 items-center justify-center',
+            'inline-flex h-9 w-4 items-center justify-center text-current opacity-75',
+            'hover:bg-transparent hover:text-current hover:opacity-100',
             '!rounded-tr-sm !rounded-br-sm !rounded-tl-none !rounded-bl-none',
             'bg-transparent',
             className
@@ -106,7 +107,7 @@ const ToolButtonListDropDown = React.forwardRef<HTMLDivElement, ToolButtonListDr
         >
           <Icons.ByName
             name="chevron-down"
-            className="text-foreground/80 h-4 w-4"
+            className="h-3.5 w-3.5"
           />
         </Button>
       </DropdownMenuTrigger>

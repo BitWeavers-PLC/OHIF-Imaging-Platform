@@ -2,7 +2,7 @@ import update from 'immutability-helper';
 import { ToolbarService, utils } from '@ohif/core';
 
 import initToolGroups from './initToolGroups';
-import toolbarButtons from './toolbarButtons';
+import toolbarButtons, { primaryToolbarGroups } from './toolbarButtons';
 import { id } from './id';
 
 const { TOOLBAR_SECTIONS } = ToolbarService;
@@ -210,25 +210,8 @@ export function onModeExit({ servicesManager }: withAppTypes) {
 
 export const toolbarSections = {
   // Fork: grouped so the row stays short; a list shows its active tool, else its first.
-  [TOOLBAR_SECTIONS.primary]: [
-    'MeasurementTools',
-    'WindowLevel',
-    'Zoom',
-    'Pan',
-    'StackScroll',
-    'Magnify',
-    'Reset',
-    'Layout',
-    'MPRTools',
-    'SlabTools',
-    'OrientationTools',
-    'SyncTools',
-    'Cine',
-    'Capture',
-    'Undo',
-    'Redo',
-    'MoreTools',
-  ],
+  // Order and groups live in toolbarButtons.ts (primaryToolbarGroups).
+  [TOOLBAR_SECTIONS.primary]: Object.values(primaryToolbarGroups).flat(),
 
   [TOOLBAR_SECTIONS.viewportActionMenu.topLeft]: ['orientationMenu', 'dataOverlayMenu'],
 
@@ -250,31 +233,36 @@ export const toolbarSections = {
 
   [TOOLBAR_SECTIONS.viewportActionMenu.bottomLeft]: ['windowLevelMenu'],
 
+  // Less-used measurements; the common ones are on the bar.
   MeasurementTools: [
-    'Length',
-    'Bidirectional',
-    'EllipticalROI',
+    'CobbAngle',
     'CircleROI',
-    'RectangleROI',
     'PlanarFreehandROI',
     'SplineROI',
     'LivewireContour',
-    'Angle',
-    'CobbAngle',
-    'Probe',
-    'ArrowAnnotate',
     'CalibrationLine',
   ],
 
-  OrientationTools: ['rotate-right', 'flipHorizontal', 'invert'],
-
-  SyncTools: ['ImageSliceSync', 'VOISync', 'ReferenceLines'],
+  WindowLevelTools: [
+    'WindowLevel',
+    'WLDefault',
+    'WLFull',
+    'WLAbdomen',
+    'WLAngio',
+    'WLBone',
+    'WLBrain',
+    'WLChest',
+    'WLLung',
+    'WLStroke',
+    'WLSubdural',
+    'WLADC',
+  ],
 
   SlabTools: ['SlabMIP20', 'SlabMIP10', 'SlabMIPFull', 'SlabMinIP10', 'SlabAvgIP5', 'SlabOff'],
 
-  MPRTools: ['MPR', 'MIP', 'VolumeRendering3D', 'Crosshairs', 'TrackballRotate', 'VolumeCropping'],
-
   MoreTools: [
+    'TrackballRotate',
+    'VolumeCropping',
     'FilterSharpenLow',
     'FilterSharpenHigh',
     'FilterSmooth',
@@ -365,7 +353,16 @@ export const modeInstance = {
   routes: [basicRoute],
   extensions: extensionDependencies,
   // Fork: best match wins; mammo and CR/DX need their modality, 'default' matches anything.
-  hangingProtocol: ['@ohif/hpMammo', '@ohif/dxTwoView', 'default'],
+  // Fork: first entry must stay hpMammo (filterSeriesRequiredForRun reads index 0).
+  hangingProtocol: [
+    '@ohif/hpMammo',
+    '@ohif/dxTwoView',
+    '@axialscope/ctBody',
+    '@axialscope/mrBrain',
+    '@axialscope/mrSpine',
+    '@axialscope/mrGeneral',
+    'default',
+  ],
   // Order is important in sop class handlers when two handlers both use
   // the same sop class under different situations.  In that case, the more
   // general handler needs to come last.  For this case, the dicomvideo must

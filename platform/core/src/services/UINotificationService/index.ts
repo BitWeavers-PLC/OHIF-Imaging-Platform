@@ -74,7 +74,7 @@ class UINotificationService {
    * @param {string} notification.title - The title of the notification
    * @param {string | function} notification.message - The message content of the notification or a function that returns a message
    * @param {number} [notification.duration=5000] - The duration to show the notification (in milliseconds)
-   * @param {'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top-center' | 'bottom-center'} [notification.position='bottom-right'] - The position of the notification
+   * @param {'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top-center' | 'bottom-center'} [notification.position='top-right'] - The position of the notification
    * @param {ToastType} [notification.type='info'] - The type of the notification
    * @param {boolean} [notification.autoClose=true] - Whether the notification should auto-close
    * @param {Promise} [notification.promise] - A promise to track for loading, success, and error states
@@ -91,7 +91,8 @@ class UINotificationService {
     title,
     message,
     duration = 2000,
-    position = 'bottom-right',
+    // Fork: top-right card, clear of the bottom-corner image overlays.
+    position = 'top-right',
     type = 'info',
     autoClose = true,
     promise,
