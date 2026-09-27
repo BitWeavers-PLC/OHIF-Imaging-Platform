@@ -80,10 +80,17 @@ async function appInit(appConfigOrFunc, defaultExtensions, defaultModes) {
     [StudyPrefetcherService.REGISTRATION, appConfig.studyPrefetcher],
   ]);
 
+  // Fork: always return a handler (callers invoke it directly); without a configured one,
+  // log the failure instead of throwing "is not a function" and hiding the real error.
   errorHandler.getHTTPErrorHandler = () => {
     if (typeof appConfig.httpErrorHandler === 'function') {
       return appConfig.httpErrorHandler;
     }
+    return error => {
+      const status = error?.status ?? error?.request?.status;
+      const url = error?.url ?? error?.request?.responseURL ?? error?.imageId;
+      console.warn('Request failed', { status, url, error });
+    };
   };
 
   /**

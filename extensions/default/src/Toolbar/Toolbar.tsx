@@ -103,10 +103,6 @@ export function Toolbar({ buttonSection = 'primary', viewportId, location }: Too
     maxVisibleButtons,
   });
 
-  if (!toolbarButtonsForRender.length) {
-    return null;
-  }
-
   const finalVisibleIdSet = React.useMemo(() => {
     const nextSet = new Set(visibleIds);
     if (isPrimarySection && moreAlwaysVisible) {
@@ -132,6 +128,11 @@ export function Toolbar({ buttonSection = 'primary', viewportId, location }: Too
         })),
     [overflowIds, toolbarButtonsForRender]
   );
+
+  // Fork: after every hook (was before the useMemos: React #310 when a section gained buttons).
+  if (!toolbarButtonsForRender.length) {
+    return null;
+  }
 
   let previousGroup: string | undefined;
 

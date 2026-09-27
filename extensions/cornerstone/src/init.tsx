@@ -1,3 +1,4 @@
+import i18n from '@ohif/i18n';
 import OHIF, { errorHandler } from '@ohif/core';
 import React from 'react';
 
@@ -259,9 +260,37 @@ export default async function init({
    * Runs error handler for failed requests.
    * @param event
    */
+  // Fork: a slice that fails to load must not be silent in a diagnostic viewer. One warning per
+  // series (IMAGE_LOAD_FAILED and IMAGE_LOAD_ERROR both fire for the same failure); details in
+  // the console. Cancelled/aborted requests (e.g. prefetch cleared) are not failures.
+  const seriesWithFailedImages = new Set<string>();
   const imageLoadFailedHandler = ({ detail }) => {
-    const handler = errorHandler.getHTTPErrorHandler();
-    handler(detail.error);
+    const { error, imageId } = detail ?? {};
+    const reason = String(error?.message ?? error?.error?.message ?? error ?? '');
+    if (/cancel|abort/i.test(reason)) {
+      return;
+    }
+    errorHandler.getHTTPErrorHandler()?.(error);
+    const displaySet = displaySetService
+      .getActiveDisplaySets()
+      .find(ds => ds.imageIds?.includes(imageId));
+    const seriesKey = displaySet?.displaySetInstanceUID ?? 'unknown';
+    console.warn('Image could not be loaded', { imageId, series: seriesKey, error });
+    if (seriesWithFailedImages.has(seriesKey)) {
+      return;
+    }
+    seriesWithFailedImages.add(seriesKey);
+    const series = displaySet?.SeriesDescription || displaySet?.SeriesNumber;
+    uiNotificationService.show({
+      title: i18n.t('Messages:An image could not be loaded'),
+      message: series
+        ? i18n.t('Messages:Series {{series}} — reopen the study; if it persists, report it.', {
+            series,
+          })
+        : i18n.t('Messages:Reopen the study; if it persists, report it.'),
+      type: 'warning',
+      duration: 10000,
+    });
   };
 
   eventTarget.addEventListener(EVENTS.IMAGE_LOAD_FAILED, imageLoadFailedHandler);

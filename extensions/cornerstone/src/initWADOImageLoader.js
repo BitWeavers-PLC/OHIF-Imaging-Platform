@@ -45,8 +45,9 @@ export default function initWADOImageLoader(
 
       return xhrRequestHeaders;
     },
+    // Fork: call the handler (upstream passed the error to the getter and dropped it).
     errorInterceptor: error => {
-      errorHandler.getHTTPErrorHandler(error);
+      errorHandler.getHTTPErrorHandler()?.(error);
     },
   });
 }

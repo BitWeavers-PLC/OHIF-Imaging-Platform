@@ -31,5 +31,8 @@
   "Refresh": "Refresh",
   "Time (s)": "Time (s)",
   "Enhancement (%)": "Enhancement (%)",
-  "Still loading; the curve updates as phases arrive.": "Still loading; the curve updates as phases arrive."
+  "Still loading; the curve updates as phases arrive.": "Still loading; the curve updates as phases arrive.",
+  "An image could not be loaded": "An image could not be loaded",
+  "Reopen the study; if it persists, report it.": "Reopen the study; if it persists, report it.",
+  "Series {{series}} — reopen the study; if it persists, report it.": "Series {{series}} — reopen the study; if it persists, report it."
 }
