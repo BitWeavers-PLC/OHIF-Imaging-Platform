@@ -190,5 +190,7 @@
   "Flip Vertically": "Flip Vertically",
   "Subtraction": "Subtraction",
   "Post minus pre contrast (MR)": "Post minus pre contrast (MR)",
-  "ADC (MR)": "ADC (MR)"
+  "ADC (MR)": "ADC (MR)",
+  "Auto-align (CT)": "Auto-align (CT)",
+  "Move other CT viewports to the matching anatomy": "Move other CT viewports to the matching anatomy"
 }

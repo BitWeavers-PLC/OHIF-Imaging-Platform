@@ -1,6 +1,5 @@
 import type { Button } from '@ohif/core/types';
 
-import { EVENTS } from '@cornerstonejs/core';
 import { ViewportGridService } from '@ohif/core';
 import i18n from 'i18next';
 
@@ -39,7 +38,7 @@ export const primaryToolbarGroups = {
   ],
   image: ['rotate-left', 'rotate-right', 'flipHorizontal', 'flipVertical', 'invert', 'Subtract'],
   layout: ['Layout', 'MPR', 'MIP', 'VolumeRendering3D', 'Crosshairs', 'SlabTools'],
-  sync: ['ImageSliceSync', 'VOISync', 'ReferenceLines'],
+  sync: ['ImageSliceSync', 'AutoAlign', 'VOISync', 'ReferenceLines'],
   output: ['Cine', 'Capture', 'ImageOverlayViewer', 'TagBrowser'],
   edit: ['Undo', 'Redo', 'MoreTools'],
 };
@@ -302,12 +301,6 @@ const toolbarButtons: Button[] = [
           type: 'imageSlice',
         },
       },
-      listeners: {
-        [EVENTS.VIEWPORT_NEW_IMAGE_SET]: {
-          commandName: 'toggleImageSliceSync',
-          commandOptions: { toggledState: true },
-        },
-      },
       evaluate: [
         'evaluate.cornerstone.synchronizer',
         {
@@ -315,6 +308,21 @@ const toolbarButtons: Button[] = [
           unsupportedViewportTypes: ['video', 'volume3d'],
         },
       ],
+    },
+  },
+  {
+    // Fork: CT vs CT, moves the other viewports to the matching anatomy (alignByAnatomy).
+    id: 'AutoAlign',
+    uiType: 'ohif.toolButton',
+    props: {
+      icon: 'tool-stack-image-sync',
+      label: i18n.t('Buttons:Auto-align (CT)'),
+      tooltip: i18n.t('Buttons:Move other CT viewports to the matching anatomy'),
+      commands: 'alignByAnatomy',
+      evaluate: {
+        name: 'evaluate.viewport.supported',
+        unsupportedViewportTypes: ['video', 'volume3d'],
+      },
     },
   },
   {

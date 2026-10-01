@@ -35,6 +35,7 @@ import {
 } from '@ohif/extension-default';
 import { vec3, mat4 } from 'gl-matrix';
 import toggleImageSliceSync from './utils/imageSliceSync/toggleImageSliceSync';
+import alignByAnatomy from './utils/imageSliceSync/alignByAnatomy';
 import linkViewportsAtCurrentPosition from './utils/imageSliceSync/linkViewportsAtCurrentPosition';
 import { getFirstAnnotationSelected } from './utils/measurementServiceMappings/utils/selection';
 import { getViewportEnabledElement } from './utils/getViewportEnabledElement';
@@ -1438,7 +1439,16 @@ function commandsModule({
           viewport?.render();
         }
       });
+
+      // CT vs CT: replace the link-at-open offset with the anatomy match. The first viewport
+      // of the other (current) study stays put; a weak match keeps the link-at-open offset.
+      if (!mixedModalities && modalityOf(ids()[0]) === 'CT') {
+        const sourceViewportId = ids().find(id => studyOf(id) !== StudyInstanceUID);
+        await alignByAnatomy({ servicesManager, sourceViewportId });
+      }
     },
+    alignByAnatomy: ({ sourceViewportId }: { sourceViewportId?: string } = {}) =>
+      alignByAnatomy({ servicesManager, sourceViewportId }),
     toggleSynchronizer: ({ type, viewports, syncId }) => {
       const synchronizer = syncGroupService.getSynchronizer(syncId);
 
@@ -2722,6 +2732,9 @@ function commandsModule({
     },
     linkComparisonViewports: {
       commandFn: actions.linkComparisonViewports,
+    },
+    alignByAnatomy: {
+      commandFn: actions.alignByAnatomy,
     },
     toggleSynchronizer: {
       commandFn: actions.toggleSynchronizer,

@@ -19,18 +19,16 @@ export default function toggleImageSliceSync({
   // Todo: right now we don't have a proper way to define specific
   // viewports to add to synchronizers, and right now it is global or not
   // after we do that, we should do fine grained control of the synchronizers
-  const someViewportHasSync = viewports.some(viewport => {
-    const syncStates = syncGroupService.getSynchronizersForViewport(
-      viewport.viewportOptions.viewportId
-    );
-
-    const imageSync = syncStates.find(syncState => syncState.id === syncId);
-
-    return !!imageSync;
-  });
+  // Fork: any image-slice group counts (e.g. the compare layout's 'compareSlice'), so the
+  // button, which already shows ON for those, turns them off instead of adding a second group.
+  const someViewportHasSync = viewports.some(viewport =>
+    syncGroupService
+      .getSynchronizersForViewport(viewport.viewportOptions.viewportId)
+      .some(synchronizer => syncGroupService.isImageSliceSyncronizer(synchronizer))
+  );
 
   if (someViewportHasSync) {
-    return disableSync(syncId, servicesManager);
+    return disableSync(servicesManager);
   }
 
   // create synchronization group and add the viewports to it.
@@ -51,7 +49,7 @@ export default function toggleImageSliceSync({
   linkViewportsAtCurrentPosition(viewports.map(viewport => viewport.viewportOptions.viewportId));
 }
 
-function disableSync(syncName, servicesManager: AppTypes.ServicesManager) {
+function disableSync(servicesManager: AppTypes.ServicesManager) {
   const { syncGroupService, viewportGridService, displaySetService, cornerstoneViewportService } =
     servicesManager.services;
   const viewports = getReconstructableStackViewports(viewportGridService, displaySetService);
@@ -61,11 +59,16 @@ function disableSync(syncName, servicesManager: AppTypes.ServicesManager) {
     if (!viewport) {
       return;
     }
-    syncGroupService.removeViewportFromSyncGroup(
-      viewport.id,
-      viewport.getRenderingEngine().id,
-      syncName
-    );
+    syncGroupService
+      .getSynchronizersForViewport(viewportId)
+      .filter(synchronizer => syncGroupService.isImageSliceSyncronizer(synchronizer))
+      .forEach(synchronizer =>
+        syncGroupService.removeViewportFromSyncGroup(
+          viewportId,
+          viewport.getRenderingEngine().id,
+          synchronizer.id
+        )
+      );
   });
 }
 

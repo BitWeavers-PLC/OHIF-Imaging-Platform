@@ -51,8 +51,10 @@ const radiantHotkeys = [
   cmd('ctrl+m', 'toggleOneUp', 'Maximize / Restore Viewport'),
   cmd('f', 'toggleFullscreen', 'Full Screen'),
   cmd('space', 'toggleCinePlay', 'Start / Stop Cine'),
-  // Links at the positions shown now: align the anatomy first, then F5.
+  // Links at the positions shown now: align the anatomy first (or use Auto-align for CT), then F5.
   cmd('f5', 'toggleSynchronizer', 'Toggle Series Synchronization', { type: 'imageSlice' }),
+  // Not in RadiAnt: CT-only anatomy match (alignByAnatomy), next to F5.
+  cmd('shift+f5', 'alignByAnatomy', 'Auto-align (CT)'),
 
   // Window presets (RadiAnt order; 8-9 are this viewer's extra CT windows)
   cmd('0', 'resetWindowLevel', 'Default Window'),
