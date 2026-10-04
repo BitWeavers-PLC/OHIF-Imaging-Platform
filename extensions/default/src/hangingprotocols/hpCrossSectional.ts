@@ -97,6 +97,13 @@ export const hpCtBody: Types.HangingProtocol.Protocol = {
       constraint: { doesNotInclude: ['PT', 'MG'] },
       required: true,
     },
+    {
+      // Only scouts / single images: one viewport (default) instead of two empty panes.
+      id: 'hasVolume',
+      attribute: 'hasReadableVolume',
+      constraint: { equals: { value: true } },
+      required: true,
+    },
   ],
   displaySetSelectors: {
     anySeries,

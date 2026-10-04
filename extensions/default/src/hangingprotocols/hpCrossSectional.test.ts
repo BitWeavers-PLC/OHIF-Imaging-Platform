@@ -133,4 +133,25 @@ describe('CT/MR hanging protocols', () => {
     const list = ['PERFUSION', 'DTI'].map(d => series(study, 'MR', d, 900));
     expect(hang(study, list).byViewport).toEqual(list.map(ds => ds.displaySetInstanceUID));
   });
+
+  it('single X-ray film opens one viewport; PA + lateral opens side by side', () => {
+    const one = { StudyInstanceUID: 'cr1', ...ModalitiesInStudy(['CR']) };
+    const single = hang(one, [series(one, 'CR', 'CHEST AP', 1)]);
+    expect(single.protocolId).toBe('default');
+    expect(single.byViewport).toHaveLength(1);
+
+    const two = { StudyInstanceUID: 'dx2', ...ModalitiesInStudy(['DX']) };
+    const pa = series(two, 'DX', 'PA', 1);
+    const lat = series(two, 'DX', 'LAT', 1);
+    const pair = hang(two, [pa, lat]);
+    expect(pair.protocolId).toBe('@ohif/dxTwoView');
+    expect(pair.byViewport).toEqual([pa.displaySetInstanceUID, lat.displaySetInstanceUID]);
+  });
+
+  it('CT with only a scout opens one viewport, not empty axial + coronal panes', () => {
+    const study = { StudyInstanceUID: 'ctScout', ...ModalitiesInStudy(['CT']) };
+    const result = hang(study, [series(study, 'CT', 'Topogram', 1)]);
+    expect(result.protocolId).toBe('default');
+    expect(result.byViewport).toHaveLength(1);
+  });
 });

@@ -21,9 +21,12 @@ describe('basic MIP toolbar action', () => {
     expect(byId('VolumeRendering3D').props.commands.commandOptions.protocolId).toBe('only3D');
   });
 
-  it('exposes slab projections that call setViewportSlab', () => {
+  it('has one MIP control: the MIP layout first, then slab projections', () => {
     expect(toolbarSections.primary).toContain('SlabTools');
-    for (const id of toolbarSections.SlabTools) {
+    expect(toolbarSections.primary).not.toContain('MIP');
+    const [first, ...slabs] = toolbarSections.SlabTools;
+    expect(first).toBe('MIP');
+    for (const id of slabs) {
       expect(byId(id)?.props.commands.commandName).toBe('setViewportSlab');
     }
     expect(byId('SlabMinIP10').props.commands.commandOptions).toEqual({

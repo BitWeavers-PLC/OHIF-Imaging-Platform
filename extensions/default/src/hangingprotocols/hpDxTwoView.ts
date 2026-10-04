@@ -21,7 +21,8 @@ const hpDxTwoView: Types.HangingProtocol.Protocol = {
     {
       id: 'twoImageSeries',
       attribute: 'numberOfDisplaySetsWithImages',
-      constraint: { greaterThan: 1 },
+      // OHIF's greaterThan is ">=": 2 means two or more (a single film opens 1-up).
+      constraint: { greaterThan: { value: 2 } },
       required: true,
     },
   ],

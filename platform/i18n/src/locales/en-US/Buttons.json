@@ -192,5 +192,11 @@
   "Post minus pre contrast (MR)": "Post minus pre contrast (MR)",
   "ADC (MR)": "ADC (MR)",
   "Auto-align (CT)": "Auto-align (CT)",
-  "Move other CT viewports to the matching anatomy": "Move other CT viewports to the matching anatomy"
+  "Move other CT viewports to the matching anatomy": "Move other CT viewports to the matching anatomy",
+  "MIP layout (rotating)": "MIP layout (rotating)",
+  "MIP slab 10 mm": "MIP slab 10 mm",
+  "MIP slab 20 mm": "MIP slab 20 mm",
+  "MIP slab full volume": "MIP slab full volume",
+  "MinIP slab 10 mm (airways)": "MinIP slab 10 mm (airways)",
+  "AvgIP slab 5 mm": "AvgIP slab 5 mm"
 }

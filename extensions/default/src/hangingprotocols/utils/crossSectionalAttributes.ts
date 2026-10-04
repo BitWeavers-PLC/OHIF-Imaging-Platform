@@ -65,6 +65,16 @@ export function isLocalizer(displaySet): boolean {
   );
 }
 
+/** The study has a real image volume (not only scouts/single images), for multi-pane CT. */
+export function hasReadableVolume(study, options): boolean {
+  return (options?.displaySets ?? []).some(
+    ds =>
+      (!study?.StudyInstanceUID || ds.StudyInstanceUID === study.StudyInstanceUID) &&
+      ds.isReconstructable &&
+      !isLocalizer(ds)
+  );
+}
+
 /** A prior's series named like one of the current study's (for hpCompare). */
 export function sameSeriesAsCurrent(displaySet, options): boolean {
   const current = options?.studies?.[0]?.StudyInstanceUID;
@@ -88,6 +98,11 @@ export default function registerCrossSectionalAttributes(hangingProtocolService)
   );
   hangingProtocolService.addCustomAttribute('studyLabel', 'Study label (lower case)', studyLabel);
   hangingProtocolService.addCustomAttribute('isLocalizer', 'Scout/localizer/dose', isLocalizer);
+  hangingProtocolService.addCustomAttribute(
+    'hasReadableVolume',
+    'Study has a reconstructable, non-scout series',
+    hasReadableVolume
+  );
   hangingProtocolService.addCustomAttribute(
     'sameSeriesAsCurrent',
     'Series also in the current study',

@@ -346,6 +346,15 @@ const SegFillOnly = Glyph(
   />
 );
 
+// Slab projection: a stack of thin planes.
+const Slab = Glyph(
+  <>
+    <path d="M4 8 L12 4 L20 8 L12 12 Z" />
+    <path d="M4 12 L12 16 L20 12" />
+    <path d="M4 16 L12 20 L20 16" />
+  </>
+);
+
 const line = Component => (props: React.SVGProps<SVGSVGElement>) => (
   <Component
     strokeWidth={1.5}
@@ -527,6 +536,7 @@ export const iconOverrides: Record<string, React.ComponentType<any>> = {
   'tool-segment-label': SegmentLabel,
   // MPR / 3D / layout
   'icon-mpr': MPR,
+  'tool-slab': Slab,
   'layout-advanced-mpr': MIP,
   'layout-advanced-3d-only': line(Box),
   'tool-layout': line(LayoutGrid),

@@ -258,7 +258,16 @@ export const toolbarSections = {
     'WLADC',
   ],
 
-  SlabTools: ['SlabMIP20', 'SlabMIP10', 'SlabMIPFull', 'SlabMinIP10', 'SlabAvgIP5', 'SlabOff'],
+  // One MIP control: the MIP layout, then slab projections for MPR/volume views.
+  SlabTools: [
+    'MIP',
+    'SlabMIP10',
+    'SlabMIP20',
+    'SlabMIPFull',
+    'SlabMinIP10',
+    'SlabAvgIP5',
+    'SlabOff',
+  ],
 
   MoreTools: [
     'TrackballRotate',

@@ -37,7 +37,8 @@ export const primaryToolbarGroups = {
     'MeasurementTools',
   ],
   image: ['rotate-left', 'rotate-right', 'flipHorizontal', 'flipVertical', 'invert', 'Subtract'],
-  layout: ['Layout', 'MPR', 'MIP', 'VolumeRendering3D', 'Crosshairs', 'SlabTools'],
+  // 'SlabTools' is the single MIP control: MIP layout first, then slab projections.
+  layout: ['Layout', 'MPR', 'SlabTools', 'VolumeRendering3D', 'Crosshairs'],
   sync: ['ImageSliceSync', 'AutoAlign', 'VOISync', 'ReferenceLines'],
   output: ['Cine', 'Capture', 'ImageOverlayViewer', 'TagBrowser'],
   edit: ['Undo', 'Redo', 'MoreTools'],
@@ -756,7 +757,7 @@ const toolbarButtons: Button[] = [
     uiType: 'ohif.toolButton',
     props: {
       icon: 'layout-advanced-mpr',
-      label: i18n.t('Buttons:MIP'),
+      label: i18n.t('Buttons:MIP layout (rotating)'),
       tooltip: i18n.t(
         'Buttons:MIP: wheel rotates, click jumps, middle or Ctrl+drag adjusts brightness/contrast, Shift+drag pans'
       ),
@@ -778,11 +779,11 @@ const toolbarButtons: Button[] = [
   },
   // Slab projections on the active MPR viewport (setViewportSlab). Thin slice = normal MPR.
   ...[
-    ['SlabMIP10', 'MIP 10 mm', 'mip', 10, 'layout-advanced-mpr'],
-    ['SlabMIP20', 'MIP 20 mm', 'mip', 20, 'layout-advanced-mpr'],
-    ['SlabMIPFull', 'MIP full volume', 'mip', 'fullVolume', 'layout-advanced-mpr'],
-    ['SlabMinIP10', 'MinIP 10 mm (airways)', 'minip', 10, 'icon-mpr'],
-    ['SlabAvgIP5', 'AvgIP 5 mm', 'avg', 5, 'icon-mpr'],
+    ['SlabMIP10', 'MIP slab 10 mm', 'mip', 10, 'tool-slab'],
+    ['SlabMIP20', 'MIP slab 20 mm', 'mip', 20, 'tool-slab'],
+    ['SlabMIPFull', 'MIP slab full volume', 'mip', 'fullVolume', 'tool-slab'],
+    ['SlabMinIP10', 'MinIP slab 10 mm (airways)', 'minip', 10, 'tool-slab'],
+    ['SlabAvgIP5', 'AvgIP slab 5 mm', 'avg', 5, 'tool-slab'],
     ['SlabOff', 'Thin slice (slab off)', undefined, undefined, 'tool-reset'],
   ].map(([id, label, blendMode, slabThickness, icon]) => ({
     id,
