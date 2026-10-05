@@ -31,6 +31,7 @@ import initStudyPrefetcherService from './initStudyPrefetcherService';
 import interleaveCenterLoader from './utils/interleaveCenterLoader';
 import nthLoader from './utils/nthLoader';
 import interleaveTopToBottom from './utils/interleaveTopToBottom';
+import readerFirstLoader from './utils/readerFirstLoader';
 import initContextMenu from './initContextMenu';
 import initDoubleClick from './initDoubleClick';
 import initViewTiming from './utils/initViewTiming';
@@ -173,6 +174,8 @@ export default async function init({
     interleaveCenter: interleaveCenterLoader,
     interleaveTopToBottom: interleaveTopToBottom,
     nth: nthLoader,
+    // Fork: nearest-first to where the reader is (CT axial + coronal layout).
+    readerFirst: readerFirstLoader,
   };
 
   Object.entries(imageLoadStrategies).forEach(([name, strategyFn]) => {

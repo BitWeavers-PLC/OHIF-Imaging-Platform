@@ -87,6 +87,8 @@ const anySeries = selector([]);
 export const hpCtBody: Types.HangingProtocol.Protocol = {
   ...base,
   id: '@axialscope/ctBody',
+  // The coronal volume loads from where the reader is (top first, then follows scroll/hover).
+  imageLoadStrategy: 'readerFirst',
   name: 'CT axial + coronal',
   description: 'CT: main axial series with a coronal reformat',
   protocolMatchingRules: [
