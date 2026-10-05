@@ -39,3 +39,12 @@ describe('segmentation editing in the main viewer', () => {
     expect(new Set(all).size).toBe(all.length);
   });
 });
+
+describe('segmentation toolbox', () => {
+  it('hides the AI tools that download a third-party model', () => {
+    const { toolbarSections } = require('../../../modes/basic/src/index');
+    expect(toolbarSections.LabelMapTools).not.toContain('LabelmapSlicePropagation');
+    expect(toolbarSections.LabelMapTools).not.toContain('MarkerLabelmap');
+    expect(toolbarSections.LabelMapTools).toContain('BrushTools');
+  });
+});

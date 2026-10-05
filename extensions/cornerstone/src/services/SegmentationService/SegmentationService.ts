@@ -16,6 +16,7 @@ import {
   segmentation as cstSegmentation,
   Types as cstTypes,
   annotation as cstAnnotation,
+  utilities as cstUtils,
 } from '@cornerstonejs/tools';
 
 import { PubSubService, Types as OHIFTypes } from '@ohif/core';
@@ -2107,6 +2108,10 @@ class SegmentationService extends PubSubService {
 
   private _onSegmentationDataModifiedFromSource = evt => {
     const { segmentationId } = evt.detail;
+    // Fork: Cornerstone only flags the labelmap textures dirty on data changes; brush tools
+    // request a render themselves, but programmatic edits (e.g. Interpolate Labelmap) don't,
+    // so views kept the old paint until the next scroll. Renders are batched per frame.
+    cstUtils.segmentation.triggerSegmentationRenderBySegmentationId(segmentationId);
     this._broadcastEvent(this.EVENTS.SEGMENTATION_DATA_MODIFIED, {
       segmentationId,
     });

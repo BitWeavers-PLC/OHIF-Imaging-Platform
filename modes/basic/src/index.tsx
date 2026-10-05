@@ -220,14 +220,9 @@ export const toolbarSections = {
   [TOOLBAR_SECTIONS.contourSegmentationToolbox]: ['ContourTools'],
   [TOOLBAR_SECTIONS.labelMapSegmentationUtilities]: ['LabelMapUtilities'],
   [TOOLBAR_SECTIONS.contourSegmentationUtilities]: ['ContourUtilities'],
-  LabelMapTools: [
-    'LabelmapSlicePropagation',
-    'BrushTools',
-    'MarkerLabelmap',
-    'RegionSegmentPlus',
-    'Shapes',
-    'LabelMapEditWithContour',
-  ],
+  // Fork: AI tools (LabelmapSlicePropagation, MarkerLabelmap) hidden: they download SAM from a
+  // third-party Hugging Face repo, need WebGPU and are not a medical model. Re-add once self-hosted.
+  LabelMapTools: ['BrushTools', 'RegionSegmentPlus', 'Shapes', 'LabelMapEditWithContour'],
   ContourTools: [
     'PlanarFreehandContourSegmentationTool',
     'SculptorTool',
