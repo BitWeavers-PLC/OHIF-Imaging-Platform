@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { vec3 } from 'gl-matrix';
 import PropTypes from 'prop-types';
-import { metaData, Enums, utilities, eventTarget } from '@cornerstonejs/core';
+import { metaData, Enums, utilities, eventTarget, getEnabledElement } from '@cornerstonejs/core';
 import { Enums as csToolsEnums, UltrasoundPleuraBLineTool } from '@cornerstonejs/tools';
 import type { ImageSliceData } from '@cornerstonejs/core/types';
 import { ViewportOverlay, formatDICOMDate } from '@ohif/ui-next';
@@ -12,6 +12,7 @@ import { StackViewportData, VolumeViewportData } from '../../types/CornerstoneCa
 
 import './CustomizableViewportOverlay.css';
 import { useViewportRendering } from '../../hooks';
+import { formatPixelValue, pixelValueAt } from './pixelValue';
 
 const EPSILON = 1e-4;
 const { formatPN } = utils;
@@ -47,6 +48,7 @@ const OverlayItemComponents = {
   'ohif.overlayItem.windowLevel': VOIOverlayItem,
   'ohif.overlayItem.zoomLevel': ZoomOverlayItem,
   'ohif.overlayItem.instanceNumber': InstanceNumberOverlayItem,
+  'ohif.overlayItem.pixelValue': PixelValueOverlayItem,
 };
 
 /**
@@ -430,6 +432,47 @@ function ZoomOverlayItem({ scale, customization }: OverlayItemProps) {
     >
       <span className="mr-0.5 shrink-0 opacity-[0.70]">Zoom:</span>
       <span>{scale.toFixed(2)}x</span>
+    </div>
+  );
+}
+
+/**
+ * Fork: value under the mouse (HU for CT), as RadiAnt shows it; hidden off the image.
+ */
+function PixelValueOverlayItem({ element, customization }: OverlayItemProps) {
+  const [text, setText] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!element) {
+      return;
+    }
+    const onMove = (event: MouseEvent) => {
+      const rect = element.getBoundingClientRect();
+      const result = pixelValueAt(getEnabledElement(element)?.viewport, [
+        event.clientX - rect.left,
+        event.clientY - rect.top,
+      ]);
+      setText(result ? formatPixelValue(result) : null);
+    };
+    const onLeave = () => setText(null);
+    element.addEventListener('mousemove', onMove);
+    element.addEventListener('mouseleave', onLeave);
+    return () => {
+      element.removeEventListener('mousemove', onMove);
+      element.removeEventListener('mouseleave', onLeave);
+    };
+  }, [element]);
+
+  if (text === null) {
+    return null;
+  }
+  return (
+    <div
+      className="overlay-item flex flex-row"
+      style={{ color: (customization && customization.color) || undefined }}
+    >
+      <span className="mr-0.5 shrink-0 opacity-[0.70]">Val:</span>
+      <span>{text}</span>
     </div>
   );
 }

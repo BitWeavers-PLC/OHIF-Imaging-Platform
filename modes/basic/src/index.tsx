@@ -215,6 +215,29 @@ export const toolbarSections = {
 
   [TOOLBAR_SECTIONS.viewportActionMenu.topLeft]: ['orientationMenu', 'dataOverlayMenu'],
 
+  // Fork: segmentation editing, shown inside the segmentation panels (as in the segmentation mode).
+  [TOOLBAR_SECTIONS.labelMapSegmentationToolbox]: ['LabelMapTools'],
+  [TOOLBAR_SECTIONS.contourSegmentationToolbox]: ['ContourTools'],
+  [TOOLBAR_SECTIONS.labelMapSegmentationUtilities]: ['LabelMapUtilities'],
+  [TOOLBAR_SECTIONS.contourSegmentationUtilities]: ['ContourUtilities'],
+  LabelMapTools: [
+    'LabelmapSlicePropagation',
+    'BrushTools',
+    'MarkerLabelmap',
+    'RegionSegmentPlus',
+    'Shapes',
+    'LabelMapEditWithContour',
+  ],
+  ContourTools: [
+    'PlanarFreehandContourSegmentationTool',
+    'SculptorTool',
+    'SplineContourSegmentationTool',
+    'LivewireContourSegmentationTool',
+  ],
+  LabelMapUtilities: ['InterpolateLabelmap', 'SegmentBidirectional'],
+  ContourUtilities: ['LogicalContourOperations', 'SimplifyContours', 'SmoothContours'],
+  BrushTools: ['Brush', 'Eraser', 'Threshold'],
+
   [TOOLBAR_SECTIONS.viewportActionMenu.bottomMiddle]: ['AdvancedRenderingControls'],
 
   AdvancedRenderingControls: [
@@ -378,7 +401,7 @@ export const modeInstance = {
   // come first to remove video transfer syntax before ohif uses images
   sopClassHandlers,
   toolbarButtons,
-  enableSegmentationEdit: false,
+  enableSegmentationEdit: true,
   nonModeModalities: NON_IMAGE_MODALITIES,
 };
 

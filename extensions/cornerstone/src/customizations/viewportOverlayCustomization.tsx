@@ -41,6 +41,11 @@ export default {
     },
   ],
   'viewportOverlay.bottomLeft': [
+    // Fork: live value under the mouse (HU for CT), no Probe needed.
+    {
+      id: 'PixelValue',
+      inheritsFrom: 'ohif.overlayItem.pixelValue',
+    },
     {
       id: 'WindowLevel',
       inheritsFrom: 'ohif.overlayItem.windowLevel',

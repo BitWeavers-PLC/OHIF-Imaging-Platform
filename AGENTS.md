@@ -98,6 +98,7 @@ yarn --cwd platform/app run build:viewer   # QUICK_BUILD=true skips minification
   - QIDO responses are cached `immutable`.
   - Saving SR, KOS or segmentations needs a STOW route.
 - **Compare with prior:** current and prior link at the positions they open on; to re-align, scroll both to the same anatomy and toggle sync (F5) off and on. CT-vs-CT comparisons instead align by anatomy when they open, keeping the link-at-open offset if the match is weak; Auto-align (CT) on the toolbar or Shift+F5 re-runs it from the active viewport, and a toast shows the match %. Reference lines don't cross studies (different frame of reference).
+- **Segmentation:** editable in the main viewer (labelmap and contour panels reuse the segmentation mode's buttons and tools). Download works; the PACS Export items stay hidden while `allowSRSave` is false.
 - **DCE curves** need the phases in one series (split by TemporalPositionIdentifier/TriggerTime); one series per phase isn't supported.
 - **Not built:** curved planar reformation (Cornerstone has no support).
 - **Visible framework traces:** the `/viewer?StudyInstanceUIDs=` URL shape is OHIF's, and `@ohif/*` package names remain in the minified bundle. Changing either needs backend URL changes or package renames.

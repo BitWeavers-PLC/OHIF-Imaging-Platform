@@ -1,3 +1,6 @@
+// Fork: not the package index, which imports this mode back.
+import { createTools as createSegmentationTools } from '../../segmentation/src/initToolGroups';
+
 const colours = {
   'viewport-0': 'rgb(200, 0, 0)',
   'viewport-1': 'rgb(200, 200, 0)',
@@ -56,6 +59,23 @@ export function radiantActiveTools(toolNames, Enums, { lengthToolName = toolName
     });
   }
   return tools;
+}
+
+/**
+ * Fork: segmentation editing in the main viewer. Adds the segmentation mode's brush, eraser,
+ * threshold, scissors and contour tools as passive, skipping any tool this group already has
+ * (so StackScroll keeps its active bindings).
+ */
+export function withSegmentationTools(tools, utilityModule, commandsManager) {
+  const present = new Set(
+    Object.values(tools)
+      .flat()
+      .map((tool: any) => tool.toolName)
+  );
+  const extra = createSegmentationTools({ utilityModule, commandsManager }).passive.filter(
+    tool => !present.has(tool.toolName)
+  );
+  return { ...tools, passive: [...(tools.passive ?? []), ...extra] };
 }
 
 function initDefaultToolGroup(extensionManager, toolGroupService, commandsManager, toolGroupId) {
@@ -121,7 +141,10 @@ function initDefaultToolGroup(extensionManager, toolGroupService, commandsManage
 
   const updatedTools = commandsManager.run('initializeSegmentLabelTool', { tools });
 
-  toolGroupService.createToolGroupAndAddTools(toolGroupId, updatedTools);
+  toolGroupService.createToolGroupAndAddTools(
+    toolGroupId,
+    withSegmentationTools(updatedTools, utilityModule, commandsManager)
+  );
 }
 
 function initSRToolGroup(extensionManager, toolGroupService) {
@@ -252,7 +275,10 @@ function initMPRToolGroup(extensionManager, toolGroupService, commandsManager) {
     ],
   };
 
-  toolGroupService.createToolGroupAndAddTools('mpr', tools);
+  toolGroupService.createToolGroupAndAddTools(
+    'mpr',
+    withSegmentationTools(tools, utilityModule, commandsManager)
+  );
 }
 function initVolume3DToolGroup(extensionManager, toolGroupService) {
   const utilityModule = extensionManager.getModuleEntry(

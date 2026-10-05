@@ -32,6 +32,8 @@ export const ExportSegmentationSubMenuItem: React.FC<ExportSegmentationSubMenuIt
   actions,
 }) => {
   const { t } = useTranslation('SegmentationPanel');
+  // Fork: "Export" stores to PACS, which fails on the read-only route (no STOW).
+  const allowPacsSave = (window as any).config?.imagingPlatform?.viewer?.allowSRSave !== false;
 
   return (
     <DropdownMenuSub>
@@ -76,31 +78,35 @@ export const ExportSegmentationSubMenuItem: React.FC<ExportSegmentationSubMenuIt
           >
             {t('DICOM RTSS')}
           </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuLabel className="flex items-center pl-0">
-            <Icons.Export className="h-5 w-5" />
-            <span className="pl-1 pt-1">{t('Export')}</span>
-          </DropdownMenuLabel>
-          {segmentationRepresentationType === SegmentationRepresentations.Labelmap && (
-            <DropdownMenuItem
-              onClick={e => {
-                e.preventDefault();
-                actions.storeSegmentation(segmentationId, 'SEG');
-              }}
-              disabled={!allowExport}
-            >
-              {t('DICOM SEG')}
-            </DropdownMenuItem>
+          {allowPacsSave && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel className="flex items-center pl-0">
+                <Icons.Export className="h-5 w-5" />
+                <span className="pl-1 pt-1">{t('Export')}</span>
+              </DropdownMenuLabel>
+              {segmentationRepresentationType === SegmentationRepresentations.Labelmap && (
+                <DropdownMenuItem
+                  onClick={e => {
+                    e.preventDefault();
+                    actions.storeSegmentation(segmentationId, 'SEG');
+                  }}
+                  disabled={!allowExport}
+                >
+                  {t('DICOM SEG')}
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuItem
+                onClick={e => {
+                  e.preventDefault();
+                  actions.storeSegmentation(segmentationId, 'RTSTRUCT');
+                }}
+                disabled={!allowExport}
+              >
+                {t('DICOM RTSS')}
+              </DropdownMenuItem>
+            </>
           )}
-          <DropdownMenuItem
-            onClick={e => {
-              e.preventDefault();
-              actions.storeSegmentation(segmentationId, 'RTSTRUCT');
-            }}
-            disabled={!allowExport}
-          >
-            {t('DICOM RTSS')}
-          </DropdownMenuItem>
         </DropdownMenuSubContent>
       </DropdownMenuPortal>
     </DropdownMenuSub>

@@ -12,7 +12,7 @@ const colorsByOrientation = {
   coronal: 'rgb(0, 200, 0)',
 };
 
-function createTools({ utilityModule, commandsManager }) {
+export function createTools({ utilityModule, commandsManager }) {
   const { toolNames, Enums } = utilityModule.exports;
 
   const tools = {

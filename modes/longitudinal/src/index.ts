@@ -37,7 +37,13 @@ export const longitudinalInstance = {
     ...basicLayout.props,
     leftPanels: [tracked.seriesStrip],
     leftPanelInitialExpandedWidth: 200,
-    rightPanels: [cornerstone.segmentation, tracked.measurements, tracked.timeIntensity],
+    // Fork: segmentation panels with editing tools (labelmap and contour), as in the segmentation mode.
+    rightPanels: [
+      cornerstone.labelMapSegmentationPanel,
+      cornerstone.contourSegmentationPanel,
+      tracked.measurements,
+      tracked.timeIntensity,
+    ],
     viewports: [
       {
         namespace: tracked.viewport,

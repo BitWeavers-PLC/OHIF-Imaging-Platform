@@ -2,6 +2,8 @@ import type { Button } from '@ohif/core/types';
 
 import { ViewportGridService } from '@ohif/core';
 import i18n from 'i18next';
+// Fork: the file, not the package index, which imports this mode back.
+import { toolbarButtons as segmentationButtons } from '../../segmentation/src/toolbarButtons';
 
 const callbacks = (toolName: string) => [
   {
@@ -977,5 +979,9 @@ for (const [group, ids] of Object.entries(primaryToolbarGroups)) {
     }
   }
 }
+
+// Fork: segmentation editing tools for the segmentation panel (sections in index.tsx).
+const ownIds = new Set(toolbarButtons.map(button => button.id));
+toolbarButtons.push(...segmentationButtons.filter(button => !ownIds.has(button.id)));
 
 export default toolbarButtons;
