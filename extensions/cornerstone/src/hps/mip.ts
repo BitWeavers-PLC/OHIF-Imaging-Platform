@@ -15,7 +15,8 @@ export const mip: Types.HangingProtocol.Protocol = {
   editableBy: {},
   numberOfPriorsReferenced: 0,
   protocolMatchingRules: [],
-  imageLoadStrategy: 'nth',
+  // Fork: load nearest-first to where the reader is (readerFirstLoader).
+  imageLoadStrategy: 'readerFirst',
   callbacks: {},
   displaySetSelectors: {
     activeDisplaySet: {
