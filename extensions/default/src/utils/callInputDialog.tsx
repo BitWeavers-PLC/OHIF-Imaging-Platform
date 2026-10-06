@@ -1,6 +1,6 @@
 import React from 'react';
-import { setAnnotationLabel } from '@cornerstonejs/tools/utilities';
-import { annotation } from '@cornerstonejs/tools';
+// Root import (same function): Jest's module mapper cannot resolve the deep path.
+import { annotation, utilities } from '@cornerstonejs/tools';
 import { LabellingFlow } from '@ohif/ui-next';
 import { InputDialog } from '@ohif/ui-next';
 
@@ -66,12 +66,19 @@ export async function callInputDialog({
 }) {
   const dialogId = 'dialog-enter-annotation';
 
-  const value = await new Promise<string>(resolve => {
+  // Fork: Cancel, the close button and Esc resolve null. Before, only Save resolved, so callers
+  // waiting on the dialog (the calibration line removes itself afterwards) hung forever.
+  const value = await new Promise<string | null>(resolve => {
     uiDialogService.show({
       id: dialogId,
       content: InputDialogDefault,
       title: title,
       shouldCloseOnEsc: true,
+      // Replaces the provider's own hide, so hide here; a no-op after Save already resolved.
+      onClose: id => {
+        uiDialogService.hide(id);
+        resolve(null);
+      },
       contentProps: {
         onSave: value => {
           resolve(value);
@@ -101,7 +108,7 @@ export async function callInputDialogAutoComplete({
       uiDialogService.hide('select-annotation');
       if (measurement && typeof newValue === 'string') {
         const sourceAnnotation = annotation.state.getAnnotation(measurement.uid);
-        setAnnotationLabel(sourceAnnotation, element, newValue);
+        utilities.setAnnotationLabel(sourceAnnotation, element, newValue);
       }
       resolve(newValue);
     };

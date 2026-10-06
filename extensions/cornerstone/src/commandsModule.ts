@@ -896,7 +896,8 @@ function commandsModule({
           defaultValue: data?.data?.label || '',
         });
 
-        callback?.(label);
+        // Fork: on cancel keep the current text (null would blank an edited arrow label).
+        callback?.(label ?? data?.data?.label);
         return;
       }
 
@@ -1910,7 +1911,10 @@ function commandsModule({
         placeholder: i18n.t('Tools:Enter new label'),
         defaultValue: segment.label,
       }).then(label => {
-        segmentationService.setSegmentLabel(segmentationId, segmentIndex, label);
+        // Fork: null when the dialog is cancelled.
+        if (label != null) {
+          segmentationService.setSegmentLabel(segmentationId, segmentIndex, label);
+        }
       });
     },
 
@@ -1930,7 +1934,10 @@ function commandsModule({
         placeholder: i18n.t('Tools:Enter new label'),
         defaultValue: label,
       }).then(label => {
-        segmentationService.addOrUpdateSegmentation({ segmentationId, label });
+        // Fork: null when the dialog is cancelled.
+        if (label != null) {
+          segmentationService.addOrUpdateSegmentation({ segmentationId, label });
+        }
       });
     },
 

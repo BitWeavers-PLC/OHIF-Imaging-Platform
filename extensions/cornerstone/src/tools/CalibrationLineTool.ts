@@ -90,7 +90,13 @@ export function onCompletedCalibrationLine(
       placeholder: 'Actual Physical distance (mm)',
       defaultValue: `${length}`,
     }).then(newValue => {
-      adjustCalibration(Number.parseFloat(newValue));
+      // Fork: Cancel/close resolves null; only a positive distance recalibrates (no NaN spacing).
+      const distance = Number.parseFloat(newValue);
+      if (newValue == null || !(distance > 0)) {
+        resolve(false);
+        return;
+      }
+      adjustCalibration(distance);
       resolve(true);
     });
   });
