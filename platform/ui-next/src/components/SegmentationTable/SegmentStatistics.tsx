@@ -15,6 +15,13 @@ const DefaultStatsList = () => {
       return '';
     }
 
+    // Fork: the bidirectional stat is a { maxMajor, maxMinor } pair; show "L × W", not NaN.
+    if (value && typeof value === 'object' && 'maxMajor' in value) {
+      const pair = value as { maxMajor: number; maxMinor: number };
+      const [length, width] = [pair.maxMajor, pair.maxMinor].sort((a, b) => b - a);
+      return `${roundNumber(length)} × ${roundNumber(width)}`;
+    }
+
     if (Array.isArray(value)) {
       return value.map(handleNumber).join(', ');
     }

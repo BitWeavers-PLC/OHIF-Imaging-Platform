@@ -37,6 +37,7 @@ import { vec3, mat4 } from 'gl-matrix';
 import toggleImageSliceSync from './utils/imageSliceSync/toggleImageSliceSync';
 import alignByAnatomy from './utils/imageSliceSync/alignByAnatomy';
 import showContourInAllPlanes from './utils/contourToLabelmap';
+import { imageAtPoint, planeNormal } from './utils/bidirectionalPlacement';
 import linkViewportsAtCurrentPosition from './utils/imageSliceSync/linkViewportsAtCurrentPosition';
 import { getFirstAnnotationSelected } from './utils/measurementServiceMappings/utils/selection';
 import { getViewportEnabledElement } from './utils/getViewportEnabledElement';
@@ -417,15 +418,37 @@ function commandsModule({
       bidirectionalData.forEach(measurement => {
         const { segmentIndex, majorAxis, minorAxis } = measurement;
 
+        // Fork: hydrate takes plane and image from the viewport it is given. Use a view in the
+        // measurement's own plane and the slice it lies on, not the active view (often coronal,
+        // or another slice), so "Jump to measurement" lands on it.
+        const normal = planeNormal([majorAxis, minorAxis]);
+        const viewportId =
+          [...viewportGridService.getState().viewports.keys()].find(id => {
+            const viewport = cornerstoneViewportService.getCornerstoneViewport(id);
+            return (
+              viewport &&
+              segmentationService.getSegmentationRepresentations(id, { segmentationId: targetId })
+                .length > 0 &&
+              Math.abs(vec3.dot(viewport.getCamera().viewPlaneNormal as vec3, normal)) > 0.99
+            );
+          }) ?? activeViewportId;
+
         // Create annotation
         const annotation = cornerstoneTools.SegmentBidirectionalTool.hydrate(
-          activeViewportId,
+          viewportId,
           [majorAxis, minorAxis],
           {
             segmentIndex,
             segmentationId: targetId,
           }
         );
+        const imageIds = (
+          cornerstoneViewportService.getCornerstoneViewport(viewportId) as any
+        )?.getImageIds?.();
+        const sliceImageId = imageIds && imageAtPoint(imageIds, majorAxis[0], normal);
+        if (sliceImageId) {
+          annotation.metadata.referencedImageId = sliceImageId;
+        }
 
         measurement.annotationUID = annotation.annotationUID;
 

@@ -1,4 +1,5 @@
 import { utils } from '@ohif/core';
+import { formatBidirectional } from './bidirectionalPlacement';
 
 const { downloadCsv } = utils;
 
@@ -97,7 +98,9 @@ export function generateSegmentationCSVReport(
             const currentStatName = `${stat.label || stat.name}${stat.unit ? ` (${stat.unit})` : ''}`;
 
             if (currentStatName === statName) {
-              statValue = stat.value !== undefined ? stat.value : '';
+              // Fork: the bidirectional pair would otherwise export as "[object Object]".
+              statValue =
+                formatBidirectional(stat.value) ?? (stat.value !== undefined ? stat.value : '');
               break;
             }
           }
