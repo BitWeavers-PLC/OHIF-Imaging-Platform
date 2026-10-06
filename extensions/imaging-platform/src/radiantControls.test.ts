@@ -10,6 +10,7 @@ const MouseBindings = {
   Primary: 1,
   Secondary: 2,
   Auxiliary: 4,
+  Primary_And_Secondary: 3,
   Fourth_Button: 8,
   Fifth_Button: 16,
   Wheel: 524288,
@@ -35,6 +36,7 @@ describe('RadiAnt mouse map', () => {
     expect(toolFor(tools, MouseBindings.Wheel, KeyboardBindings.Ctrl)).toBe('Zoom');
     expect(toolFor(tools, MouseBindings.Primary, KeyboardBindings.Ctrl)).toBe('WindowLevel');
     expect(toolFor(tools, MouseBindings.Primary, KeyboardBindings.Shift)).toBe('Pan');
+    expect(toolFor(tools, MouseBindings.Primary_And_Secondary)).toBe('Pan');
   });
 
   it('never binds one input to two tools', () => {

@@ -16,6 +16,7 @@ const colorsByOrientation = {
 /**
  * RadiAnt-style mouse map for 2D viewports: left browse, middle W/L, right zoom,
  * back pan, forward length, wheel browse, Ctrl+wheel zoom, Ctrl+left W/L, Shift+left pan.
+ * Fork addition (not in RadiAnt): left+right together pan, for mice without a back button.
  * Toolbar tools replace only the plain left binding.
  */
 export function radiantActiveTools(toolNames, Enums, { lengthToolName = toolNames.Length } = {}) {
@@ -49,6 +50,7 @@ export function radiantActiveTools(toolNames, Enums, { lengthToolName = toolName
       bindings: [
         { mouseButton: MouseBindings.Fourth_Button },
         { mouseButton: MouseBindings.Primary, modifierKey: KeyboardBindings.Shift },
+        { mouseButton: MouseBindings.Primary_And_Secondary },
       ],
     },
   ];
