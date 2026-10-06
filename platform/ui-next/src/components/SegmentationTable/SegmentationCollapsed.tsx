@@ -24,7 +24,8 @@ import {
 // Main header component
 const SegmentationCollapsedHeader = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="bg-muted flex h-10 w-full items-center space-x-1 rounded-t px-1.5">
+    // Fork: compact flat header (series strip style).
+    <div className="bg-background border-border flex h-8 w-full items-center gap-1 border-b px-1">
       {children}
     </div>
   );
@@ -38,8 +39,9 @@ const SegmentationCollapsedDropdownMenu = ({ children }: { children: React.React
         <Button
           variant="ghost"
           size="icon"
+          className="text-muted-foreground hover:text-foreground h-6 w-6 shrink-0"
         >
-          <Icons.More className="h-6 w-6" />
+          <Icons.More className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
       {children}
@@ -75,7 +77,7 @@ const SegmentationCollapsedSelector = () => {
       onValueChange={value => onSegmentationClick(value)}
       value={segmentation?.segmentationId}
     >
-      <SelectTrigger className="w-full overflow-hidden">
+      <SelectTrigger className="border-border bg-background h-6 w-full overflow-hidden rounded-none text-xs">
         <SelectValue placeholder={t('Select a segmentation')} />
       </SelectTrigger>
       <SelectContent>
@@ -108,8 +110,9 @@ const SegmentationCollapsedInfo = () => {
         <Button
           variant="ghost"
           size="icon"
+          className="text-muted-foreground hover:text-foreground h-6 w-6 shrink-0"
         >
-          <Icons.Info className="h-6 w-6" />
+          <Icons.Info className="h-4 w-4" />
         </Button>
       </TooltipTrigger>
       <TooltipContent

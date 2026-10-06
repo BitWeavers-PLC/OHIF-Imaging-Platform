@@ -57,11 +57,13 @@ export const RowSegmentedControl: React.FC<RowSegmentedControlProps> = ({
           value={option.value}
           onValueChange={handleValueChange}
         >
-          <TabsList className="inline-flex space-x-1">
+          {/* Fork: square segmented control (series strip style). */}
+          <TabsList className="border-border inline-flex h-6 rounded-none border bg-transparent p-0">
             {option.values.map(({ label, value: itemValue }, index) => (
               <TabsTrigger
                 value={itemValue}
                 key={`button-${option.id}-${index}`}
+                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground h-full rounded-none px-2.5 text-xs"
               >
                 {label}
               </TabsTrigger>

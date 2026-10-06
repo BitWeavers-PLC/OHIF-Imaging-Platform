@@ -66,7 +66,7 @@ export function Toolbox({ buttonSectionId, title }: ToolboxProps) {
         {CustomConfigComponent && (
           <div className="ml-auto mr-2">
             <Icons.Settings
-              className="text-primary h-4 w-4"
+              className="text-muted-foreground hover:text-foreground h-3.5 w-3.5"
               onClick={e => {
                 e.stopPropagation();
                 setShowConfig(!showConfig);
@@ -76,7 +76,8 @@ export function Toolbox({ buttonSectionId, title }: ToolboxProps) {
         )}
       </PanelSection.Header>
 
-      <PanelSection.Content className="bg-muted flex-shrink-0 border-none">
+      {/* Fork: flat tool area (series strip style). */}
+      <PanelSection.Content className="bg-background border-border flex-shrink-0 border-b">
         {showConfig && <CustomConfigComponent />}
         {toolboxSections.map(section => {
           const sectionId = section.componentProps.buttonSection;
@@ -85,7 +86,7 @@ export function Toolbox({ buttonSectionId, title }: ToolboxProps) {
           return (
             <div
               key={sectionId}
-              className="bg-muted flex flex-wrap gap-2 py-2 px-1"
+              className="flex flex-wrap gap-1 p-1.5"
             >
               {buttons.map(tool => {
                 // Skip over tools that are not visible. The visible flag is typically set to
@@ -113,7 +114,7 @@ export function Toolbox({ buttonSectionId, title }: ToolboxProps) {
           );
         })}
         {activeToolOptions && (
-          <div className="bg-muted mt-1 h-auto px-2">
+          <div className="border-border h-auto border-t px-2 pt-1.5 text-xs">
             <ToolSettings options={activeToolOptions} />
           </div>
         )}

@@ -7,6 +7,7 @@ import {
   DropdownMenuItem,
 } from '../../components/DropdownMenu';
 import { Icons } from '../../components/Icons/Icons';
+import { Eye, EyeOff } from 'lucide-react';
 import { Tooltip, TooltipTrigger, TooltipContent } from '../../components/Tooltip/Tooltip';
 import { cn } from '../../lib/utils';
 import { useTranslation } from 'react-i18next';
@@ -238,9 +239,10 @@ const DataRowComponent = React.forwardRef<HTMLDivElement, DataRowProps>(
         ref={ref}
         className={cn('flex flex-col', !isVisible && 'opacity-60', className)}
       >
+        {/* Fork: compact flat rows (series strip style); selection is a red left edge, not a red badge. */}
         <div
-          className={`flex items-center ${
-            isSelected ? 'bg-popover' : 'bg-muted'
+          className={`border-border flex h-7 items-center border-b ${
+            isSelected ? 'bg-muted shadow-[inset_2px_0_0_hsl(var(--primary))]' : 'bg-background'
           } group relative cursor-pointer`}
           onClick={onSelect}
           data-cy="data-row"
@@ -250,14 +252,14 @@ const DataRowComponent = React.forwardRef<HTMLDivElement, DataRowProps>(
             <div className="bg-primary/20 pointer-events-none absolute inset-0"></div>
           )}
 
-          <div className="bg-primary/20 pointer-events-none absolute inset-0 opacity-0 transition-opacity group-hover:opacity-100"></div>
+          <div className="bg-foreground/5 pointer-events-none absolute inset-0 opacity-0 transition-opacity group-hover:opacity-100"></div>
 
           {/* Number Box */}
           {number !== null && (
             <div
-              className={`flex h-7 max-h-7 w-7 flex-shrink-0 items-center justify-center rounded-l border-r border-background text-base ${
-                isSelected ? 'bg-highlight text-black' : 'bg-muted text-muted-foreground'
-              } overflow-hidden`}
+              className={`flex h-7 max-h-7 w-6 flex-shrink-0 items-center justify-end overflow-hidden text-[11px] tabular-nums ${
+                isSelected ? 'text-foreground' : 'text-muted-foreground'
+              }`}
             >
               {number}
             </div>
@@ -268,7 +270,7 @@ const DataRowComponent = React.forwardRef<HTMLDivElement, DataRowProps>(
           {colorHex && (
             <div className="flex h-7 w-5 items-center justify-center">
               <span
-                className="ml-2 h-2 w-2 rounded-full"
+                className="border-foreground/30 ml-1.5 h-2.5 w-2.5 border"
                 style={{ backgroundColor: colorHex }}
               ></span>
             </div>
@@ -280,8 +282,8 @@ const DataRowComponent = React.forwardRef<HTMLDivElement, DataRowProps>(
               <Tooltip>
                 <TooltipTrigger asChild>
                   <span
-                    className={`cursor-default text-base ${
-                      isSelected ? 'text-highlight' : 'text-muted-foreground'
+                    className={`cursor-default text-xs ${
+                      isSelected ? 'text-foreground' : 'text-foreground/80'
                     } [overflow:hidden] [display:-webkit-box] [-webkit-line-clamp:2] [-webkit-box-orient:vertical]`}
                   >
                     {title}
@@ -296,9 +298,7 @@ const DataRowComponent = React.forwardRef<HTMLDivElement, DataRowProps>(
               </Tooltip>
             ) : (
               <span
-                className={`text-base ${
-                  isSelected ? 'text-highlight' : 'text-muted-foreground'
-                } [overflow:hidden] [display:-webkit-box] [-webkit-line-clamp:2] [-webkit-box-orient:vertical]`}
+                className={`text-xs ${isSelected ? 'text-foreground' : 'text-foreground/80'} [overflow:hidden] [display:-webkit-box] [-webkit-line-clamp:2] [-webkit-box-orient:vertical]`}
               >
                 {title}
               </span>
@@ -311,7 +311,7 @@ const DataRowComponent = React.forwardRef<HTMLDivElement, DataRowProps>(
             <Button
               size="icon"
               variant="ghost"
-              className={`h-6 w-6 transition-opacity ${
+              className={`text-muted-foreground hover:text-foreground h-6 w-6 transition-opacity ${
                 isSelected || !isVisible ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
               }`}
               aria-label={isVisible ? t('Hide') : t('Show')}
@@ -321,12 +321,23 @@ const DataRowComponent = React.forwardRef<HTMLDivElement, DataRowProps>(
                 onToggleVisibility(e);
               }}
             >
-              {isVisible ? <Icons.Hide className="h-6 w-6" /> : <Icons.Show className="h-6 w-6" />}
+              {/* Fork: icon shows the current state (open eye = visible). */}
+              {isVisible ? (
+                <Eye
+                  className="h-4 w-4"
+                  strokeWidth={1.5}
+                />
+              ) : (
+                <EyeOff
+                  className="h-4 w-4"
+                  strokeWidth={1.5}
+                />
+              )}
             </Button>
 
             {/* Lock Icon (if needed) */}
             {isLocked && !disableEditing && (
-              <Icons.Lock className="text-muted-foreground h-6 w-6" />
+              <Icons.Lock className="text-muted-foreground h-4 w-4" />
             )}
 
             {/* Status Components */}
@@ -340,7 +351,7 @@ const DataRowComponent = React.forwardRef<HTMLDivElement, DataRowProps>(
                   <Button
                     size="icon"
                     variant="ghost"
-                    className={`h-6 w-6 transition-opacity ${
+                    className={`text-muted-foreground hover:text-foreground h-6 w-6 transition-opacity ${
                       isSelected || isDropdownOpen
                         ? 'opacity-100'
                         : 'opacity-0 group-hover:opacity-100'
@@ -349,7 +360,7 @@ const DataRowComponent = React.forwardRef<HTMLDivElement, DataRowProps>(
                     dataCY="actionsMenuTrigger"
                     onClick={e => e.stopPropagation()} // Prevent row selection on button click
                   >
-                    <Icons.More className="h-6 w-6" />
+                    <Icons.More className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent

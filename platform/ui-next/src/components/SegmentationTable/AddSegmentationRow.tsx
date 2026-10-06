@@ -43,11 +43,12 @@ export const AddSegmentationRow: React.FC<{ children?: React.ReactNode }> = ({
       }
     >
       {children}
-      <div className="text-primary group-hover:bg-popover flex items-center rounded-[4px] pl-1 group-hover:cursor-pointer">
-        <div className="grid h-[28px] w-[28px] place-items-center">
+      {/* Fork: quiet text action, red only on hover. */}
+      <div className="text-muted-foreground group-hover:text-foreground flex h-7 items-center gap-1 pl-2 group-hover:cursor-pointer">
+        <div className="grid h-4 w-4 place-items-center [&>svg]:h-4 [&>svg]:w-4">
           {disabled ? <Icons.Info /> : <Icons.Add />}
         </div>
-        <span className="text-[13px]">
+        <span className="text-xs">
           {t(disabled ? 'Segmentation not supported' : 'Add segmentation')}
         </span>
       </div>

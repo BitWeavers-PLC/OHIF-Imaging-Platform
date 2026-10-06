@@ -49,9 +49,12 @@ export const PanelSection: React.FC<PanelSectionProps> & {
 
 PanelSection.Header = ({ children, className }) => (
   <AccordionTrigger
+    // Fork: flat section bar (series strip style): small caps label, muted chevron, no red hover.
     className={cn(
-      'bg-popover hover:bg-accent text-muted-foreground',
-      'my-0.5 flex h-7 w-full items-center justify-between rounded py-2 pr-1 pl-2.5 text-[13px]',
+      'bg-card hover:bg-muted text-muted-foreground border-border border-b',
+      'flex h-7 w-full items-center justify-between rounded-none py-1 pr-1.5 pl-2',
+      'text-[11px] font-semibold uppercase tracking-wider',
+      '[&>svg]:text-muted-foreground [&>svg]:h-3.5 [&>svg]:w-3.5',
       className
     )}
   >
@@ -63,7 +66,7 @@ PanelSection.Header.displayName = 'PanelSection.Header';
 
 PanelSection.Content = ({ children, className }) => (
   <AccordionContent className={cn('overflow-hidden p-0', className)}>
-    <div className="rounded-b">{children}</div>
+    <div>{children}</div>
   </AccordionContent>
 );
 

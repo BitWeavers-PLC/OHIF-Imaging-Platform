@@ -29,9 +29,10 @@ function SegmentationUtilityButton(props: SegmentationUtilityButtonProps) {
   );
 
   const toolButtonClassName = cn(
-    'w-7 h-7 text-primary hover:text-primary hover:!bg-primary/30',
+    // Fork: muted square utility buttons; active gets the red border, not a red wash.
+    'w-7 h-7 rounded-none border border-border text-muted-foreground hover:text-foreground hover:!bg-muted',
     className,
-    isActive && 'bg-primary/30'
+    isActive && 'border-primary text-foreground'
   );
 
   const handleMouseDownCapture = useCallback(

@@ -20,13 +20,14 @@ export function ToolBoxButtonGroupWrapper({ buttonSection, id }) {
   const items = toolbarButtons.map(button => button.componentProps);
 
   return (
-    <div className="bg-popover flex flex-row space-x-1 rounded-md px-0 py-0">
+    // Fork: square bordered tool buttons in the segmentation toolbox, no rounded pill group.
+    <div className="flex flex-row gap-1">
       {items.map(item => (
         <ToolButton
           {...item}
           key={item.id}
           size="small"
-          className={item.disabled && 'text-foreground/70'}
+          className={classNames('border-border border', item.disabled && 'text-foreground/70')}
           onInteraction={event => {
             onInteraction?.({
               event,
@@ -44,12 +45,16 @@ export function ToolBoxButtonGroupWrapper({ buttonSection, id }) {
 
 export function ToolBoxButtonWrapper({ onInteraction, className, options, ...props }) {
   return (
-    <div className="bg-popover flex flex-row rounded-md px-0 py-0">
+    <div className="flex flex-row">
       <ToolButton
         {...props}
         id={props.id}
         size="small"
-        className={classNames(props.disabled && 'text-foreground/70', className)}
+        className={classNames(
+          'border-border border',
+          props.disabled && 'text-foreground/70',
+          className
+        )}
         onInteraction={event => {
           onInteraction?.({
             event,

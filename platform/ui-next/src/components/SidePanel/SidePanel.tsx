@@ -111,10 +111,9 @@ const getTabClassNames = (
   isActiveTab: boolean,
   isTabDisabled: boolean
 ) =>
-  classnames('h-[28px] mb-[2px] cursor-pointer text-foreground bg-primary/10 hover:bg-primary/20', {
-    'hover:text-primary': !isActiveTab && !isTabDisabled,
-    'rounded-l': tabIndex % numColumns === 0,
-    'rounded-r': (tabIndex + 1) % numColumns === 0 || tabIndex === numTabs - 1,
+  // Fork: flat tabs (series strip style): muted icons, no red pill background.
+  classnames('h-[28px] mb-[2px] cursor-pointer text-muted-foreground', {
+    'hover:text-foreground hover:bg-muted': !isActiveTab && !isTabDisabled,
   });
 
 const getTabStyle = (numTabs: number) => {
@@ -124,9 +123,9 @@ const getTabStyle = (numTabs: number) => {
 };
 
 const getTabIconClassNames = (numTabs: number, isActiveTab: boolean) => {
+  // Fork: the active tab is white with a red underline.
   return classnames('h-full w-full flex items-center justify-center', {
-    'bg-primary/20': isActiveTab,
-    rounded: isActiveTab,
+    'text-foreground shadow-[inset_0_-2px_0_hsl(var(--primary))]': isActiveTab,
   });
 };
 const createStyleMap = (
@@ -296,7 +295,10 @@ const SidePanel = ({
           data-cy={`side-panel-header-${side}`}
         >
           <Icons.NavigationPanelReveal
-            className={classnames('text-primary', side === 'left' && 'rotate-180 transform')}
+            className={classnames(
+              'text-muted-foreground hover:text-foreground',
+              side === 'left' && 'rotate-180 transform'
+            )}
           />
         </div>
         <div className={classnames('mt-3 flex flex-col space-y-3')}>
@@ -306,14 +308,13 @@ const SidePanel = ({
                 <div
                   id={`${childComponent.name}-btn`}
                   data-cy={`${childComponent.name}-btn`}
-                  className="text-primary hover:cursor-pointer"
+                  className="text-muted-foreground hover:text-foreground hover:cursor-pointer"
                   onClick={() => {
                     return childComponent.disabled ? null : updateActiveTabIndex(index, true);
                   }}
                 >
                   {React.createElement(Icons[childComponent.iconName] || Icons.MissingIcon, {
                     className: classnames({
-                      'text-primary': true,
                       'ohif-disabled': childComponent.disabled,
                     }),
                     style: {
@@ -354,7 +355,7 @@ const SidePanel = ({
         data-cy={`side-panel-header-${side}`}
       >
         {React.createElement(Icons[openStateIconName[side]] || Icons.MissingIcon, {
-          className: 'text-primary',
+          className: 'text-muted-foreground hover:text-foreground',
         })}
       </div>
     );
@@ -367,7 +368,7 @@ const SidePanel = ({
       <>
         {getCloseIcon()}
         <div className={classnames('flex grow justify-center')}>
-          <div className={classnames('bg-muted text-primary flex flex-wrap')}>
+          <div className={classnames('text-muted-foreground flex flex-wrap')}>
             {tabs.map((tab, tabIndex) => {
               const { disabled } = tab;
               return (
@@ -376,7 +377,7 @@ const SidePanel = ({
                     <div
                       className={classnames('flex h-[28px] w-[2px] items-center', tabSpacerWidth)}
                     >
-                      <div className="bg-muted h-[20px] w-full"></div>
+                      <div className="h-[20px] w-full"></div>
                     </div>
                   )}
                   <Tooltip key={tabIndex}>
@@ -399,8 +400,8 @@ const SidePanel = ({
                           className={getTabIconClassNames(tabs.length, tabIndex === activeTabIndex)}
                         >
                           {React.createElement(Icons[tab.iconName] || Icons.MissingIcon, {
+                            // Fork: inherit the tab colour (muted, white when active) instead of red.
                             className: classnames({
-                              'text-primary': true,
                               'ohif-disabled': disabled,
                             }),
                             style: {
@@ -428,7 +429,7 @@ const SidePanel = ({
     return (
       <div
         className={classnames(
-          'text-primary flex grow cursor-pointer select-none justify-center self-center text-[13px]'
+          'text-muted-foreground hover:text-foreground flex grow cursor-pointer select-none justify-center self-center text-[13px]'
         )}
         data-cy={`${tabs[0].name}-btn`}
         onClick={() => updatePanelOpen(!panelOpen)}
@@ -442,7 +443,7 @@ const SidePanel = ({
   const getOpenStateComponent = () => {
     return (
       <>
-        <div className="bg-muted flex h-[40px] flex-shrink-0 select-none rounded-t p-2">
+        <div className="bg-card flex h-[40px] flex-shrink-0 select-none p-2">
           {tabs.length === 1 ? getOneTabComponent() : getTabGridComponent()}
         </div>
         <Separator

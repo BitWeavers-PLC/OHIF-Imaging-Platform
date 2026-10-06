@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button, Icons } from '@ohif/ui-next';
+import { Button } from '@ohif/ui-next';
+import { Eye, EyeOff, Plus } from 'lucide-react';
 import { useSegmentationTableContext, useSegmentationExpanded } from './contexts';
 import { useTranslation } from 'react-i18next';
 
@@ -39,25 +40,35 @@ export const AddSegmentRow: React.FC<{ children?: React.ReactNode }> = ({ childr
     segment => segment?.visible !== false
   );
 
+  // Fork: the eye shows the current state (open = visible), as in most PACS viewers.
   const Icon = allSegmentsVisible ? (
-    <Icons.Hide className="h-6 w-6" />
+    <Eye
+      className="h-4 w-4"
+      strokeWidth={1.5}
+    />
   ) : (
-    <Icons.Show className="h-6 w-6" />
+    <EyeOff
+      className="h-4 w-4"
+      strokeWidth={1.5}
+    />
   );
 
   const allowAddSegment = showAddSegment && !disableEditing;
 
   return (
-    <div className="my-px flex h-7 w-full items-center justify-between rounded pl-0.5 pr-7">
-      <div className="mt-1 flex-1">
+    <div className="border-border flex h-7 w-full items-center justify-between border-b pl-1 pr-7">
+      <div className="flex-1">
         {allowAddSegment ? (
           <Button
             size="sm"
             variant="ghost"
-            className="pr pl-0.5"
+            className="text-muted-foreground hover:text-foreground h-6 gap-1 px-1 text-xs hover:bg-transparent"
             onClick={() => onSegmentAdd(segmentationId)}
           >
-            <Icons.Add />
+            <Plus
+              className="h-3.5 w-3.5"
+              strokeWidth={1.5}
+            />
             {t('Add Segment')}
           </Button>
         ) : null}
@@ -65,6 +76,7 @@ export const AddSegmentRow: React.FC<{ children?: React.ReactNode }> = ({ childr
       <Button
         size="icon"
         variant="ghost"
+        className="text-muted-foreground hover:text-foreground h-6 w-6"
         onClick={() =>
           onToggleSegmentationRepresentationVisibility(segmentationId, representation?.type)
         }

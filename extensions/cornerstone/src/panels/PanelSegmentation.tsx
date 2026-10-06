@@ -258,7 +258,8 @@ export default function PanelSegmentation({
         size="large"
         IconContainer={SegmentationUtilityButton}
       >
-        <div className="flex flex-wrap gap-[3px] bg-transparent pb-[2px] pl-[8px] pt-[6px]">
+        {/* Fork: utilities row on a flat bar (series strip style). */}
+        <div className="border-border flex flex-wrap gap-1 border-b px-1.5 py-1">
           <Toolbar buttonSection={buttonSection} />
         </div>
       </IconPresentationProvider>
