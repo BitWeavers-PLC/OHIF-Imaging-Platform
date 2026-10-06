@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ScrollArea, DataRow } from '../../components';
 import { HoverCard, HoverCardTrigger, HoverCardContent } from '../../components/HoverCard';
 import { useSegmentationTableContext, useSegmentationExpanded } from './contexts';
@@ -6,6 +7,7 @@ import { SegmentStatistics } from './SegmentStatistics';
 import { useDynamicMaxHeight } from '../../hooks/useDynamicMaxHeight';
 
 export const SegmentationSegments = ({ children = null }: { children?: React.ReactNode }) => {
+  const { t } = useTranslation('SegmentationPanel');
   const {
     activeSegmentationId,
     disableEditing,
@@ -203,6 +205,25 @@ export const SegmentationSegments = ({ children = null }: { children?: React.Rea
                   >
                     {children}
                   </SegmentStatistics>
+                </HoverCardContent>
+              </HoverCard>
+            ) : representation?.type === 'Contour' ? (
+              // Fork: contours have no statistics (they are outlines); say where the volume is.
+              <HoverCard
+                key={`hover-${segmentIndex}`}
+                openDelay={300}
+              >
+                <HoverCardTrigger asChild>
+                  <div>{DataRowComponent}</div>
+                </HoverCardTrigger>
+                <HoverCardContent
+                  side="left"
+                  align="start"
+                  className="text-muted-foreground w-64 border text-xs"
+                >
+                  {t(
+                    'Volume and statistics are calculated on a 3D copy. Use ••• › Show in All Planes, then hover this segment in the Label map tab.'
+                  )}
                 </HoverCardContent>
               </HoverCard>
             ) : (

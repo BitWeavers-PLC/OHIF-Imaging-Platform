@@ -42,8 +42,7 @@
   "Export": "Export",
   "CSV Report": "CSV Report",
   "DICOM SEG": "DICOM SEG",
-  "DICOM RTSS": "DICOM RTSS"
-  ,
+  "DICOM RTSS": "DICOM RTSS",
   "Fill contour holes": "Fill contour holes",
   "Fill Holes": "Fill Holes",
   "Remove Small Contours": "Remove Small Contours",
@@ -63,5 +62,7 @@
   "New segment name": "New segment name",
   "No segmentations available": "No segmentations available",
   "Not available on the current viewport": "Not available on the current viewport",
-  "Add segment to enable this tool": "Add segment to enable this tool"
+  "Add segment to enable this tool": "Add segment to enable this tool",
+  "Show in All Planes": "Show in All Planes",
+  "Volume and statistics are calculated on a 3D copy. Use ••• › Show in All Planes, then hover this segment in the Label map tab.": "Volume and statistics are calculated on a 3D copy. Use ••• › Show in All Planes, then hover this segment in the Label map tab."
 }

@@ -38,5 +38,8 @@
   "Auto-align works on a CT stack viewport": "Auto-align works on a CT stack viewport",
   "Aligning anatomy…": "Aligning anatomy…",
   "No matching anatomy in {{series}}": "No matching anatomy in {{series}}",
-  "Aligned by anatomy (match {{score}}%)": "Aligned by anatomy (match {{score}}%)"
+  "Aligned by anatomy (match {{score}}%)": "Aligned by anatomy (match {{score}}%)",
+  "Draw contours first": "Draw contours first",
+  "Open the series in a 2D view to convert its contours": "Open the series in a 2D view to convert its contours",
+  "Contours shown in all planes as {{label}}": "Contours shown in all planes as {{label}}"
 }

@@ -100,6 +100,15 @@ export const CustomDropdownMenuContent = () => {
         <Icons.Rename className="text-foreground" />
         <span className="pl-2">{t('Rename')}</span>
       </DropdownMenuItem>
+      {/* Fork: contours only show in their drawing plane; make a 3D labelmap copy. */}
+      {segmentationRepresentationTypes?.[0] === 'Contour' && (
+        <DropdownMenuItem
+          onClick={() => commandsManager.run('showContourInAllPlanes', { segmentationId })}
+        >
+          <Icons.ViewportViews className="text-foreground" />
+          <span className="pl-2">{t('Show in All Planes')}</span>
+        </DropdownMenuItem>
+      )}
       <ExportSegmentationSubMenuItem
         segmentationId={segmentationId}
         segmentationRepresentationType={segmentationRepresentationTypes?.[0]}
