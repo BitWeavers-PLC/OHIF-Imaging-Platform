@@ -286,9 +286,8 @@ export default function TimeIntensityPanel() {
       {curves ? (
         <div className="h-[260px]">
           <LineChart
-            // The legend only helps to tell several ROIs apart; one ROI gets the full width.
-            showLegend={curves.series.length > 1}
-            legendWidth={90}
+            // Legend below the chart (the chart's own one sits on the right and squeezes the plot).
+            showLegend={false}
             transparentChartBackground
             axis={{
               x: {
@@ -313,6 +312,22 @@ export default function TimeIntensityPanel() {
           />
         </div>
       ) : null}
+      {curves && curves.series.length > 1 && (
+        <div className="flex flex-wrap gap-x-3 gap-y-1 px-1 text-xs">
+          {curves.series.map(({ label }, i) => (
+            <span
+              key={label + i}
+              className="flex items-center gap-1.5"
+            >
+              <span
+                className="h-2 w-2 shrink-0 rounded-full"
+                style={{ backgroundColor: tokenColor(TOKENS[i % TOKENS.length]) }}
+              />
+              {label}
+            </span>
+          ))}
+        </div>
+      )}
       {message && <p className="text-muted-foreground text-sm">{message}</p>}
     </div>
   );
