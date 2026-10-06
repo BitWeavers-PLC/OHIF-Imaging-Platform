@@ -50,6 +50,7 @@ import {
 import { LabelmapSlicePropagationTool, MarkerLabelmapTool } from '@cornerstonejs/ai';
 import * as polySeg from '@cornerstonejs/polymorphic-segmentation';
 import registerJoinContourInterpolation from './utils/joinContourInterpolation';
+import registerAnnotationHoverCursor from './utils/annotationHoverCursor';
 
 import CalibrationLineTool from './tools/CalibrationLineTool';
 import ImageOverlayViewerTool from './tools/ImageOverlayViewerTool';
@@ -91,6 +92,8 @@ export default function initCornerstoneTools(configuration = {}) {
   });
   // Fork: every key contour of a segment joins one interpolation group (no gaps).
   registerJoinContourInterpolation();
+  // Fork: move cursor over measurements (a left click grabs them, otherwise it browses).
+  registerAnnotationHoverCursor();
   addTool(PanTool);
   addTool(SegmentBidirectionalTool);
   addTool(WindowLevelTool);
