@@ -14,6 +14,9 @@ export function pixelValueAt(viewport, canvasPoint: [number, number]) {
     return null;
   }
   let value = data.voxelManager.getAtIJKPoint(ijk);
+  if (value == null) {
+    return null; // e.g. an MPR slice that has not loaded yet
+  }
   const { preScale } = data;
   if (preScale && !preScale.scaled && typeof value === 'number') {
     const { rescaleSlope = 1, rescaleIntercept = 0 } = preScale.scalingParameters ?? {};

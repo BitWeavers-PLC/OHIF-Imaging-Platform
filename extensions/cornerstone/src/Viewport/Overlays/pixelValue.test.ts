@@ -26,6 +26,17 @@ describe('pixelValueAt', () => {
     expect(result.value).toBe(102 - 1024);
   });
 
+  it('is null where the volume has no value yet', () => {
+    const notLoaded = {
+      ...viewport(),
+      getImageData: () => ({
+        ...viewport().getImageData(),
+        voxelManager: { getAtIJKPoint: () => null },
+      }),
+    };
+    expect(pixelValueAt(notLoaded, [2, 1])).toBeNull();
+  });
+
   it('is null off the image', () => {
     expect(pixelValueAt(viewport(), [9, 1])).toBeNull();
   });
