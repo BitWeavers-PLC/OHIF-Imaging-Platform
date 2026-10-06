@@ -198,5 +198,6 @@
   "MIP slab 20 mm": "MIP slab 20 mm",
   "MIP slab full volume": "MIP slab full volume",
   "MinIP slab 10 mm (airways)": "MinIP slab 10 mm (airways)",
-  "AvgIP slab 5 mm": "AvgIP slab 5 mm"
+  "AvgIP slab 5 mm": "AvgIP slab 5 mm",
+  "One Click Segment works best on PET. On CT the lesion must differ from its surroundings by roughly 100 HU or more, with a clear edge. Rest the mouse on it until a + cursor appears, then click; a ⊘ cursor means it cannot segment there.": "One Click Segment works best on PET. On CT the lesion must differ from its surroundings by roughly 100 HU or more, with a clear edge. Rest the mouse on it until a + cursor appears, then click; a ⊘ cursor means it cannot segment there."
 }

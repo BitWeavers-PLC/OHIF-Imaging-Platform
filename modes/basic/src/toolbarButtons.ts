@@ -984,4 +984,17 @@ for (const [group, ids] of Object.entries(primaryToolbarGroups)) {
 const ownIds = new Set(toolbarButtons.map(button => button.id));
 toolbarButtons.push(...segmentationButtons.filter(button => !ownIds.has(button.id)));
 
+// Fork: grow cut accepts ±1.8 SD around the click and needs >3.2 SD to the background, so on
+// contrast CT (noise ~15-25 HU) low-contrast lesions such as liver cysts are refused.
+// ponytail: "roughly 100 HU" is an estimate from that rule and testing, not a measured cut-off.
+const oneClick = toolbarButtons.find(button => button.id === 'RegionSegmentPlus');
+if (oneClick) {
+  oneClick.props = {
+    ...oneClick.props,
+    tooltip: i18n.t(
+      'Buttons:One Click Segment works best on PET. On CT the lesion must differ from its surroundings by roughly 100 HU or more, with a clear edge. Rest the mouse on it until a + cursor appears, then click; a ⊘ cursor means it cannot segment there.'
+    ),
+  };
+}
+
 export default toolbarButtons;
