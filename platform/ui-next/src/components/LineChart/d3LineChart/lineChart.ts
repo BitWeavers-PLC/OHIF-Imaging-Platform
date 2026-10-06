@@ -180,7 +180,8 @@ const addLineChartNode = ({
   chart.background.addNode(chartWrapper, _width, _height, transparentChartBackground);
 
   // call the x axis in a group tag
-  const xAxisGenerator = d3Axis.axisBottom(xAxisScale);
+  // Fork: tick count from the plot size; d3's default ~10 ran labels together in narrow panels.
+  const xAxisGenerator = d3Axis.axisBottom(xAxisScale).ticks(Math.max(2, Math.floor(_width / 45)));
 
   if (showAxisGrid) {
     xAxisGenerator.tickSize(-_height).tickPadding(10);
@@ -198,7 +199,7 @@ const addLineChartNode = ({
     undefined,
     showAxisGrid
   );
-  const yAxisGenerator = d3Axis.axisLeft(yAxisScale);
+  const yAxisGenerator = d3Axis.axisLeft(yAxisScale).ticks(Math.max(2, Math.floor(_height / 25)));
 
   if (showAxisGrid) {
     yAxisGenerator.tickSize(-_width).tickPadding(10);

@@ -79,3 +79,64 @@ export function percentEnhancement(curve: number[]): number[] {
   const s0 = curve[0];
   return curve.map(s => (s0 ? Math.round(((s - s0) / s0) * 1000) / 10 : 0));
 }
+
+/** A series that may be one phase of a dynamic study stored as one series per phase. */
+export type PhaseSeries = {
+  uid: string;
+  studyUID: string;
+  modality: string;
+  frameOfReferenceUID: string;
+  /** rows x columns x images */
+  size: string;
+  orientation: string;
+  description: string;
+  seriesNumber: number;
+  /** Seconds (number) or DICOM TM; see seriesTime. */
+  time?: number | string;
+};
+
+const TT_TAG = /[_\s-]*TT\s*=\s*([\d.]+)\s*s?/i;
+
+/** Description without the phase time tag, e.g. "twist_20s_dyn_TRA (h20 ex B17)_TT=99.3s". */
+export const phaseKey = (description = '') => description.replace(TT_TAG, '').trim();
+
+/**
+ * Phase time: the "TT=…s" tag some vendors put in the description (Siemens TWIST: the true
+ * effective time, where AcquisitionTime is skewed by view sharing), else TriggerTime, else
+ * AcquisitionTime / ContentTime.
+ */
+export function seriesTime(
+  description: string,
+  instance: { TriggerTime?: number | string; AcquisitionTime?: string; ContentTime?: string }
+): number | string | undefined {
+  const tt = TT_TAG.exec(description ?? '');
+  if (tt) {
+    return Number(tt[1]);
+  }
+  return instance.TriggerTime != null
+    ? Number(instance.TriggerTime) / 1000
+    : (instance.AcquisitionTime ?? instance.ContentTime);
+}
+
+/**
+ * Fork: dynamic studies stored as one series per phase. The phases of `target`: series of the
+ * same study, modality, frame of reference, matrix, orientation and description (time tag
+ * removed), ordered by time. Fewer than 3 means "not a dynamic study".
+ */
+export function phaseSeriesGroup(target: PhaseSeries, all: PhaseSeries[]): PhaseSeries[] {
+  const key = phaseKey(target.description);
+  const group = all.filter(
+    s =>
+      s.studyUID === target.studyUID &&
+      s.modality === target.modality &&
+      s.frameOfReferenceUID === target.frameOfReferenceUID &&
+      s.size === target.size &&
+      s.orientation === target.orientation &&
+      phaseKey(s.description) === key
+  );
+  if (group.length < 3) {
+    return [];
+  }
+  const seconds = (s: PhaseSeries) => tmToSeconds(s.time) ?? Infinity;
+  return [...group].sort((a, b) => seconds(a) - seconds(b) || a.seriesNumber - b.seriesNumber);
+}
