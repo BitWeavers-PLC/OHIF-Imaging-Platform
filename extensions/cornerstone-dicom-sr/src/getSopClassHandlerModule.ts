@@ -36,6 +36,11 @@ const sopClassUids = [
   sopClassDictionary.EnhancedSR,
   sopClassDictionary.ComprehensiveSR,
   sopClassDictionary.Comprehensive3DSR,
+  // Dose reports have no measurements, so they open in the text report view.
+  sopClassDictionary.XRayRadiationDoseSR,
+  sopClassDictionary.RadiopharmaceuticalRadiationDoseSR,
+  '1.2.840.10008.5.1.4.1.1.88.73', // Patient Radiation Dose SR
+  '1.2.840.10008.5.1.4.1.1.88.76', // Enhanced X-Ray Radiation Dose SR
 ];
 
 const validateSameStudyUID = (uid: string, instances): void => {
