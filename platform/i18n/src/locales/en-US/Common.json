@@ -28,5 +28,13 @@
   "SELECT A SEGMENTATION": "Choose a segmentation",
   "Edit label…": "Edit label…",
   "Delete": "Delete",
-  "Multiple patients loaded": "Multiple patients loaded"
+  "Multiple patients loaded": "Multiple patients loaded",
+  "Sync": "Sync",
+  "on": "on",
+  "off": "off",
+  "Previous layout": "Previous layout",
+  "Next layout": "Next layout",
+  "Segments": "Segments",
+  "Patient": "Patient",
+  "Hide series": "Hide series"
 }

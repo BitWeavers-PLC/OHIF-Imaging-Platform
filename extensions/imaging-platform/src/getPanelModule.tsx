@@ -1,5 +1,6 @@
 import React from 'react';
 import WrappedPanelStudyBrowserTracking from '@ohif/extension-measurement-tracking/src/panels/PanelStudyBrowserTracking';
+import WrappedPanelStudyBrowser from '@ohif/extension-default/src/Panels/WrappedPanelStudyBrowser';
 import SeriesStrip from './panels/SeriesStrip';
 import TimeIntensityPanel from './panels/TimeIntensityPanel';
 
@@ -12,6 +13,14 @@ export default function getPanelModule() {
       iconLabel: 'Series',
       label: '',
       component: () => <WrappedPanelStudyBrowserTracking StudyBrowserComponent={SeriesStrip} />,
+    },
+    {
+      // Same list for workflows without measurement tracking (segmentation, tumor volume).
+      name: 'seriesStripPlain',
+      iconName: 'tab-studies',
+      iconLabel: 'Series',
+      label: '',
+      component: () => <WrappedPanelStudyBrowser StudyBrowserComponent={SeriesStrip} />,
     },
     {
       // Fork: DCE time–intensity curves (right panel).

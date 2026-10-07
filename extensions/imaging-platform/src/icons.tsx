@@ -80,6 +80,8 @@ import {
   Pause,
   SquareMinus,
   Activity,
+  ClipboardList,
+  Mouse,
 } from 'lucide-react';
 
 /**
@@ -363,6 +365,24 @@ const Eraser = Glyph(
     {area(SWATH)}
     <path d="M16 3 L21 8 L13.5 15.5 L8.5 10.5 Z" />
     <path d="M11.1 7.9 L16.1 12.9" />
+  </>
+);
+// Panels: Paint is a painted (filled) region, Outline the same region as a contour with edit
+// handles, so neither repeats Browse's stack of slices.
+const REGION =
+  'M8 5 C11 3.5 15 4.5 17.5 6.5 C20 8.5 20.5 12 18.5 14 C16.5 16 17 19 13.5 19.8 C10 20.6 6 19 4.8 15.5 C3.6 12 5 6.5 8 5 Z';
+const PaintPanel = Glyph(
+  <>
+    {area(REGION)}
+    <path d={REGION} />
+  </>
+);
+const OutlinePanel = Glyph(
+  <>
+    <path d={REGION} />
+    {handle(8, 5)}
+    {handle(18.5, 14)}
+    {handle(4.8, 15.5)}
   </>
 );
 // Threshold: HU histogram with the cut-off line.
@@ -739,7 +759,7 @@ export const iconOverrides: Record<string, React.ComponentType<any>> = {
   'viewport-window-level': WindowLevel,
   'filter-sharpen': line(Focus),
   'filter-smooth': line(Droplet),
-  'tool-stack-scroll': line(Layers),
+  'tool-stack-scroll': line(Mouse), // Browse: the mouse wheel scrolls the slices
   'tool-reset': line(RefreshCcw),
   'tool-rotate-right': line(RotateCw),
   'tool-rotate-left': line(RotateCcw),
@@ -859,9 +879,10 @@ export const iconOverrides: Record<string, React.ComponentType<any>> = {
   OutlineOnly: Panes([[4, 4, 16, 16]]),
   // Side panel tabs
   'tab-studies': line(Images),
-  'tab-segmentation': line(Layers),
+  'tab-segmentation': PaintPanel,
   'tab-linear': line(Ruler),
-  'tab-contours': line(Shapes),
+  'tab-findings': line(ClipboardList),
+  'tab-contours': OutlinePanel,
   'tab-time-intensity': line(Activity),
   // Chrome
   'tool-more-menu': line(Ellipsis),

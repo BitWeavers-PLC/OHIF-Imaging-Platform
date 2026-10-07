@@ -7,6 +7,9 @@ import { ExtensionManager } from '../../extensions';
 export const EVENTS = {
   PANELS_CHANGED: 'event::panelService:panelsChanged',
   ACTIVATE_PANEL: 'event::panelService:activatePanel',
+  // Fork: open/switch/close a side panel from a button, and which panel each side shows.
+  TOGGLE_PANEL: 'event::panelService:togglePanel',
+  OPEN_PANEL_CHANGED: 'event::panelService:openPanelChanged',
 };
 
 type PanelData = {
@@ -192,6 +195,30 @@ export default class PanelService extends PubSubService {
    */
   public activatePanel(panelId: string, forceActive = false): void {
     this._broadcastEvent(EVENTS.ACTIVATE_PANEL, { panelId, forceActive });
+  }
+
+  private _openPanels: Partial<Record<PanelPosition, string | null>> = {};
+
+  /**
+   * Fork: shows the panel, switches to it, or closes its side when it is already showing
+   * (header panel buttons). The side panel holding it handles the event.
+   */
+  public togglePanel(panelId: string): void {
+    this._broadcastEvent(EVENTS.TOGGLE_PANEL, { panelId });
+  }
+
+  /** Fork: the panel a side shows, or null when that side is closed. */
+  public getOpenPanel(position: PanelPosition): string | null {
+    return this._openPanels[position] ?? null;
+  }
+
+  /** Fork: reported by the side panel whenever it opens, closes or changes tab. */
+  public setOpenPanel(position: PanelPosition, panelId: string | null): void {
+    if (this._openPanels[position] === panelId) {
+      return;
+    }
+    this._openPanels[position] = panelId;
+    this._broadcastEvent(EVENTS.OPEN_PANEL_CHANGED, { position, panelId });
   }
 
   /**

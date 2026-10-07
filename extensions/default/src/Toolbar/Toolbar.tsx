@@ -1,5 +1,5 @@
 import React from 'react';
-import { useToolbar } from '@ohif/core';
+import { useToolbar, useSystem } from '@ohif/core';
 import { useResponsiveToolbarOverflow } from './useResponsiveToolbarOverflow';
 import ToolButtonListWrapper from './ToolButtonListWrapper';
 
@@ -30,6 +30,9 @@ interface ToolbarProps {
   location?: number;
 }
 
+// Fork: toolbar groups whose overflowing tools go into a menu of their own instead of More.
+const GROUP_MENUS: Record<string, string> = { measure: 'MeasurementTools' };
+
 export function Toolbar({ buttonSection = 'primary', viewportId, location }: ToolbarProps) {
   const {
     toolbarButtons,
@@ -42,6 +45,7 @@ export function Toolbar({ buttonSection = 'primary', viewportId, location }: Too
   } = useToolbar({
     buttonSection,
   });
+  const { toolbarService } = useSystem().servicesManager.services;
 
   const appConfig = (window as any)?.config ?? {};
   const productConfig = appConfig.imagingPlatform ?? {};
@@ -112,12 +116,21 @@ export function Toolbar({ buttonSection = 'primary', viewportId, location }: Too
   }, [isPrimarySection, moreAlwaysVisible, visibleIds]);
   const overflowItems = React.useMemo(
     () =>
-      overflowIds
-        .map(id => toolbarButtonsForRender.find(button => button.id === id))
-        .filter(Boolean)
-        .filter(button => button.componentProps?.commands)
-        .map(button => ({
+      // Fork: in bar order (overflowIds come in priority order), so More's sections line up.
+      toolbarButtonsForRender
+        .filter(button => overflowIds.includes(button.id))
+        // Fork: a hidden list (e.g. the rarer measurements) shows its items in More.
+        .flatMap(button =>
+          button.componentProps?.commands || !button.componentProps?.buttonSection
+            ? [{ button, group: button.componentProps?.group }]
+            : toolbarService
+                .getButtonSection(button.componentProps.buttonSection)
+                .map(item => ({ button: item, group: button.componentProps?.group }))
+        )
+        .filter(({ button }) => button.componentProps?.commands)
+        .map(({ button, group }) => ({
           id: button.id,
+          group,
           icon: button.componentProps?.icon,
           label: button.componentProps?.label || button.componentProps?.tooltip || button.id,
           tooltip: button.componentProps?.tooltip,
@@ -126,7 +139,7 @@ export function Toolbar({ buttonSection = 'primary', viewportId, location }: Too
           disabledText: button.componentProps?.disabledText,
           isActive: button.componentProps?.isActive,
         })),
-    [overflowIds, toolbarButtonsForRender]
+    [overflowIds, toolbarButtonsForRender, toolbarService]
   );
 
   // Fork: after every hook (was before the useMemos: React #310 when a section gained buttons).
@@ -167,7 +180,13 @@ export function Toolbar({ buttonSection = 'primary', viewportId, location }: Too
           onClose: () => closeItem(id, viewportId),
           onToggleLock: () => toggleLock(id, viewportId),
           viewportId,
-          ...(id === 'MoreTools' ? { overflowItems } : {}),
+          // Fork: measuring tools that leave the bar go into the Measure menu, the rest into More.
+          ...(id === 'MoreTools'
+            ? { overflowItems: overflowItems.filter(item => !GROUP_MENUS[item.group]) }
+            : {}),
+          ...(Object.values(GROUP_MENUS).includes(id)
+            ? { overflowItems: overflowItems.filter(item => GROUP_MENUS[item.group] === id) }
+            : {}),
         };
 
         const tool = (

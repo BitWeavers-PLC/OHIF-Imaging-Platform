@@ -215,14 +215,6 @@ export const toolbarSections = {
   // Order and groups live in toolbarButtons.ts (primaryToolbarGroups).
   [TOOLBAR_SECTIONS.primary]: Object.values(primaryToolbarGroups).flat(),
 
-  // Fork: one top-left group (window/level was alone in the bottom-left, as in OHIF), so the
-  // image corners hold only the overlay text.
-  [TOOLBAR_SECTIONS.viewportActionMenu.topLeft]: [
-    'windowLevelMenu',
-    'orientationMenu',
-    'dataOverlayMenu',
-  ],
-
   // Fork: segmentation editing, shown inside the segmentation panels (as in the segmentation mode).
   [TOOLBAR_SECTIONS.labelMapSegmentationToolbox]: ['LabelMapTools'],
   [TOOLBAR_SECTIONS.contourSegmentationToolbox]: ['ContourTools'],
@@ -251,10 +243,15 @@ export const toolbarSections = {
     'thresholdMenu',
   ],
 
+  // Fork: the view's menus as a row in the top-right corner, above the corner text (were a
+  // top-left group, a recognisable OHIF trait); the status badges sit to their left.
   [TOOLBAR_SECTIONS.viewportActionMenu.topRight]: [
     'modalityLoadBadge',
     'trackingStatus',
     'navigationComponent',
+    'windowLevelMenu',
+    'orientationMenu',
+    'dataOverlayMenu',
   ],
 
   [TOOLBAR_SECTIONS.viewportActionMenu.bottomLeft]: [],

@@ -35,6 +35,8 @@ interface HeaderProps {
   UndoRedo?: ReactNode;
   /** Fork: workflow (viewer mode) switcher, right side of the header. */
   Workflow?: ReactNode;
+  /** Fork: buttons that open the right-hand panels, right side of the header. */
+  Panels?: ReactNode;
 }
 
 function Header({
@@ -48,6 +50,7 @@ function Header({
   UndoRedo,
   Secondary,
   Workflow,
+  Panels,
   ...props
 }: HeaderProps): ReactNode {
   const rightSlotRef = useRef<HTMLDivElement | null>(null);
@@ -72,6 +75,8 @@ function Header({
   // Fork: the toolbar starts at the image area's left edge (follows the left panel as it
   // resizes or collapses); `alignToViewport: false` starts it right after the logo instead.
   const alignToolbarToViewport = toolbarConfig.alignToViewport !== false;
+  // Fork: a short caption under each toolbar icon; `toolbar.showLabels: false` hides them.
+  const showToolbarLabels = toolbarConfig.showLabels !== false;
   const toolbarMinRightActionsPx = Number(
     toolbarConfig.minRightActionsPx ?? appConfig.toolbarMinRightActionsPx ?? 44
   );
@@ -151,12 +156,18 @@ function Header({
     <IconPresentationProvider
       size="large"
       IconContainer={ToolButton}
+      showLabels={showToolbarLabels}
     >
       <NavBar
         isSticky={isSticky}
         {...props}
       >
-        <div className="flex h-[44px] min-w-0 items-center gap-2">
+        <div
+          className={classNames(
+            'flex min-w-0 items-center gap-2',
+            showToolbarLabels ? 'h-[52px]' : 'h-[44px]'
+          )}
+        >
           <div className="ml-0.5 flex min-w-0 shrink items-center">
             <div
               className={classNames(
@@ -205,6 +216,7 @@ function Header({
             className="bg-popover relative z-10 flex shrink-0 select-none items-center"
             style={{ minWidth: `${toolbarMinRightActionsPx}px` }}
           >
+            {Panels}
             {Workflow && <div className="flex flex-shrink-0 items-center">{Workflow}</div>}
             <div className="hidden md:flex">{UndoRedo}</div>
             <div className="border-muted mx-1.5 hidden h-[25px] border-r xl:block"></div>

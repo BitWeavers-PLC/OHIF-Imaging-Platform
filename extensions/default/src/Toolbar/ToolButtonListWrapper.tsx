@@ -1,19 +1,32 @@
 import React from 'react';
 import {
   Button,
-  Icons,
+  ToolbarGlyph,
+  captionedButtonClass,
+  useToolbarLabels,
   useHoverMenu,
   ToolButtonList,
   ToolButton,
   ToolButtonListDefault,
   ToolButtonListDropDown,
   ToolButtonListItem,
+  DropdownMenuSeparator,
 } from '@ohif/ui-next';
 import { useToolbar, useSystem } from '@ohif/core/src';
 import i18n from '@ohif/i18n';
 import getShortcut from './getShortcut';
 
 const HOVER_LISTS = ['WindowLevelTools', 'MeasurementTools', 'SlabTools'];
+
+// Fork: lists that show a fixed face instead of their first tool ("Cobb" read as the only
+// measuring tool). The face lights up while one of the list's tools is in use; a click opens it.
+const FIXED_FACES: Record<string, { icon: string; caption: string; label: string }> = {
+  MeasurementTools: {
+    icon: 'tab-linear', // ruler
+    caption: i18n.t('Buttons:Measure'),
+    label: i18n.t('Buttons:More measurements'),
+  },
+};
 
 interface ToolButtonListWrapperProps {
   buttonSection: string;
@@ -59,6 +72,7 @@ export default function ToolButtonListWrapper({
   // on click (W/L, measurement, slab); More has no tool, so a click toggles the list.
   const opensOnHover = isMoreTools || HOVER_LISTS.includes(id);
   const { open: hoverOpen, setOpen: setHoverOpen, hoverProps } = useHoverMenu();
+  const showLabels = useToolbarLabels();
   const hover = opensOnHover ? hoverProps : {};
 
   if (!toolbarButtons?.length && !(isMoreTools && moreAlwaysVisible)) {
@@ -72,38 +86,59 @@ export default function ToolButtonListWrapper({
     isActive: false,
   };
 
+  // Includes tools moved into this menu from the bar (e.g. Length on a narrow window).
+  const activeItem =
+    overflowItems.find(item => item.isActive) ||
+    toolbarButtons?.find(button => button.componentProps.isActive)?.componentProps;
+  const face = FIXED_FACES[id];
   const primary = isMoreTools
     ? fallbackMorePrimary
-    : toolbarButtons.find(button => button.componentProps.isActive)?.componentProps ||
-      toolbarButtons[0]?.componentProps;
+    : face
+      ? {
+          id,
+          icon: face.icon,
+          caption: face.caption,
+          label: activeItem?.label ?? face.label,
+          isActive: Boolean(activeItem),
+        }
+      : activeItem || toolbarButtons[0]?.componentProps;
 
   const items = (toolbarButtons || []).map(button => button.componentProps);
-  const mergedItems = [...items, ...overflowItems].filter(
+  // Fork: tools that normally sit on the bar (MPR, Length, ...) come first in More, ahead of
+  // More's own rarer items.
+  const mergedItems = [...overflowItems, ...items].filter(
     (item, index, array) => array.findIndex(candidate => candidate.id === item.id) === index
   );
 
+  // Hover tracking is on the menu panel (contentProps), so its scroll strips keep it open.
   const menuItems = (
-    <div {...hover}>
+    <div>
       {mergedItems.length ? (
-        mergedItems.map(item => (
-          <ToolButtonListItem
-            key={item.id}
-            {...item}
-            data-cy={item.id}
-            data-tool={item.id}
-            data-active={item.isActive}
-            onSelect={() => onInteraction?.({ id, itemId: item.id, commands: item.commands })}
-          >
-            {/* Text-only items (e.g. W/L presets) line up with the ones that have an icon. */}
-            <span className={item.icon ? 'pl-1' : 'pl-9'}>
-              {item.label || item.tooltip || item.id}
-            </span>
-            {shortcutOf(item) && (
-              <kbd className="text-muted-foreground !ml-auto pl-6 font-mono text-xs">
-                {shortcutOf(item)}
-              </kbd>
+        mergedItems.map((item, index) => (
+          <React.Fragment key={item.id}>
+            {/* Fork: a divider between More's sections (and the bar groups that moved in). */}
+            {(isMoreTools || face) && index > 0 && item.group !== mergedItems[index - 1].group && (
+              <DropdownMenuSeparator />
             )}
-          </ToolButtonListItem>
+            <ToolButtonListItem
+              key={item.id}
+              {...item}
+              data-cy={item.id}
+              data-tool={item.id}
+              data-active={item.isActive}
+              onSelect={() => onInteraction?.({ id, itemId: item.id, commands: item.commands })}
+            >
+              {/* Text-only items (e.g. W/L presets) line up with the ones that have an icon. */}
+              <span className={item.icon ? 'pl-1' : 'pl-9'}>
+                {item.label || item.tooltip || item.id}
+              </span>
+              {shortcutOf(item) && (
+                <kbd className="text-muted-foreground !ml-auto pl-6 font-mono text-xs">
+                  {shortcutOf(item)}
+                </kbd>
+              )}
+            </ToolButtonListItem>
+          </React.Fragment>
         ))
       ) : (
         <ToolButtonListItem
@@ -128,16 +163,20 @@ export default function ToolButtonListWrapper({
           open={hoverOpen}
           onOpenChange={setHoverOpen}
           modal={false}
+          contentProps={hover}
           trigger={
             <Button
               variant="ghost"
               size="icon"
               aria-label={primary.label}
-              className="text-foreground/80 hover:bg-background h-9 w-9 !rounded-sm"
+              className={`text-foreground/80 hover:bg-background h-9 w-9 !rounded-sm ${
+                showLabels ? captionedButtonClass : ''
+              }`}
             >
-              <Icons.ByName
-                name={primary.icon}
-                className="h-6 w-6"
+              <ToolbarGlyph
+                icon={primary.icon}
+                caption={primary.label}
+                iconClassName="h-6 w-6"
               />
             </Button>
           }
@@ -161,9 +200,12 @@ export default function ToolButtonListWrapper({
           {...primary}
           // The open list explains the tools; the button's tooltip would cover its first item.
           hideTooltip={hoverOpen}
+          hasMenu
           shortcut={shortcutOf(primary)}
           onInteraction={({ itemId }) =>
-            onInteraction?.({ id, itemId, commands: primary.commands })
+            face
+              ? setHoverOpen(!hoverOpen)
+              : onInteraction?.({ id, itemId, commands: primary.commands })
           }
           className={primary.className}
         />
@@ -171,6 +213,7 @@ export default function ToolButtonListWrapper({
           open={hoverOpen}
           onOpenChange={setHoverOpen}
           modal={false}
+          contentProps={hover}
           trigger={
             <span
               aria-hidden

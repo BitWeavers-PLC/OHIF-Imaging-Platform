@@ -6,6 +6,10 @@ jest.mock('react-dnd', () => ({ useDrag: () => [{}, () => {}] }));
 jest.mock('@ohif/extension-default', () => ({
   usePatientInfo: () => ({ patientInfo: {}, isMixedPatients: false }),
 }));
+const mockPanelService = { getOpenPanel: jest.fn(() => 'series'), togglePanel: jest.fn() };
+jest.mock('@ohif/core', () => ({
+  useSystem: () => ({ servicesManager: { services: { panelService: mockPanelService } } }),
+}));
 
 const ds = (uid, seriesNumber, modality, numInstances, description) => ({
   displaySetInstanceUID: uid,
@@ -74,5 +78,11 @@ describe('SeriesStrip', () => {
     const props = setup();
     fireEvent.click(screen.getByText(/Prior · OLD CHEST/));
     expect(props.onClickStudy).toHaveBeenCalledWith('prior');
+  });
+
+  it('hides the panel from the banner (no header row)', () => {
+    setup();
+    fireEvent.click(screen.getByTitle('Hide series'));
+    expect(mockPanelService.togglePanel).toHaveBeenCalledWith('series');
   });
 });

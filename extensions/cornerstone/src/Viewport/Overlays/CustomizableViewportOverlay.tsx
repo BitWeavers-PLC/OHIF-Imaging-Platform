@@ -8,6 +8,8 @@ import { ViewportOverlay, formatDICOMDate } from '@ohif/ui-next';
 import type { InstanceMetadata } from '@ohif/core/src/types';
 import { formatDICOMTime, formatNumberPrecision } from './utils';
 import { utils } from '@ohif/core';
+import i18n from '@ohif/i18n';
+import isSliceSynced from '../../utils/isSliceSynced';
 import { StackViewportData, VolumeViewportData } from '../../types/CornerstoneCacheService';
 
 import './CustomizableViewportOverlay.css';
@@ -49,6 +51,7 @@ const OverlayItemComponents = {
   'ohif.overlayItem.zoomLevel': ZoomOverlayItem,
   'ohif.overlayItem.instanceNumber': InstanceNumberOverlayItem,
   'ohif.overlayItem.pixelValue': PixelValueOverlayItem,
+  'axialscope.overlayItem.sync': SyncOverlayItem,
 };
 
 /**
@@ -474,6 +477,38 @@ function PixelValueOverlayItem({ element, customization }: OverlayItemProps) {
     >
       <span className="mr-0.5 shrink-0 opacity-[0.70]">Val:</span>
       <span>{text}</span>
+    </div>
+  );
+}
+
+/**
+ * Fork: "Sync: on/off" in the corner text when there is more than one view, so the reader
+ * sees which views scroll together.
+ */
+function SyncOverlayItem({ viewportId, servicesManager, customization }: OverlayItemProps) {
+  const { syncGroupService, viewportGridService } = servicesManager.services;
+  const read = () =>
+    viewportGridService.getState().viewports.size > 1
+      ? isSliceSynced(syncGroupService, viewportId)
+      : null;
+  const [synced, setSynced] = useState<boolean | null>(read);
+
+  useEffect(() => {
+    // ponytail: polls (links have no change event); a sync-changed event would replace it.
+    const timer = setInterval(() => setSynced(read()), 500);
+    return () => clearInterval(timer);
+  }, [viewportId]);
+
+  if (synced === null) {
+    return null;
+  }
+  return (
+    <div
+      className="overlay-item flex flex-row"
+      style={{ color: (customization && customization.color) || undefined }}
+    >
+      <span className="mr-0.5 shrink-0 opacity-[0.70]">{i18n.t('Common:Sync')}:</span>
+      <span>{synced ? i18n.t('Common:on') : i18n.t('Common:off')}</span>
     </div>
   );
 }

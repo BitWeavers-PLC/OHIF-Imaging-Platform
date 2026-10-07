@@ -6,3 +6,4 @@ export {
   ToolButtonListItem,
   ToolButtonListDivider,
 } from './ToolButtonList';
+export { ToolbarGlyph, captionedButtonClass, useToolbarLabels } from './ToolbarGlyph';

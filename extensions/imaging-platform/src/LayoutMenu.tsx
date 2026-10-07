@@ -63,7 +63,10 @@ export default function LayoutMenu({ commandsManager, servicesManager }) {
         open={open}
         onOpenChange={setOpen}
       >
-        <LayoutSelector.Trigger tooltip={i18n.t('ToolbarLayoutSelector:Viewports and layouts')} />
+        <LayoutSelector.Trigger
+          tooltip={i18n.t('ToolbarLayoutSelector:Viewports and layouts')}
+          caption={i18n.t('Buttons:Layout')}
+        />
         <LayoutSelector.Content>
           <div
             className="bg-popover flex w-56 flex-col gap-2 p-2"

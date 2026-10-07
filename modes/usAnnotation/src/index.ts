@@ -313,7 +313,8 @@ function modeFactory({ modeConfiguration }) {
           return {
             id: ohif.layout,
             props: {
-              leftPanels: [tracked.thumbnailList],
+              // Fork: AxialScope series list (the stock study browser is a recognisable OHIF panel).
+              leftPanels: ['@ohif/extension-imaging-platform.panelModule.seriesStrip'],
               leftPanelResizable: true,
               rightPanels: [usAnnotation.panel, cornerstone.segmentation, tracked.measurements],
               rightPanelResizable: true,

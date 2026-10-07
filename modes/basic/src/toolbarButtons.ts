@@ -983,6 +983,27 @@ for (const [group, ids] of Object.entries(primaryToolbarGroups)) {
   }
 }
 
+// Fork: sections of the More menu (a divider between groups); bar tools that move into More
+// keep their bar group (above).
+const moreGroups: Record<string, string> = {
+  TrackballRotate: 'more-3d',
+  VolumeCropping: 'more-3d',
+  FilterSharpenLow: 'more-filter',
+  FilterSharpenHigh: 'more-filter',
+  FilterSmooth: 'more-filter',
+  FilterOff: 'more-filter',
+  WindowLevelRegion: 'more-view',
+  AdvancedMagnify: 'more-view',
+  UltrasoundDirectionalTool: 'more-other',
+  SegmentLabelTool: 'more-other',
+};
+for (const [id, group] of Object.entries(moreGroups)) {
+  const button = toolbarButtons.find(b => b.id === id);
+  if (button && !button.props?.group) {
+    button.props = { ...button.props, group };
+  }
+}
+
 // Fork: segmentation editing tools for the segmentation panel (sections in index.tsx).
 const ownIds = new Set(toolbarButtons.map(button => button.id));
 toolbarButtons.push(...segmentationButtons.filter(button => !ownIds.has(button.id)));
@@ -1124,6 +1145,64 @@ for (const [id, [label, tooltip]] of Object.entries(toolNames)) {
   const button = toolbarButtons.find(b => b.id === id);
   if (button) {
     button.props = { ...button.props, label, ...(tooltip ? { tooltip } : {}) };
+  }
+}
+
+// Fork: short captions under the header icons (the label stays the tooltip). Applied to the
+// segmentation mode's own header buttons too.
+export const toolCaptions: Record<string, string> = {
+  StackScroll: i18n.t('Buttons:Browse'),
+  WindowLevel: i18n.t('Buttons:Window'),
+  Pan: i18n.t('Buttons:Pan'),
+  Zoom: i18n.t('Buttons:Zoom'),
+  Magnify: i18n.t('Buttons:Magnify'),
+  Reset: i18n.t('Buttons:Reset'),
+  Length: i18n.t('Buttons:Length'),
+  Angle: i18n.t('Buttons:Angle'),
+  EllipticalROI: i18n.t('Buttons:Ellipse'),
+  RectangleROI: i18n.t('Buttons:Rectangle'),
+  Bidirectional: i18n.t('Buttons:Diameters'),
+  ArrowAnnotate: i18n.t('Buttons:Arrow'),
+  Probe: i18n.t('Buttons:Value'),
+  CobbAngle: i18n.t('Buttons:Cobb'),
+  CircleROI: i18n.t('Buttons:Circle'),
+  PlanarFreehandROI: i18n.t('Buttons:Freehand'),
+  SplineROI: i18n.t('Buttons:Spline'),
+  LivewireContour: i18n.t('Buttons:Edge-snap'),
+  CalibrationLine: i18n.t('Buttons:Calibrate'),
+  'rotate-left': i18n.t('Buttons:Rotate L'),
+  'rotate-right': i18n.t('Buttons:Rotate R'),
+  flipHorizontal: i18n.t('Buttons:Flip H'),
+  flipVertical: i18n.t('Buttons:Flip V'),
+  invert: i18n.t('Buttons:Invert'),
+  Subtract: i18n.t('Buttons:Subtract'),
+  MPR: i18n.t('Buttons:MPR'),
+  MIP: i18n.t('Buttons:MIP'),
+  SlabMIP10: i18n.t('Buttons:MIP 10'),
+  SlabMIP20: i18n.t('Buttons:MIP 20'),
+  SlabMIPFull: i18n.t('Buttons:MIP full'),
+  SlabMinIP10: i18n.t('Buttons:MinIP'),
+  SlabAvgIP5: i18n.t('Buttons:AvgIP'),
+  SlabOff: i18n.t('Buttons:Thin'),
+  VolumeRendering3D: i18n.t('Buttons:3D'),
+  Crosshairs: i18n.t('Buttons:Crosshair'),
+  ImageSliceSync: i18n.t('Buttons:Sync'),
+  AutoAlign: i18n.t('Buttons:Align'),
+  VOISync: i18n.t('Buttons:Sync W/L'),
+  ReferenceLines: i18n.t('Buttons:Ref lines'),
+  Cine: i18n.t('Buttons:Cine'),
+  Capture: i18n.t('Buttons:Save'),
+  ImageOverlayViewer: i18n.t('Buttons:Overlay'),
+  TagBrowser: i18n.t('Buttons:Tags'),
+  Undo: i18n.t('Buttons:Undo'),
+  Redo: i18n.t('Buttons:Redo'),
+  TrackballRotate: i18n.t('Buttons:Rotate 3D'),
+};
+for (const [id, caption] of Object.entries(toolCaptions)) {
+  for (const button of [toolbarButtons, segmentationButtons].flat()) {
+    if (button.id === id) {
+      button.props = { ...button.props, caption };
+    }
   }
 }
 

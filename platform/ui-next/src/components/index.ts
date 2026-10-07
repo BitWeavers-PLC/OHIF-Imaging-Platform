@@ -116,6 +116,9 @@ import {
   ToolButtonListDropDown,
   ToolButtonListItem,
   ToolButtonListDivider,
+  ToolbarGlyph,
+  captionedButtonClass,
+  useToolbarLabels,
 } from './ToolButton';
 import { LayoutSelector } from './LayoutSelector';
 import { ToolSettings } from './OHIFToolSettings';
@@ -252,6 +255,9 @@ export {
   ToolButtonListDropDown,
   ToolButtonListItem,
   ToolButtonListDivider,
+  ToolbarGlyph,
+  captionedButtonClass,
+  useToolbarLabels,
   InputDialog,
   PresetDialog,
   Modal,
@@ -269,5 +275,5 @@ export {
   ProgressLoadingBar,
   ViewportDialog,
   CinePlayer,
-  LayoutSelector
+  LayoutSelector,
 };

@@ -6,6 +6,7 @@ import { Button, Header, Icons } from '@ohif/ui-next';
 import { useSystem } from '@ohif/core';
 import { Toolbar } from '../Toolbar/Toolbar';
 import HeaderPatientInfo from './HeaderPatientInfo';
+import PanelButtons from './PanelButtons';
 import { PatientInfoVisibility } from './HeaderPatientInfo/HeaderPatientInfo';
 import useOpenSettings from './useOpenSettings';
 import { preserveQueryParameters } from '@ohif/app';
@@ -67,6 +68,7 @@ function ViewerHeader({
     <Header
       menuOptions={menuOptions}
       Workflow={WorkflowMenu ? <WorkflowMenu /> : null}
+      Panels={<PanelButtons servicesManager={servicesManager} />}
       isReturnEnabled={!!appConfig.showStudyList}
       onClickReturnButton={onClickReturnButton}
       WhiteLabeling={appConfig.whiteLabeling}

@@ -4,7 +4,7 @@ import { useSystem } from '@ohif/core';
 import getShortcut from './getShortcut';
 
 export default function ToolButtonWrapper(props) {
-  const { IconContainer, containerProps } = useIconPresentation();
+  const { IconContainer, containerProps, showLabels } = useIconPresentation();
   const { hotkeysManager } = useSystem();
   const shortcut = getShortcut(hotkeysManager?.hotkeyDefinitions, props);
 
@@ -19,7 +19,8 @@ export default function ToolButtonWrapper(props) {
           {...props}
           {...containerProps}
         >
-          {Icon}
+          {/* Fork: with captions the header's ToolButton draws icon + caption itself. */}
+          {showLabels ? null : Icon}
         </IconContainer>
       ) : (
         <Button

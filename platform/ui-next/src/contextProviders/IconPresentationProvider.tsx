@@ -15,6 +15,8 @@ interface IconSizeContextType {
     [key: string]: any;
   };
   className: string;
+  /** Fork: header toolbar shows a short caption under each icon. */
+  showLabels: boolean;
 }
 
 const sizeMap = {
@@ -46,6 +48,7 @@ const defaultContext: IconSizeContextType = {
     size: 'icon',
   },
   className: '',
+  showLabels: false,
 };
 
 export const IconSizeContext = createContext<IconSizeContextType>(defaultContext);
@@ -59,6 +62,7 @@ interface IconPresentationProviderProps {
     size?: string;
     [key: string]: any;
   };
+  showLabels?: boolean;
 }
 
 export const IconPresentationProvider = ({
@@ -66,6 +70,7 @@ export const IconPresentationProvider = ({
   children,
   IconContainer = Button,
   containerProps = {},
+  showLabels = false,
 }: IconPresentationProviderProps) => {
   const className = getSizeClassName(size);
   const mergedProps = {
@@ -81,6 +86,7 @@ export const IconPresentationProvider = ({
     IconContainer,
     containerProps: mergedProps,
     className,
+    showLabels,
   };
   return <IconSizeContext.Provider value={contextValue}>{children}</IconSizeContext.Provider>;
 };

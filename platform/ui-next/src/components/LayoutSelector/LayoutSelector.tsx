@@ -4,6 +4,7 @@ import { Tooltip, TooltipTrigger, TooltipContent } from '../Tooltip';
 import { Button } from '../Button';
 import { cn } from '../../lib/utils';
 import { Icons } from '../Icons';
+import { ToolbarGlyph, captionedButtonClass, useToolbarLabels } from '../ToolButton/ToolbarGlyph';
 import * as PropTypes from 'prop-types';
 
 // Types
@@ -113,6 +114,8 @@ type TriggerProps = {
   tooltip?: string;
   disabled?: boolean;
   disabledText?: string;
+  /** Fork: short text under the icon in the header toolbar. */
+  caption?: string;
 };
 
 const Trigger = ({
@@ -121,8 +124,10 @@ const Trigger = ({
   tooltip = 'Change layout',
   disabled = false,
   disabledText,
+  caption,
 }: TriggerProps) => {
   const { isOpen } = useLayoutSelector();
+  const showLabels = useToolbarLabels();
 
   const hasTooltip = tooltip || (disabled && disabledText);
 
@@ -130,6 +135,7 @@ const Trigger = ({
     <Button
       className={cn(
         'inline-flex h-10 w-10 items-center justify-center !rounded-lg',
+        showLabels && caption && cn(captionedButtonClass, '!rounded-sm'),
         disabled
           ? 'text-foreground/80 hover:bg-muted hover:text-highlight cursor-not-allowed opacity-40'
           : isOpen
@@ -142,9 +148,11 @@ const Trigger = ({
       aria-label={tooltip}
       disabled={disabled}
     >
-      <Icons.ByName
-        name="tool-layout"
-        className="h-7 w-7"
+      <ToolbarGlyph
+        icon="tool-layout"
+        caption={caption}
+        hasMenu
+        iconClassName="h-7 w-7"
       />
     </Button>
   );
@@ -332,7 +340,7 @@ const GridSelector = ({ rows = 3, columns = 4, className }: GridSelectorProps) =
 };
 
 const Divider = ({ className }: { className?: string }) => (
-  <div className={cn('h-px bg-background', className)}></div>
+  <div className={cn('bg-background h-px', className)}></div>
 );
 
 const HelpText = ({ children, className }: { children: React.ReactNode; className?: string }) => (

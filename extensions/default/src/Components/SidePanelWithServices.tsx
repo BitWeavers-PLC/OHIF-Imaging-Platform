@@ -16,6 +16,8 @@ export type SidePanelWithServicesProps = {
   expandedInsideBorderSize?: number;
   collapsedInsideBorderSize?: number;
   collapsedOutsideBorderSize?: number;
+  hideWhenClosed?: boolean;
+  headerless?: boolean;
 };
 
 const SidePanelWithServices = ({
@@ -104,6 +106,34 @@ const SidePanelWithServices = ({
       activatePanelSubscription.unsubscribe();
     };
   }, [tabs, sidePanelExpanded, panelService, closedManually]);
+
+  // Fork: header panel buttons open, switch or close this side.
+  useEffect(() => {
+    const { unsubscribe } = panelService.subscribe(
+      panelService.EVENTS.TOGGLE_PANEL,
+      ({ panelId }: { panelId: string }) => {
+        const tabIndex = tabs.findIndex(tab => tab.id === panelId);
+        if (tabIndex === -1) {
+          return;
+        }
+        if (sidePanelExpanded && tabIndex === activeTabIndex) {
+          handleClose();
+          return;
+        }
+        setActiveTabIndex(tabIndex);
+        setClosedManually(false);
+        if (!sidePanelExpanded) {
+          handleOpen();
+        }
+      }
+    );
+    return unsubscribe;
+  }, [panelService, tabs, sidePanelExpanded, activeTabIndex, handleOpen, handleClose]);
+
+  // Fork: which panel this side shows, for the header buttons' active state.
+  useEffect(() => {
+    panelService.setOpenPanel(side, sidePanelExpanded ? (tabs[activeTabIndex]?.id ?? null) : null);
+  }, [panelService, side, sidePanelExpanded, tabs, activeTabIndex]);
 
   return (
     <SidePanel

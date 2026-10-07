@@ -1,8 +1,9 @@
 import React from 'react';
 import { useDrag } from 'react-dnd';
-import { ChevronDown, ChevronRight, User, Users } from 'lucide-react';
+import { ChevronDown, ChevronRight, PanelLeftClose, User, Users } from 'lucide-react';
 import i18n from '@ohif/i18n';
 import { usePatientInfo } from '@ohif/extension-default';
+import { useSystem } from '@ohif/core';
 
 /**
  * Fork: compact vertical series strip (MedDream / Syngo style) replacing the OHIF study
@@ -109,32 +110,67 @@ export function patientDetails({ PatientID, PatientAge, PatientSex, PatientDOB }
  * Fork: patient banner at the head of the study list (was in the toolbar header). The images
  * keep the name in their corner text, so the patient stays identifiable with this panel closed.
  */
+/** Fork: hides the series panel (it has no header row; the toolbar's edge button reopens it). */
+function CollapseButton() {
+  const { panelService } = useSystem().servicesManager.services;
+  return (
+    <button
+      type="button"
+      data-cy="series-panel-collapse"
+      title={i18n.t('Common:Hide series')}
+      aria-label={i18n.t('Common:Hide series')}
+      className="text-muted-foreground hover:text-foreground hover:bg-muted ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-sm"
+      onClick={() => {
+        const panelId = panelService.getOpenPanel('left');
+        if (panelId) {
+          panelService.togglePanel(panelId);
+        }
+      }}
+    >
+      <PanelLeftClose
+        className="h-4 w-4"
+        strokeWidth={1.5}
+      />
+    </button>
+  );
+}
+
+/**
+ * Fork: patient banner at the head of the study list (was in the toolbar header), with the
+ * panel's collapse button. The images keep the name in their corner text, so the patient stays
+ * identifiable with this panel closed.
+ */
 export function PatientBanner() {
   const { patientInfo, isMixedPatients } = usePatientInfo();
   const { PatientName, PatientID } = patientInfo;
-  if (!PatientName && !PatientID) {
-    return null;
-  }
+  const hasPatient = Boolean(PatientName || PatientID);
   const details = patientDetails(patientInfo);
   const Icon = isMixedPatients ? Users : User;
   return (
     <div
       data-cy="patient-banner"
-      className="bg-card border-background flex shrink-0 items-start gap-2 border-b-2 px-2 py-1.5"
-      title={[PatientName, details].filter(Boolean).join('\n')}
+      className="bg-card border-background flex shrink-0 items-center gap-2 border-b-2 px-2 py-1.5"
+      title={hasPatient ? [PatientName, details].filter(Boolean).join('\n') : undefined}
     >
-      <Icon
-        className={`mt-0.5 h-4 w-4 shrink-0 ${isMixedPatients ? 'text-[hsl(var(--warning-text))]' : 'text-primary'}`}
-        strokeWidth={1.5}
-      />
-      <div className="min-w-0">
-        <div className="text-foreground truncate text-[13px] font-semibold">
-          {isMixedPatients ? i18n.t('Common:Multiple patients loaded') : PatientName || PatientID}
-        </div>
-        {!isMixedPatients && (
-          <div className="text-muted-foreground truncate text-[11px]">{details}</div>
-        )}
-      </div>
+      {hasPatient && (
+        <>
+          <Icon
+            className={`h-4 w-4 shrink-0 ${isMixedPatients ? 'text-[hsl(var(--warning-text))]' : 'text-primary'}`}
+            strokeWidth={1.5}
+          />
+          <div className="min-w-0">
+            <div className="text-foreground truncate text-[13px] font-semibold">
+              {isMixedPatients
+                ? i18n.t('Common:Multiple patients loaded')
+                : PatientName || PatientID}
+            </div>
+            {!isMixedPatients && (
+              <div className="text-muted-foreground truncate text-[11px]">{details}</div>
+            )}
+          </div>
+        </>
+      )}
+      <CollapseButton />
     </div>
   );
 }

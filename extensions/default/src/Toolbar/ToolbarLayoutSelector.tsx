@@ -1,4 +1,5 @@
 // Updated ToolbarLayoutSelector.tsx
+import i18n from '@ohif/i18n';
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { CommandsManager } from '@ohif/core';
@@ -137,7 +138,10 @@ function ToolbarLayoutSelectorWithServices({
         onSelectionChange={handleSelectionChange}
         {...props}
       >
-        <LayoutSelector.Trigger tooltip={t('Change layout')} />
+        <LayoutSelector.Trigger
+          tooltip={t('Change layout')}
+          caption={i18n.t('Buttons:Layout')}
+        />
         <LayoutSelector.Content>
           {/* Left side - Presets */}
           {(commonPresets.length > 0 || advancedPresets.length > 0) && (

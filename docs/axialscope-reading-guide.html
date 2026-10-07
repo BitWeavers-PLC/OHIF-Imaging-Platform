@@ -148,13 +148,14 @@ footer { max-width: 1120px; margin: 56px auto 0; padding-top: 18px; border-top: 
   <div class="sec-head"><h2>The screen</h2><span class="depth d-quick">Quick</span></div>
   <div class="screen">
     <div><b>Left panel</b><span>Patient name and ID at the top, then the current study and its priors. Each tile shows series number, modality, image count and description.</span></div>
-    <div><b>Toolbar</b><span>Grouped as Navigate, Measure, Image, Layout, Sync and Output. Menus open when you hover them. Tools that don't fit go under <span class="ui">•••</span>.</span></div>
+    <div><b>Toolbar</b><span>Grouped as Navigate, Measure, Image, Layout, Sync and Output, each icon with a short name under it. A small red corner mark means the button opens a menu when you hover it. Tools that don't fit go under <span class="ui">More</span>.</span></div>
     <div><b>Image area</b><span>One or more views. The study opens in a layout that suits it (for example CT axial + coronal, PET/CT side by side, or an MR grid).</span></div>
-    <div><b>Right panel</b><span>Tabs for <span class="ui">Paint</span>, <span class="ui">Outline</span>, <span class="ui">Measurements</span> and <span class="ui">Curves</span>.</span></div>
+    <div><b>Panels</b><span>The buttons at the right of the toolbar, <span class="ui">Paint</span>, <span class="ui">Outline</span>, <span class="ui">Findings</span> and <span class="ui">Curves</span>, open a panel beside the images. Press the same button again (or ×) to close it and give the images the full width.</span></div>
   </div>
   <ul>
     <li><strong>To show a series</strong>, double-click its tile, or drag it onto a view.</li>
-    <li><strong>View corners</strong> show the study date and series (top left), the patient (top right), the pixel value under the mouse with W/L and zoom (bottom left), and slice thickness, location and image number (bottom right).</li>
+    <li><strong>View corners</strong> show the study date and series (top left), the patient (top right), the pixel value under the mouse with W/L, zoom and <strong>Sync: on/off</strong> (bottom left), and slice thickness, location and image number (bottom right).</li>
+    <li><strong>View menus</strong> sit in a small row at each view's top-right corner: window presets and colour map, orientation, and overlays.</li>
     <li><strong>Settings</strong> is the gear at the bottom left.</li>
     <li><strong>The workflow menu</strong> (top right, e.g. <span class="ui">Standard reading</span>) appears when the study fits more than one workflow, such as PET/CT tumor volume or Segmentation.</li>
   </ul>
@@ -190,6 +191,7 @@ footer { max-width: 1120px; margin: 56px auto 0; padding-top: 18px; border-top: 
       <tr><td><kbd>Space</kbd></td><td>Start / stop cine</td></tr>
       <tr><td><kbd>F5</kbd> &nbsp; <kbd>Shift</kbd>+<kbd>F5</kbd></td><td>Sync scrolling on / off; Auto-align (CT)</td></tr>
       <tr><td><kbd>Ctrl</kbd>+<kbd>M</kbd> &nbsp; <kbd>F</kbd></td><td>Maximize view; full screen</td></tr>
+      <tr><td><kbd>,</kbd> / <kbd>.</kbd></td><td>Previous / next arrangement of the current layout</td></tr>
       <tr><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>1</kbd> &nbsp; <kbd>F3</kbd></td><td>MPR; 3D volume rendering</td></tr>
       <tr><td><kbd>B</kbd> <kbd>W</kbd> <kbd>M</kbd> <kbd>Z</kbd></td><td>Browse, Window, Pan, Zoom</td></tr>
       <tr><td><kbd>L</kbd> <kbd>E</kbd> <kbd>A</kbd> <kbd>C</kbd> <kbd>Y</kbd></td><td>Length, Ellipse, Angle, Cobb, Arrow</td></tr>
@@ -206,7 +208,7 @@ footer { max-width: 1120px; margin: 56px auto 0; padding-top: 18px; border-top: 
   <div class="sec-head"><h2>Everyday tools</h2><span class="depth d-quick">Quick</span></div>
 
   <h3>Window presets</h3>
-  <p>Hover the window/level button for the list, or press the number key. Each view's top-left menu (it shows when the mouse is over the view) also has Soft tissue, Liver and the PET SUV presets.</p>
+  <p>Hover the window/level button for the list, or press the number key. The window menu at each view's top-right corner also has Soft tissue, Liver and the PET SUV presets.</p>
   <div class="table-scroll"><table>
     <thead><tr><th>Key</th><th>Preset</th><th>Width / Level</th></tr></thead>
     <tbody>
@@ -231,9 +233,10 @@ footer { max-width: 1120px; margin: 56px auto 0; padding-top: 18px; border-top: 
     <li><span class="ui">Freehand ROI</span>, <span class="ui">Spline ROI</span>, and <span class="ui">Edge-snap ROI</span>. Edge-snap is for irregular structures: click points around the structure and the outline snaps to the edges between them.</li>
     <li><span class="ui">Arrow</span> (with a text label) and <span class="ui">Pixel value</span>.</li>
     <li><span class="ui">Calibrate</span> sets the true length of a line, for images that have no pixel spacing (e.g. some scanned films).</li>
+    <li>The rarer tools (Cobb angle, Circle, Freehand, Spline, Edge-snap, Calibrate) are under <span class="ui">Measure</span>; it lights up while one of them is in use.</li>
   </ul>
   <p>Hover a measurement to grab and move it. Right-click it to relabel or delete it.</p>
-  <p>The <span class="ui">Measurements</span> tab lists every measurement. <span class="ui">Copy findings</span> copies them as a table you can paste straight into the report. <span class="ui">Download CSV</span> saves them as a spreadsheet.</p>
+  <p>The <span class="ui">Findings</span> panel lists every measurement. <span class="ui">Copy findings</span> copies them as a table you can paste straight into the report. <span class="ui">Download CSV</span> saves them as a spreadsheet.</p>
 
   <h3>Image tools</h3>
   <ul>
@@ -248,7 +251,7 @@ footer { max-width: 1120px; margin: 56px auto 0; padding-top: 18px; border-top: 
 <!-- 4 -->
 <section id="compare">
   <div class="sec-head"><h2>Priors and syncing</h2><span class="depth d-know">Know this</span></div>
-  <p>Priors are listed under the current study as "Prior · description". Drag a prior series beside the current one, or use the study menu's <span class="ui">Compare with current</span> to open a side-by-side layout.</p>
+  <p>Priors are listed under the current study as "Prior · description". Drag a prior series beside the current one, or use the study menu's <span class="ui">Compare with current</span> to open a side-by-side layout. When a layout has other arrangements (for example one or two series of each study), a strip above the views shows "Layout 1/2" with arrows; <kbd>,</kbd> and <kbd>.</kbd> step through them.</p>
   <div class="callout miss"><span class="lbl">Don't miss</span>
     <ul>
       <li><strong>Series from the same scan link by themselves.</strong> Put CT and PET of one PET/CT, or axial T1 and FLAIR, side by side and they scroll, zoom and pan together without <kbd>F5</kbd>. A newly dropped series lines up with the view you are reading. Your current view doesn't jump.</li>
@@ -290,7 +293,7 @@ footer { max-width: 1120px; margin: 56px auto 0; padding-top: 18px; border-top: 
       <tr><td><strong>Export</strong></td><td>DICOM SEG, CSV report</td><td>DICOM RTSS, CSV report</td></tr>
     </tbody>
   </table></div>
-  <p>You can segment in <span class="ui">Standard reading</span> through the <span class="ui">Paint</span> and <span class="ui">Outline</span> tabs. For a longer job, switch to the <span class="ui">Segmentation</span> workflow in the workflow menu, which puts the image views and tools first. Switching workflows closes the current one, and its measurements and segmentations don't carry over. The viewer asks before switching.</p>
+  <p>You can segment in <span class="ui">Standard reading</span> through the <span class="ui">Paint</span> and <span class="ui">Outline</span> panels (toolbar, right). For a longer job, switch to the <span class="ui">Segmentation</span> workflow in the workflow menu, which puts the image views and tools first. Switching workflows closes the current one, and its measurements and segmentations don't carry over. The viewer asks before switching.</p>
 
   <h3>A typical session</h3>
   <ol class="steps">
@@ -359,14 +362,14 @@ footer { max-width: 1120px; margin: 56px auto 0; padding-top: 18px; border-top: 
     <li>A PET/CT study opens as <strong>axial CT beside the attenuation-corrected PET</strong>, both at mid-body. NAC reconstructions are left out of the layout but stay in the series list.</li>
     <li><strong>PET in 2D views is inverted</strong> (dark uptake on white), as most readers prefer. Press <kbd>I</kbd> to flip it.</li>
     <li>CT and PET of one scan are linked: scrolling, zoom and pan stay matched in millimetres, so the same lesion sits under the cursor in both, even though PET pixels are much larger.</li>
-    <li>PET windows are in each view's top-left menu: SUV 0–3, 0–5, 0–7, 0–8, 0–10 and 0–15. When SUV can be calculated the default is SUV 0–5.</li>
+    <li>PET windows are in the window menu at each view's top-right corner: SUV 0–3, 0–5, 0–7, 0–8, 0–10 and 0–15. When SUV can be calculated the default is SUV 0–5.</li>
     <li>An <span class="ui">Ellipse</span> or <span class="ui">Circle</span> on PET gives SUV mean and max.</li>
   </ul>
 
   <h3>SUV only means what the header says</h3>
   <p>SUV is calculated from the PET header: injected dose, injection time, radionuclide half-life, patient weight, acquisition time, decay correction and units. If any of these is missing or wrong, every SUV in the study is wrong too.</p>
   <div class="callout care"><span class="lbl">Check first</span>
-    <p>In the PET/CT tumor volume workflow, open the <span class="ui">Patient Info</span> tab and check sex, weight (kg), total dose, half-life, injection time and acquisition time against the request or the technologist's sheet. Correct anything wrong and press <span class="ui">Reload Data</span>. A missing patient weight gives no warning on screen.</p>
+    <p>In the PET/CT tumor volume workflow, open the <span class="ui">Patient</span> panel (toolbar, right) and check sex, weight (kg), total dose, half-life, injection time and acquisition time against the request or the technologist's sheet. Correct anything wrong and press <span class="ui">Reload Data</span>. A missing patient weight gives no warning on screen.</p>
   </div>
 
   <h3>Measuring total metabolic tumor volume</h3>
@@ -384,7 +387,7 @@ footer { max-width: 1120px; margin: 56px auto 0; padding-top: 18px; border-top: 
   <ol class="steps">
     <li><strong>Check SUV inputs</strong> in <span class="ui">Patient Info</span> (above).</li>
     <li><strong>Survey the MIP.</strong> Rotate it with the wheel, then click each focus to bring it up in all planes. Decide which foci are disease and which are physiological: brain, heart, kidneys, ureters, bladder, bowel, brown fat, muscle, and injection-site or inflammatory uptake.</li>
-    <li><strong>Create the segmentation.</strong> In the Segmentation (TMTV) tab press <span class="ui">New segmentation</span>. It is built on the PET.</li>
+    <li><strong>Create the segmentation.</strong> In the <span class="ui">Segments</span> panel press <span class="ui">New segmentation</span>. It is built on the PET.</li>
     <li><strong>Box each lesion.</strong> Choose the rectangle ROI threshold tool and drag a box around the lesion on an axial PET or fusion view. Set its first and last slices with the <span class="ui">Start</span> and <span class="ui">End</span> slice buttons, so the box covers the lesion's whole height and no neighbouring physiological uptake.</li>
     <li><strong>Choose the threshold.</strong>
       <ul>
@@ -412,7 +415,7 @@ footer { max-width: 1120px; margin: 56px auto 0; padding-top: 18px; border-top: 
     <li><strong>Slide viewer:</strong> whole-slide microscopy images open here automatically. Draw lines, points, polygons, circles, boxes or freehand shapes to annotate.</li>
     <li><strong>US lung B-lines:</strong> annotate the pleura and B-lines frame by frame on lung ultrasound. It shows the pleura percentage and exports the annotations as JSON.</li>
     <li><strong>Subtraction (MR):</strong> the <span class="ui">Subtraction</span> button makes a post-minus-pre contrast series (a new "SUB" series). For a dynamic series, choose which phases to subtract.</li>
-    <li><strong>Time–intensity curves:</strong> draw an ellipse, rectangle or circle on a multi-phase series and the <span class="ui">Curves</span> tab plots enhancement over time.</li>
+    <li><strong>Time–intensity curves:</strong> draw an ellipse, rectangle or circle on a multi-phase series and the <span class="ui">Curves</span> panel plots enhancement over time.</li>
     <li><strong>Reports in the study:</strong> structured reports, including CT and PET dose reports, open as a readable document (DLP, CTDIvol, acquisition settings). Drag them onto a view like any series.</li>
   </ul>
 </section>

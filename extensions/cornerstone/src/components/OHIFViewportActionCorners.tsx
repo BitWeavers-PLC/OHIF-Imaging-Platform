@@ -2,25 +2,14 @@ import React, { memo } from 'react';
 import { ViewportActionCorners, IconPresentationProvider, ToolButton } from '@ohif/ui-next';
 import { Toolbar } from '@ohif/extension-default/src/Toolbar/Toolbar';
 import { ButtonLocation } from '@ohif/core/src/services/ToolBarService/ToolbarService';
-import { useViewportHover } from '../hooks';
 
 export type OHIFViewportActionCornersProps = {
   viewportId: string;
 };
 
 function OHIFViewportActionCornersComponent({ viewportId }: OHIFViewportActionCornersProps) {
-  // Use the viewport hover hook to track if viewport is hovered or active
-  const { isHovered, isActive } = useViewportHover(viewportId);
-
-  // Fork: only under the mouse (OHIF also kept them on the active viewport), so a reading
-  // view shows just the image and its text. Touch screens can't hover: keep the active one.
-  const canHover = typeof window !== 'undefined' && window.matchMedia?.('(hover: hover)').matches;
-  const shouldShowCorners = isHovered || (isActive && !canHover);
-
-  if (!shouldShowCorners) {
-    return null;
-  }
-
+  // Fork: always shown (MedDream-style); the menus sit in the top-right corner, clear of the
+  // anatomy, so they no longer need hiding until the mouse is over the view.
   return (
     <IconPresentationProvider
       size="medium"

@@ -55,6 +55,9 @@ const radiantHotkeys = [
   cmd('f5', 'toggleSynchronizer', 'Toggle Series Synchronization', { type: 'imageSlice' }),
   // Not in RadiAnt: CT-only anatomy match (alignByAnatomy), next to F5.
   cmd('shift+f5', 'alignByAnatomy', 'Auto-align (CT)'),
+  // Not in RadiAnt: the opening layout's other arrangements (strip above the views).
+  cmd(',', 'previousStage', 'Previous Layout'),
+  cmd('.', 'nextStage', 'Next Layout'),
 
   // Window presets (RadiAnt order; 8-9 are this viewer's extra CT windows)
   cmd('0', 'resetWindowLevel', 'Default Window'),

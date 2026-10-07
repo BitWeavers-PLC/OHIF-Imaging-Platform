@@ -115,7 +115,8 @@ const useResizablePanels = (
   useLayoutEffect(() => {
     const appConfig = (window as any)?.config ?? {};
     const viewerConfig = appConfig.imagingPlatform?.viewer ?? {};
-    const autoFitEnabled = (viewerConfig.panelAutoFit ?? appConfig.studyBrowserPanelAutoFit) !== false;
+    const autoFitEnabled =
+      (viewerConfig.panelAutoFit ?? appConfig.studyBrowserPanelAutoFit) !== false;
 
     if (!autoFitEnabled) {
       return;
@@ -401,14 +402,18 @@ const useResizablePanels = (
       collapsedInsideBorderSize: panelGroupDefinition.shared.collapsedInsideBorderSize,
       collapsedOutsideBorderSize: panelGroupDefinition.shared.collapsedOutsideBorderSize,
       expandedInsideBorderSize: panelGroupDefinition.shared.expandedInsideBorderSize,
+      // Fork: the series list's patient banner holds the collapse button; no header row.
+      headerless: true,
       onClose: onLeftPanelClose,
       onOpen: onLeftPanelOpen,
     },
     {
+      // Fork: no collapsed strip on the right; the header has a button per panel.
       expandedWidth: rightPanelExpandedWidth,
-      collapsedWidth: panelGroupDefinition.shared.collapsedWidth,
-      collapsedInsideBorderSize: panelGroupDefinition.shared.collapsedInsideBorderSize,
-      collapsedOutsideBorderSize: panelGroupDefinition.shared.collapsedOutsideBorderSize,
+      collapsedWidth: 0,
+      collapsedInsideBorderSize: 0,
+      collapsedOutsideBorderSize: 0,
+      hideWhenClosed: true,
       expandedInsideBorderSize: panelGroupDefinition.shared.expandedInsideBorderSize,
       onClose: onRightPanelClose,
       onOpen: onRightPanelOpen,

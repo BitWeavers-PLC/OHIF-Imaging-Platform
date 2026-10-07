@@ -12,6 +12,7 @@ jest.mock('@ohif/core', () => ({
     closeItem: () => {},
     toggleLock: () => {},
   }),
+  useSystem: () => ({ servicesManager: { services: { toolbarService: {} } } }),
 }));
 jest.mock('./ToolButtonListWrapper', () => () => null);
 

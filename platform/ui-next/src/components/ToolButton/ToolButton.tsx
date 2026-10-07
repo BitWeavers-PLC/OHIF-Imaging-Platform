@@ -1,9 +1,9 @@
 import React from 'react';
 import { Tooltip, TooltipTrigger, TooltipContent } from '../Tooltip';
-import { Icons } from '../Icons';
 import { Button } from '../Button';
 import { cn } from '../../lib/utils';
 import { useIconPresentation } from '../../contextProviders/IconPresentationProvider';
+import { ToolbarGlyph, captionedButtonClass } from './ToolbarGlyph';
 
 const baseClasses = '!rounded-sm inline-flex items-center justify-center';
 const defaultClasses = 'bg-transparent text-foreground/80 hover:bg-muted hover:text-foreground';
@@ -43,6 +43,10 @@ interface ToolButtonProps {
   shortcut?: string;
   /** Fork: suppress the tooltip (e.g. while the button's hover menu is open over it). */
   hideTooltip?: boolean;
+  /** Fork: short text under the icon in the header toolbar (falls back to the label). */
+  caption?: string;
+  /** Fork: the button opens a menu (corner mark in the header toolbar). */
+  hasMenu?: boolean;
 }
 
 function ToolButton(props: ToolButtonProps) {
@@ -61,14 +65,17 @@ function ToolButton(props: ToolButtonProps) {
     children,
     shortcut,
     hideTooltip = false,
+    caption,
+    hasMenu = false,
   } = props;
 
-  const { className: iconClassName } = useIconPresentation();
+  const { className: iconClassName, showLabels } = useIconPresentation();
   const { buttonSizeClass, iconSizeClass } = sizeClasses[size] || sizeClasses.default;
 
   const buttonClasses = cn(
     baseClasses,
     buttonSizeClass,
+    showLabels && !children && captionedButtonClass,
     disabled ? disabledClasses : isActive ? activeClasses : defaultClasses,
     className
   );
@@ -106,9 +113,11 @@ function ToolButton(props: ToolButtonProps) {
             name={id}
           >
             {children || (
-              <Icons.ByName
-                name={icon}
-                className={iconClassName || iconSizeClass}
+              <ToolbarGlyph
+                icon={icon}
+                caption={caption ?? label}
+                hasMenu={hasMenu}
+                iconClassName={iconClassName || iconSizeClass}
               />
             )}
           </Button>

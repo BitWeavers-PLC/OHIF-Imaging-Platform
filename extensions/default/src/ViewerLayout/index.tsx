@@ -5,6 +5,7 @@ import { HangingProtocolService, CommandsManager } from '@ohif/core';
 import { useAppConfig } from '@state';
 import ViewerHeader from './ViewerHeader';
 import SettingsButton from './SettingsButton';
+import StageBar from './StageBar';
 import SidePanelWithServices from '../Components/SidePanelWithServices';
 import { Onboarding, ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@ohif/ui-next';
 import useResizablePanels from './ResizablePanelsHook';
@@ -189,6 +190,10 @@ function ViewerLayout({
             {/* TOOLBAR + GRID */}
             <ResizablePanel {...resizableViewportGridPanelProps}>
               <div className="flex h-full flex-1 flex-col">
+                <StageBar
+                  servicesManager={servicesManager}
+                  commandsManager={commandsManager}
+                />
                 <div
                   className="bg-background relative flex h-full flex-1 items-center justify-center overflow-hidden"
                   onMouseEnter={handleMouseEnter}

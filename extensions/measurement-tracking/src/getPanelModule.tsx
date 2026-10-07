@@ -19,9 +19,10 @@ function getPanelModule({ commandsManager, extensionManager, servicesManager }):
     },
     {
       name: 'trackedMeasurements',
-      iconName: 'tab-linear',
-      iconLabel: 'Measure',
-      label: i18n.t('SidePanel:Measurements'),
+      iconName: 'tab-findings',
+      // Fork: "Findings" (the toolbar's "Measure" is the rarer-measurements menu).
+      iconLabel: 'Findings',
+      label: i18n.t('SidePanel:Findings'),
       component: props => (
         <PanelMeasurementTableTracking
           {...props}

@@ -58,6 +58,11 @@ export default {
         return activeToolName === 'Zoom';
       },
     },
+    // Fork: whether this view scrolls with the others.
+    {
+      id: 'Sync',
+      inheritsFrom: 'axialscope.overlayItem.sync',
+    },
   ],
   'viewportOverlay.bottomRight': [
     {

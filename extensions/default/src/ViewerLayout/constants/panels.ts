@@ -34,7 +34,8 @@ const getPanelGroupDefinition = ({
       initialExpandedWidth: rightPanelInitialExpandedWidth,
       minimumExpandedOffsetWidth: rightPanelMinimumExpandedWidth + expandedInsideBorderSize,
       initialExpandedOffsetWidth: rightPanelInitialExpandedWidth + expandedInsideBorderSize,
-      collapsedOffsetWidth: collapsedWidth + collapsedInsideBorderSize + collapsedOutsideBorderSize,
+      // Fork: closed, the right panel takes no width (opened from the header panel buttons).
+      collapsedOffsetWidth: 0,
     },
   };
 };

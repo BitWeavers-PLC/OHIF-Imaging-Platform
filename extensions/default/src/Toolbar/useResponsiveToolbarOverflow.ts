@@ -9,13 +9,14 @@ const PREFERRED_VISIBLE_IDS = new Set([
   'Length',
   'Angle',
   'EllipticalROI',
-  'MeasurementTools',
   'Layout',
   'MPR',
   'SlabTools',
 ]);
 
 // Lists and Layout have no `commands`, so the More menu can't host them: never overflow them.
+// Fork: the Measure menu stays on the bar; measuring tools that do not fit move into it
+// (Toolbar.tsx), not into More.
 const PINNED_IDS = new Set(['WindowLevelTools', 'MeasurementTools', 'Layout', 'SlabTools']);
 const PRIMARY_MORE_ID = 'MoreTools';
 // Least-used bar items go to More first when the window is narrow.

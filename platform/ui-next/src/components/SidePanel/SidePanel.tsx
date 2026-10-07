@@ -27,6 +27,10 @@ type SidePanelProps = {
   expandedInsideBorderSize: number;
   collapsedInsideBorderSize: number;
   collapsedOutsideBorderSize: number;
+  /** Fork: render nothing while closed (the right panel opens from header buttons). */
+  hideWhenClosed?: boolean;
+  /** Fork: no header row when open (the panel content has its own close control). */
+  headerless?: boolean;
   tabs: any;
 };
 
@@ -194,6 +198,8 @@ const SidePanel = ({
   expandedInsideBorderSize = 4,
   collapsedInsideBorderSize = 8,
   collapsedOutsideBorderSize = 4,
+  hideWhenClosed = false,
+  headerless = false,
   footer,
 }: SidePanelProps & { footer?: React.ReactNode }) => {
   const [panelOpen, setPanelOpen] = useState(isExpanded);
@@ -444,9 +450,27 @@ const SidePanel = ({
   const getOpenStateComponent = () => {
     return (
       <>
-        <div className="bg-card flex h-[40px] flex-shrink-0 select-none p-2">
-          {tabs.length === 1 ? getOneTabComponent() : getTabGridComponent()}
-        </div>
+        {hideWhenClosed ? (
+          // Fork: header buttons switch panels; here only the panel's name and a close button.
+          <div className="bg-card flex h-[40px] flex-shrink-0 select-none items-center justify-between pl-3 pr-1.5">
+            <span className="text-foreground truncate text-sm font-semibold">
+              {tabs[activeTabIndex]?.label || tabs[activeTabIndex]?.iconLabel}
+            </span>
+            <button
+              type="button"
+              aria-label="Close"
+              data-cy={`side-panel-close-${side}`}
+              className="text-muted-foreground hover:text-foreground hover:bg-muted flex h-7 w-7 items-center justify-center rounded-sm"
+              onClick={() => updatePanelOpen(false)}
+            >
+              <Icons.Close className="h-4 w-4" />
+            </button>
+          </div>
+        ) : (
+          <div className="bg-card flex h-[40px] flex-shrink-0 select-none p-2">
+            {tabs.length === 1 ? getOneTabComponent() : getTabGridComponent()}
+          </div>
+        )}
         <Separator
           orientation="horizontal"
           className="bg-background"
@@ -463,7 +487,7 @@ const SidePanel = ({
     >
       {panelOpen ? (
         <>
-          {getOpenStateComponent()}
+          {!headerless && getOpenStateComponent()}
           {tabs.map((tab, tabIndex) => {
             if (tabIndex === activeTabIndex) {
               return <tab.content key={tabIndex} />;
@@ -471,7 +495,7 @@ const SidePanel = ({
             return null;
           })}
         </>
-      ) : (
+      ) : hideWhenClosed ? null : (
         <React.Fragment>{getCloseStateComponent()}</React.Fragment>
       )}
       {/* Fork: pinned to the bottom, open or collapsed (left panel: the settings button). */}
