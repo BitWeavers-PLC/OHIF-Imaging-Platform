@@ -52,7 +52,7 @@ const DEFAULT_STATE: AppTypes.ViewportGrid.State = {
   ),
 };
 
-const determineActiveViewportId = (
+export const determineActiveViewportId = (
   state: AppTypes.ViewportGrid.State,
   newViewports: Map<string, AppTypes.ViewportGrid.Viewport>
 ) => {
@@ -102,8 +102,10 @@ const determineActiveViewportId = (
     return 0; // Return 0 if no differences found
   });
 
+  // Fork: every pane empty (e.g. a study of only localizers): the first pane, never none, so
+  // a double-clicked thumbnail has somewhere to go.
   if (!sortedViewports?.length) {
-    return null;
+    return newViewports.keys().next().value ?? null;
   }
 
   return sortedViewports[0].viewportId;
@@ -312,8 +314,10 @@ export function ViewportGridProvider({ children, service }: ViewportGridProvider
           }
         }
 
-        activeViewportIdToSet =
-          activeViewportIdToSet ?? determineActiveViewportId(state, viewports);
+        // Fork: an id not in the new layout would leave the grid without an active pane.
+        activeViewportIdToSet = viewports.has(activeViewportIdToSet)
+          ? activeViewportIdToSet
+          : determineActiveViewportId(state, viewports);
 
         const ret = {
           ...state,

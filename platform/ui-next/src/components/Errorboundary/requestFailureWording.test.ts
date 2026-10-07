@@ -1,4 +1,4 @@
-import { requestFailureWording } from './ErrorBoundary';
+import { requestFailureWording } from './requestFailureWording';
 
 const t = (key: string, options?: { status?: number }) =>
   key.replace('{{status}}', String(options?.status));
