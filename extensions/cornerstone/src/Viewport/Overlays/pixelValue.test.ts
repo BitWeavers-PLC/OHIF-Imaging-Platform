@@ -17,6 +17,7 @@ describe('pixelValueAt', () => {
     expect(pixelValueAt(viewport({ scaled: true }), [2, 1])).toEqual({
       value: 102,
       modality: 'CT',
+      suv: false,
     });
   });
 
@@ -47,5 +48,7 @@ describe('formatPixelValue', () => {
     expect(formatPixelValue({ value: -47.4, modality: 'CT' })).toBe('-47 HU');
     expect(formatPixelValue({ value: 289.256, modality: 'MR' })).toBe('289.26');
     expect(formatPixelValue({ value: [10, 20, 30], modality: 'US' })).toBe('10, 20, 30');
+    expect(formatPixelValue({ value: 3.0519, modality: 'PT', suv: true })).toBe('3.05 SUV');
+    expect(formatPixelValue({ value: 12034, modality: 'PT' })).toBe('12034'); // not SUV-scaled
   });
 });

@@ -22,13 +22,26 @@ export function pixelValueAt(viewport, canvasPoint: [number, number]) {
     const { rescaleSlope = 1, rescaleIntercept = 0 } = preScale.scalingParameters ?? {};
     value = value * rescaleSlope + rescaleIntercept;
   }
-  return { value, modality: data.metadata?.Modality };
+  // PET pixels pre-scaled to SUV (body weight) read as SUV, as the ROI statistics do.
+  const suv = !!(preScale?.scaled && preScale.scalingParameters?.suvbw);
+  return { value, modality: data.metadata?.Modality, suv };
 }
 
-export function formatPixelValue({ value, modality }: { value; modality?: string }): string {
+export function formatPixelValue({
+  value,
+  modality,
+  suv = false,
+}: {
+  value;
+  modality?: string;
+  suv?: boolean;
+}): string {
   if (Array.isArray(value) || ArrayBuffer.isView(value)) {
     return Array.from(value as ArrayLike<number>).join(', '); // RGB
   }
   const rounded = Number.isInteger(value) ? value : Number(value.toFixed(2));
-  return modality === 'CT' ? `${Math.round(value)} HU` : `${rounded}`;
+  if (modality === 'CT') {
+    return `${Math.round(value)} HU`;
+  }
+  return suv ? `${rounded} SUV` : `${rounded}`;
 }
