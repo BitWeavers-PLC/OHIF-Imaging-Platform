@@ -54,6 +54,7 @@ import registerAnnotationHoverCursor from './utils/annotationHoverCursor';
 
 import CalibrationLineTool from './tools/CalibrationLineTool';
 import CenterDragCrosshairsTool from './tools/CenterDragCrosshairsTool';
+import EllipticalROIAreaFixTool from './tools/EllipticalROIAreaFixTool';
 import ImageOverlayViewerTool from './tools/ImageOverlayViewerTool';
 
 /**
@@ -106,7 +107,7 @@ export default function initCornerstoneTools(configuration = {}) {
   addTool(LengthTool);
   addTool(RectangleROITool);
   addTool(RectangleROIThresholdTool);
-  addTool(EllipticalROITool);
+  addTool(EllipticalROIAreaFixTool);
   addTool(CircleROITool);
   addTool(BidirectionalTool);
   addTool(ArrowAnnotateTool);
