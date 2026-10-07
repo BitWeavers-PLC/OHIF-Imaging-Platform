@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { utils, useSystem } from '@ohif/core';
 
 const { formatPN, formatDate } = utils;
+const NON_IMAGE = ['SR', 'SEG', 'RTSTRUCT', 'RTPLAN', 'RTDOSE', 'PR', 'KO', 'DOC'];
 
 function usePatientInfo() {
   const { servicesManager } = useSystem();
@@ -35,7 +36,13 @@ function usePatientInfo() {
     if (!displaySetsAdded.length) {
       return;
     }
-    const displaySet = displaySetsAdded[0];
+    // Fork: patient details from an image series. Reports and overlays (SR, SEG, RT, ...) are
+    // often written by other tools with poor demographics (one demo SR names the patient
+    // "[object Object]"), and a prior's report loading last would overwrite the banner.
+    const displaySet = displaySetsAdded.find(ds => !NON_IMAGE.includes(ds?.Modality));
+    if (!displaySet) {
+      return;
+    }
     const instance = displaySet?.instances?.[0] || displaySet?.instance;
     if (!instance) {
       return;

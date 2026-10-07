@@ -6,8 +6,10 @@ export default function formatPN(name) {
     return;
   }
 
-  let nameToUse = name.Alphabetic ?? name;
-  if (typeof nameToUse === 'object') {
+  // Fork: DICOM JSON PN is a list of { Alphabetic } (a bare list gave an empty name).
+  const first = Array.isArray(name) ? name[0] : name;
+  let nameToUse = first?.Alphabetic ?? first;
+  if (!nameToUse || typeof nameToUse === 'object') {
     nameToUse = '';
   }
 
