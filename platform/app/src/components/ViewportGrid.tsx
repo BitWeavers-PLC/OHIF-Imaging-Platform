@@ -5,7 +5,7 @@ import { useViewportGrid } from '@ohif/ui-next';
 import EmptyViewport from './EmptyViewport';
 import { useAppConfig } from '@state';
 import i18n from '@ohif/i18n';
-import dropFitsViewport from './dropFitsViewport';
+import dropAction from './dropAction';
 
 function ViewerViewportGrid(props: withAppTypes) {
   const { servicesManager, viewportComponents = [], dataSource, commandsManager } = props;
@@ -104,22 +104,30 @@ function ViewerViewportGrid(props: withAppTypes) {
         return [];
       }
 
-      // Fork: a 3D (volume) view can only show a series that builds into a volume; a scout or
-      // other 2D series was accepted (allowUnmatchedView) and rendered as streaks.
+      // Fork: no silent drops. A series no viewport can draw gets a message; a series that
+      // cannot build a volume, dropped on a 3D view, is shown there as a 2D stack (RadiAnt).
       const targetType = servicesManager.services.viewportGridService
         .getState()
         .viewports.get(viewportId)?.viewportOptions?.viewportType;
       const dropped = displaySetService.getDisplaySetByUID(displaySetInstanceUID);
-      if (!dropFitsViewport(targetType, dropped)) {
+      const action = dropAction(targetType, dropped);
+      if (action === 'unsupported') {
         uiNotificationService.show({
           title: i18n.t('Messages:Drag and drop'),
-          message: i18n.t(
-            'Messages:This series is not a 3D volume, so it cannot be shown in this view. Drop it on a 2D view instead.'
-          ),
+          message: i18n.t('Messages:This series cannot be displayed.'),
           type: 'warning',
           duration: 4000,
         });
         return [];
+      }
+      if (action === 'showAsStack') {
+        return [
+          {
+            viewportId,
+            displaySetInstanceUIDs: [displaySetInstanceUID],
+            viewportOptions: { viewportType: 'stack' },
+          },
+        ];
       }
 
       let updatedViewports = [];

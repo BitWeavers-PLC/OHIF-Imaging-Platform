@@ -12,5 +12,8 @@
   "Report issue": "Report issue",
   "Copy": "Copy",
   "Close": "Close",
-  "Copy error": "Copy error"
+  "Copy error": "Copy error",
+  "Image data could not be loaded": "Image data could not be loaded",
+  "The image server could not send part of this study (error {{status}}).": "The image server could not send part of this study (error {{status}}).",
+  "The image server could not be reached. Check the connection and try again.": "The image server could not be reached. Check the connection and try again."
 }

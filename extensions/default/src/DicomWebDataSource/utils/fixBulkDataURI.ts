@@ -32,6 +32,16 @@ function fixBulkDataURI(value, instance, dicomWebConfig) {
     value.BulkDataURI = BulkDataURI;
   }
 
+  // Fork: Orthanc writes absolute URIs with its own host and public path, which the browser may
+  // not reach (another origin, no CORS, or an internal name behind the viewer's proxy). Fetch
+  // them through the configured root, like the rest of the study.
+  const studiesAt = BulkDataURI.indexOf('/studies/');
+  const { wadoRoot } = dicomWebConfig;
+  if (BulkDataURI.startsWith('http') && studiesAt !== -1 && !BulkDataURI.startsWith(wadoRoot)) {
+    value.BulkDataURI = `${wadoRoot}${BulkDataURI.substring(studiesAt)}`;
+    return;
+  }
+
   if (!BulkDataURI.startsWith('http') && !value.BulkDataURI.startsWith('/')) {
     const { StudyInstanceUID, SeriesInstanceUID } = instance;
     const isInstanceStart = BulkDataURI.startsWith('instances/') || BulkDataURI.startsWith('../');
