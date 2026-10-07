@@ -84,17 +84,30 @@ function ToolButton(props: ToolButtonProps) {
   const disabledTooltip = disabled && disabledText ? disabledText : null;
   const hasSecondaryTooltip = tooltip || disabledTooltip;
 
-  const showTooltip = hasSecondaryTooltip || defaultTooltip;
+  // Fork: with a caption under the icon the name is already on screen; the tooltip then gives
+  // only the shortcut key (or why the button is disabled), after a longer pause, and none
+  // when there is neither.
+  const captioned = showLabels && !children;
+  const detail = captioned ? disabledTooltip : disabledTooltip || tooltip;
+  const showTooltip = captioned
+    ? Boolean(detail || shortcut)
+    : hasSecondaryTooltip || defaultTooltip;
 
   return (
-    <Tooltip open={hideTooltip ? false : undefined}>
+    <Tooltip
+      open={hideTooltip || !showTooltip ? false : undefined}
+      delayDuration={captioned ? 700 : undefined}
+    >
       <TooltipTrigger
         asChild
         className={cn(disabled && 'cursor-not-allowed')}
       >
         {/* TooltipTrigger is a span since a disabled button does not fire events and the tooltip
         will not show. */}
+        {/* Fork: inline-flex so the span is as tall as the button; inline, its box ended
+            mid-button and the tooltip sat over the caption. */}
         <span
+          className="inline-flex"
           data-cy={id}
           data-tool={id}
           data-active={isActive}
@@ -125,9 +138,16 @@ function ToolButton(props: ToolButtonProps) {
       </TooltipTrigger>
       <TooltipContent
         side="bottom"
+        sideOffset={6}
         className="text-wrap w-auto max-w-sm whitespace-normal break-words"
       >
-        {showTooltip && (
+        {showTooltip && captioned && (
+          <div className="flex items-center justify-between gap-4 text-xs">
+            {detail && <span>{detail}</span>}
+            {shortcut && <kbd className="text-muted-foreground font-mono">{shortcut}</kbd>}
+          </div>
+        )}
+        {showTooltip && !captioned && (
           <div className="space-y-1">
             {defaultTooltip && (
               <div className="flex items-center justify-between gap-4 text-sm">

@@ -82,6 +82,7 @@ import {
   Activity,
   ClipboardList,
   Mouse,
+  Type,
 } from 'lucide-react';
 
 /**
@@ -383,6 +384,47 @@ const OutlinePanel = Glyph(
     {handle(8, 5)}
     {handle(18.5, 14)}
     {handle(4.8, 15.5)}
+  </>
+);
+// Extra measuring tools: what each measures, with edit handles at the points you click.
+const PolylineIcon = Glyph(
+  <>
+    <path d="M3.5 18 L9 9.5 L14.5 14 L20.5 5.5" />
+    {[handle(3.5, 18), handle(9, 9.5), handle(14.5, 14), handle(20.5, 5.5)]}
+  </>
+);
+const HeightDifferenceIcon = Glyph(
+  <>
+    <path
+      d="M3 6 h8 M13 18 h8"
+      strokeDasharray="2 2"
+    />
+    <path d="M17 6.5 v11 M15 8.5 l2-2 2 2 M15 15.5 l2 2 2-2" />
+    {[handle(3, 6), handle(21, 18)]}
+  </>
+);
+const CTRIcon = Glyph(
+  <>
+    <path d="M4 20.5 C4 9 7.5 4 12 4 C16.5 4 20 9 20 20.5" />
+    <path d="M9 13 h7 M5.5 18 h13" />
+    {[handle(9, 13), handle(16, 13), handle(5.5, 18), handle(18.5, 18)]}
+  </>
+);
+const SpineLabelIcon = Glyph(
+  <>
+    <path d="M6 3.5 h7 v4 h-7 z M6 10 h7 v4 h-7 z M6 16.5 h7 v4 h-7 z" />
+    <path d="M15.5 12 h4.5" />
+    {handle(15.5, 12)}
+  </>
+);
+const TTTGIcon = Glyph(
+  <>
+    <path d="M3 7 h18" />
+    <path
+      d="M8 7 v8 M16 7 v11"
+      strokeDasharray="2 2"
+    />
+    {[handle(8, 15), handle(16, 18), handle(3, 7), handle(21, 7)]}
   </>
 );
 // Threshold: HU histogram with the cut-off line.
@@ -882,6 +924,12 @@ export const iconOverrides: Record<string, React.ComponentType<any>> = {
   'tab-segmentation': PaintPanel,
   'tab-linear': line(Ruler),
   'tab-findings': line(ClipboardList),
+  'tool-polyline': PolylineIcon,
+  'tool-height-difference': HeightDifferenceIcon,
+  'tool-ctr': CTRIcon,
+  'tool-text-label': line(Type),
+  'tool-spine-label': SpineLabelIcon,
+  'tool-tttg': TTTGIcon,
   'tab-contours': OutlinePanel,
   'tab-time-intensity': line(Activity),
   // Chrome

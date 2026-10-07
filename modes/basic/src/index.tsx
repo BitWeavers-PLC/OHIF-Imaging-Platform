@@ -263,6 +263,12 @@ export const toolbarSections = {
     'PlanarFreehandROI',
     'SplineROI',
     'LivewireContour',
+    'Polyline',
+    'HeightDifference',
+    'CTR',
+    'SpineLabel',
+    'TTTG',
+    'Label',
     'CalibrationLine',
   ],
 

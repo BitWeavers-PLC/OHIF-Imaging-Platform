@@ -1,5 +1,5 @@
 import { eventTarget, EVENTS } from '@cornerstonejs/core';
-import { Enums } from '@cornerstonejs/tools';
+import { Enums, state as csToolsState } from '@cornerstonejs/tools';
 import { CommandsManager, CustomizationService } from '@ohif/core';
 import { findNearbyToolData } from './utils/findNearbyToolData';
 
@@ -34,6 +34,11 @@ export type initDoubleClickArgs = {
 
 function initDoubleClick({ customizationService, commandsManager }: initDoubleClickArgs): void {
   const cornerstoneViewportHandleDoubleClick = (evt: CustomEvent) => {
+    // Fork: a tool still drawing (Polyline, Spline) finishes on double-click; do not also
+    // maximize the view.
+    if (csToolsState.isInteractingWithTool) {
+      return;
+    }
     // Do not allow double click on a tool.
     const nearbyToolData = findNearbyToolData(commandsManager, evt);
     if (nearbyToolData) {

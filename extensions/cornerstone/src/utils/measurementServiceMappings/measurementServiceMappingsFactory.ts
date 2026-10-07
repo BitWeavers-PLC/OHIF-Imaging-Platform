@@ -51,6 +51,13 @@ const measurementServiceMappingsFactory = (
       Probe: POINT,
       UltrasoundDirectional: POLYLINE,
       SegmentBidirectional: BIDIRECTIONAL,
+      // Fork: extra measuring tools.
+      Polyline: POLYLINE,
+      HeightDifference: POLYLINE,
+      CTR: POLYLINE,
+      Label: POINT,
+      SpineLabel: POINT,
+      TTTG: POINT,
     };
 
     return TOOL_TYPE_TO_VALUE_TYPE[toolType];

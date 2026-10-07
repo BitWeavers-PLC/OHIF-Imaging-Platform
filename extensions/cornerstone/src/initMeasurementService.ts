@@ -154,6 +154,42 @@ const initMeasurementService = (
     Length.toMeasurement
   );
 
+  // Fork: extra measuring tools. Polyline and Height difference read like Length, CTR adds its
+  // ratio, and Text, Spine and TT-TG labels show their (current) label.
+  const withRatio = csToolsAnnotation => {
+    const measurement = Length.toMeasurement(csToolsAnnotation);
+    const ratio = csToolsAnnotation?.annotation?.data?.ctr;
+    if (measurement && ratio != null) {
+      const primary = [...(measurement.displayText?.primary ?? []), `CTR ${ratio.toFixed(2)}`];
+      measurement.displayText = { ...measurement.displayText, primary };
+    }
+    return measurement;
+  };
+  const withLabel = csToolsAnnotation => {
+    const measurement = ArrowAnnotate.toMeasurement(csToolsAnnotation);
+    const label = csToolsAnnotation?.annotation?.data?.label;
+    if (measurement) {
+      measurement.displayText = { ...measurement.displayText, primary: label ? [label] : [] };
+    }
+    return measurement;
+  };
+  [
+    ['Polyline', Length, Length.toMeasurement],
+    ['HeightDifference', Length, Length.toMeasurement],
+    ['CTR', Length, withRatio],
+    ['Label', ArrowAnnotate, withLabel],
+    ['SpineLabel', ArrowAnnotate, withLabel],
+    ['TTTG', ArrowAnnotate, withLabel],
+  ].forEach(([toolName, base, toMeasurement]: [string, typeof Length, typeof withLabel]) =>
+    measurementService.addMapping(
+      csTools3DVer1MeasurementSource,
+      toolName,
+      base.matchingCriteria,
+      base.toAnnotation,
+      toMeasurement
+    )
+  );
+
   measurementService.addMapping(
     csTools3DVer1MeasurementSource,
     'LivewireContour',

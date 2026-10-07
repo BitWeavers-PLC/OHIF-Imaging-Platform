@@ -304,5 +304,19 @@
   "Undo": "Undo",
   "Redo": "Redo",
   "Measure": "Measure",
-  "More measurements": "More measurements"
+  "More measurements": "More measurements",
+  "Polyline": "Polyline",
+  "Length along a path: click points, double-click to finish": "Length along a path: click points, double-click to finish",
+  "Height difference": "Height difference",
+  "Vertical offset between two points (e.g. leg length, pelvic tilt)": "Vertical offset between two points (e.g. leg length, pelvic tilt)",
+  "CTR": "CTR",
+  "Cardiothoracic ratio: draw the heart width, then the chest width": "Cardiothoracic ratio: draw the heart width, then the chest width",
+  "Text": "Text",
+  "A text note on the image": "A text note on the image",
+  "Spine labels": "Spine labels",
+  "Click each vertebra: the first asks its level, the rest follow (L1, L2, ...)": "Click each vertebra: the first asks its level, the rest follow (L1, L2, ...)",
+  "TT-TG": "TT-TG",
+  "Knee: click the medial and lateral posterior condyles, the trochlear groove, then the tibial tuberosity": "Knee: click the medial and lateral posterior condyles, the trochlear groove, then the tibial tuberosity",
+  "Height": "Height",
+  "Spine": "Spine"
 }

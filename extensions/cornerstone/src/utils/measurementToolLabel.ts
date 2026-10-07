@@ -16,6 +16,12 @@ const NAMES: Record<string, string> = {
   CobbAngle: 'Cobb angle',
   Probe: 'Pixel value',
   CalibrationLine: 'Calibration',
+  Polyline: 'Polyline',
+  HeightDifference: 'Height difference',
+  CTR: 'CTR',
+  Label: 'Text',
+  SpineLabel: 'Spine label',
+  TTTG: 'TT-TG',
 };
 
 /** The measurement's tool as a reader would name it, e.g. "Ellipse" for EllipticalROI. */

@@ -7,6 +7,7 @@ import {
   ZoomTool,
   MIPJumpToClickTool,
   LengthTool,
+  LabelTool,
   RectangleROITool,
   RectangleROIThresholdTool,
   EllipticalROITool,
@@ -56,6 +57,11 @@ import CalibrationLineTool from './tools/CalibrationLineTool';
 import CenterDragCrosshairsTool from './tools/CenterDragCrosshairsTool';
 import EllipticalROIAreaFixTool from './tools/EllipticalROIAreaFixTool';
 import ImageOverlayViewerTool from './tools/ImageOverlayViewerTool';
+// Fork: extra measuring tools (Polyline, Height difference, CTR, Text, Spine labels, TT-TG).
+import PolylineTool from './tools/PolylineTool';
+import HeightDifferenceTool from './tools/HeightDifferenceTool';
+import CTRTool from './tools/CTRTool';
+import { SpineLabelTool, TTTGTool } from './tools/SequenceLabelTools';
 
 /**
  * Fork: RadiAnt zoom direction (drag up = zoom in). Only the mouse drag is flipped;
@@ -123,6 +129,12 @@ export default function initCornerstoneTools(configuration = {}) {
   addTool(PaintFillTool);
   addTool(ReferenceLinesTool);
   addTool(CalibrationLineTool);
+  addTool(LabelTool);
+  addTool(PolylineTool);
+  addTool(HeightDifferenceTool);
+  addTool(CTRTool);
+  addTool(SpineLabelTool);
+  addTool(TTTGTool);
   addTool(TrackballRotateTool);
   addTool(VolumeCroppingTool);
   addTool(ImageOverlayViewerTool);
@@ -183,6 +195,12 @@ const toolNames = {
   PaintFill: PaintFillTool.toolName,
   ReferenceLines: ReferenceLinesTool.toolName,
   CalibrationLine: CalibrationLineTool.toolName,
+  Label: LabelTool.toolName,
+  Polyline: PolylineTool.toolName,
+  HeightDifference: HeightDifferenceTool.toolName,
+  CTR: CTRTool.toolName,
+  SpineLabel: SpineLabelTool.toolName,
+  TTTG: TTTGTool.toolName,
   TrackballRotateTool: TrackballRotateTool.toolName,
   VolumeCropping: VolumeCroppingTool.toolName,
   CircleScissors: CircleScissorsTool.toolName,

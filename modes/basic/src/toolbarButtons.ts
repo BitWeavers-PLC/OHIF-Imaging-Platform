@@ -499,6 +499,85 @@ const toolbarButtons: Button[] = [
       ],
     },
   },
+  // Fork: extra measuring tools (in the Measure menu).
+  {
+    id: 'Polyline',
+    uiType: 'ohif.toolButton',
+    props: {
+      icon: 'tool-polyline',
+      label: i18n.t('Buttons:Polyline'),
+      commands: setToolActiveToolbar,
+      evaluate: [
+        'evaluate.cornerstoneTool',
+        { name: 'evaluate.viewport.supported', unsupportedViewportTypes: ['video'] },
+      ],
+    },
+  },
+  {
+    id: 'HeightDifference',
+    uiType: 'ohif.toolButton',
+    props: {
+      icon: 'tool-height-difference',
+      label: i18n.t('Buttons:Height difference'),
+      commands: setToolActiveToolbar,
+      evaluate: [
+        'evaluate.cornerstoneTool',
+        { name: 'evaluate.viewport.supported', unsupportedViewportTypes: ['video'] },
+      ],
+    },
+  },
+  {
+    id: 'CTR',
+    uiType: 'ohif.toolButton',
+    props: {
+      icon: 'tool-ctr',
+      label: i18n.t('Buttons:CTR'),
+      commands: setToolActiveToolbar,
+      evaluate: [
+        'evaluate.cornerstoneTool',
+        { name: 'evaluate.viewport.supported', unsupportedViewportTypes: ['video'] },
+      ],
+    },
+  },
+  {
+    id: 'Label',
+    uiType: 'ohif.toolButton',
+    props: {
+      icon: 'tool-text-label',
+      label: i18n.t('Buttons:Text'),
+      commands: setToolActiveToolbar,
+      evaluate: [
+        'evaluate.cornerstoneTool',
+        { name: 'evaluate.viewport.supported', unsupportedViewportTypes: ['video'] },
+      ],
+    },
+  },
+  {
+    id: 'SpineLabel',
+    uiType: 'ohif.toolButton',
+    props: {
+      icon: 'tool-spine-label',
+      label: i18n.t('Buttons:Spine labels'),
+      commands: setToolActiveToolbar,
+      evaluate: [
+        'evaluate.cornerstoneTool',
+        { name: 'evaluate.viewport.supported', unsupportedViewportTypes: ['video'] },
+      ],
+    },
+  },
+  {
+    id: 'TTTG',
+    uiType: 'ohif.toolButton',
+    props: {
+      icon: 'tool-tttg',
+      label: i18n.t('Buttons:TT-TG'),
+      commands: setToolActiveToolbar,
+      evaluate: [
+        'evaluate.cornerstoneTool',
+        { name: 'evaluate.viewport.supported', unsupportedViewportTypes: ['video'] },
+      ],
+    },
+  },
   {
     id: 'TagBrowser',
     uiType: 'ohif.toolButton',
@@ -1140,6 +1219,29 @@ export const toolNames: Record<string, [string, string?]> = {
   LogicalContourOperations: [i18n.t('Buttons:Combine outlines')],
   SimplifyContours: [i18n.t('Buttons:Simplify outline')],
   SmoothContours: [i18n.t('Buttons:Smooth outline')],
+  Polyline: [
+    i18n.t('Buttons:Polyline'),
+    i18n.t('Buttons:Length along a path: click points, double-click to finish'),
+  ],
+  HeightDifference: [
+    i18n.t('Buttons:Height difference'),
+    i18n.t('Buttons:Vertical offset between two points (e.g. leg length, pelvic tilt)'),
+  ],
+  CTR: [
+    i18n.t('Buttons:CTR'),
+    i18n.t('Buttons:Cardiothoracic ratio: draw the heart width, then the chest width'),
+  ],
+  Label: [i18n.t('Buttons:Text'), i18n.t('Buttons:A text note on the image')],
+  SpineLabel: [
+    i18n.t('Buttons:Spine labels'),
+    i18n.t('Buttons:Click each vertebra: the first asks its level, the rest follow (L1, L2, ...)'),
+  ],
+  TTTG: [
+    i18n.t('Buttons:TT-TG'),
+    i18n.t(
+      'Buttons:Knee: click the medial and lateral posterior condyles, the trochlear groove, then the tibial tuberosity'
+    ),
+  ],
 };
 for (const [id, [label, tooltip]] of Object.entries(toolNames)) {
   const button = toolbarButtons.find(b => b.id === id);
@@ -1197,6 +1299,12 @@ export const toolCaptions: Record<string, string> = {
   Undo: i18n.t('Buttons:Undo'),
   Redo: i18n.t('Buttons:Redo'),
   TrackballRotate: i18n.t('Buttons:Rotate 3D'),
+  Polyline: i18n.t('Buttons:Polyline'),
+  HeightDifference: i18n.t('Buttons:Height'),
+  CTR: i18n.t('Buttons:CTR'),
+  Label: i18n.t('Buttons:Text'),
+  SpineLabel: i18n.t('Buttons:Spine'),
+  TTTG: i18n.t('Buttons:TT-TG'),
 };
 for (const [id, caption] of Object.entries(toolCaptions)) {
   for (const button of [toolbarButtons, segmentationButtons].flat()) {

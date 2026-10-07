@@ -885,20 +885,23 @@ function commandsModule({
 
       viewportGridService.setActiveViewportId(viewportId);
     },
-    arrowTextCallback: async ({ callback, data }) => {
+    // Fork: `title`/`placeholder` for the Text, Spine and TT-TG tools; a label tool passes its
+    // annotation data (label at `data.label`), the arrow its annotation (`data.data.label`).
+    arrowTextCallback: async ({ callback, data, title, placeholder }) => {
       const labelConfig = customizationService.getCustomization('measurementLabels');
       const renderContent = customizationService.getCustomization('ui.labellingComponent');
+      const current = data?.data?.label ?? data?.label;
 
-      if (!labelConfig) {
+      if (!labelConfig || title) {
         const label = await callInputDialog({
           uiDialogService,
-          title: i18n.t('Tools:Edit Arrow Text'),
-          placeholder: data?.data?.label || i18n.t('Tools:Enter new text'),
-          defaultValue: data?.data?.label || '',
+          title: title ?? i18n.t('Tools:Edit Arrow Text'),
+          placeholder: current || placeholder || i18n.t('Tools:Enter new text'),
+          defaultValue: current || '',
         });
 
         // Fork: on cancel keep the current text (null would blank an edited arrow label).
-        callback?.(label ?? data?.data?.label);
+        callback?.(label ?? current);
         return;
       }
 

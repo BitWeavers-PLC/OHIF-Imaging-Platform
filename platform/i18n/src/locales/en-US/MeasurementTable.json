@@ -45,5 +45,11 @@
   "Save as structured report": "Save as structured report",
   "Delete all measurements": "Delete all measurements",
   "Edge-snap ROI": "Edge-snap ROI",
-  "Pixel value": "Pixel value"
+  "Pixel value": "Pixel value",
+  "Polyline": "Polyline",
+  "Height difference": "Height difference",
+  "CTR": "CTR",
+  "Text": "Text",
+  "Spine label": "Spine label",
+  "TT-TG": "TT-TG"
 }

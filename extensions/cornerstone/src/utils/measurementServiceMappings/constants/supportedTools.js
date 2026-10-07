@@ -14,6 +14,13 @@ const supportedTools = [
   'UltrasoundDirectionalTool',
   'UltrasoundPleuraBLineTool',
   'SegmentBidirectional',
+  // Fork: extra measuring tools.
+  'Polyline',
+  'HeightDifference',
+  'CTR',
+  'Label',
+  'SpineLabel',
+  'TTTG',
 ];
 
 export default supportedTools;

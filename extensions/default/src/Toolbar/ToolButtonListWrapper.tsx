@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   ToolbarGlyph,
@@ -18,8 +18,9 @@ import getShortcut from './getShortcut';
 
 const HOVER_LISTS = ['WindowLevelTools', 'MeasurementTools', 'SlabTools'];
 
-// Fork: lists that show a fixed face instead of their first tool ("Cobb" read as the only
-// measuring tool). The face lights up while one of the list's tools is in use; a click opens it.
+// Fork: lists whose button shows the tool last picked from them (or this face until one is
+// picked), not simply their first tool ("Cobb" read as the only measuring tool). The button
+// lights up while that tool is in use; a click picks it again, or opens the list.
 const FIXED_FACES: Record<string, { icon: string; caption: string; label: string }> = {
   MeasurementTools: {
     icon: 'tab-linear', // ruler
@@ -73,6 +74,7 @@ export default function ToolButtonListWrapper({
   const opensOnHover = isMoreTools || HOVER_LISTS.includes(id);
   const { open: hoverOpen, setOpen: setHoverOpen, hoverProps } = useHoverMenu();
   const showLabels = useToolbarLabels();
+  const [lastPickedId, setLastPickedId] = useState<string | null>(null);
   const hover = opensOnHover ? hoverProps : {};
 
   if (!toolbarButtons?.length && !(isMoreTools && moreAlwaysVisible)) {
@@ -91,24 +93,24 @@ export default function ToolButtonListWrapper({
     overflowItems.find(item => item.isActive) ||
     toolbarButtons?.find(button => button.componentProps.isActive)?.componentProps;
   const face = FIXED_FACES[id];
-  const primary = isMoreTools
-    ? fallbackMorePrimary
-    : face
-      ? {
-          id,
-          icon: face.icon,
-          caption: face.caption,
-          label: activeItem?.label ?? face.label,
-          isActive: Boolean(activeItem),
-        }
-      : activeItem || toolbarButtons[0]?.componentProps;
-
   const items = (toolbarButtons || []).map(button => button.componentProps);
   // Fork: tools that normally sit on the bar (MPR, Length, ...) come first in More, ahead of
   // More's own rarer items.
   const mergedItems = [...overflowItems, ...items].filter(
     (item, index, array) => array.findIndex(candidate => candidate.id === item.id) === index
   );
+  const shown = face && (activeItem || mergedItems.find(item => item.id === lastPickedId));
+  const primary = isMoreTools
+    ? fallbackMorePrimary
+    : face
+      ? {
+          id,
+          icon: shown?.icon ?? face.icon,
+          caption: shown ? (shown.caption ?? shown.label) : face.caption,
+          label: shown?.label ?? face.label,
+          isActive: Boolean(activeItem),
+        }
+      : activeItem || toolbarButtons[0]?.componentProps;
 
   // Hover tracking is on the menu panel (contentProps), so its scroll strips keep it open.
   const menuItems = (
@@ -126,7 +128,12 @@ export default function ToolButtonListWrapper({
               data-cy={item.id}
               data-tool={item.id}
               data-active={item.isActive}
-              onSelect={() => onInteraction?.({ id, itemId: item.id, commands: item.commands })}
+              onSelect={() => {
+                if (face) {
+                  setLastPickedId(item.id);
+                }
+                onInteraction?.({ id, itemId: item.id, commands: item.commands });
+              }}
             >
               {/* Text-only items (e.g. W/L presets) line up with the ones that have an icon. */}
               <span className={item.icon ? 'pl-1' : 'pl-9'}>
@@ -204,7 +211,9 @@ export default function ToolButtonListWrapper({
           shortcut={shortcutOf(primary)}
           onInteraction={({ itemId }) =>
             face
-              ? setHoverOpen(!hoverOpen)
+              ? shown
+                ? onInteraction?.({ id, itemId: shown.id, commands: shown.commands })
+                : setHoverOpen(!hoverOpen)
               : onInteraction?.({ id, itemId, commands: primary.commands })
           }
           className={primary.className}

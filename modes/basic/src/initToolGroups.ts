@@ -1,3 +1,4 @@
+import i18n from 'i18next';
 // Fork: not the package index, which imports this mode back.
 import { createTools as createSegmentationTools } from '../../segmentation/src/initToolGroups';
 
@@ -80,6 +81,38 @@ export function withSegmentationTools(tools, utilityModule, commandsManager) {
   return { ...tools, passive: [...(tools.passive ?? []), ...extra] };
 }
 
+/**
+ * Fork: the extra measuring tools (Polyline, Height difference, CTR, Text, Spine labels, TT-TG),
+ * with the same text dialog as Arrow for typing or editing a label.
+ */
+function extraMeasureTools(toolNames, commandsManager) {
+  const dialog = (title: string, placeholder?: string) => ({
+    ask: callback =>
+      commandsManager.runCommand('arrowTextCallback', { callback, title, placeholder }),
+    edit: (data, eventDetails, callback) =>
+      commandsManager.runCommand('arrowTextCallback', { callback, data, eventDetails, title }),
+  });
+  const text = dialog(i18n.t('Tools:Text'));
+  const spine = dialog(i18n.t('Tools:Spine level'), i18n.t('Tools:e.g. L1'));
+  return [
+    { toolName: toolNames.Polyline },
+    { toolName: toolNames.HeightDifference },
+    { toolName: toolNames.CTR },
+    {
+      toolName: toolNames.Label,
+      configuration: { getTextCallback: text.ask, changeTextCallback: text.edit },
+    },
+    {
+      toolName: toolNames.SpineLabel,
+      configuration: { promptText: spine.ask, changeTextCallback: spine.edit },
+    },
+    {
+      toolName: toolNames.TTTG,
+      configuration: { changeTextCallback: dialog(i18n.t('Tools:Edit label')).edit },
+    },
+  ];
+}
+
 function initDefaultToolGroup(extensionManager, toolGroupService, commandsManager, toolGroupId) {
   const utilityModule = extensionManager.getModuleEntry(
     '@ohif/extension-cornerstone.utilityModule.tools'
@@ -121,6 +154,7 @@ function initDefaultToolGroup(extensionManager, toolGroupService, commandsManage
       { toolName: toolNames.CobbAngle },
       { toolName: toolNames.Magnify },
       { toolName: toolNames.CalibrationLine },
+      ...extraMeasureTools(toolNames, commandsManager),
       {
         toolName: toolNames.PlanarFreehandContourSegmentation,
         configuration: {
@@ -231,6 +265,7 @@ function initMPRToolGroup(extensionManager, toolGroupService, commandsManager) {
       { toolName: toolNames.PlanarFreehandROI },
       { toolName: toolNames.SplineROI },
       { toolName: toolNames.LivewireContour },
+      ...extraMeasureTools(toolNames, commandsManager),
       { toolName: toolNames.WindowLevelRegion },
       {
         toolName: toolNames.PlanarFreehandContourSegmentation,
