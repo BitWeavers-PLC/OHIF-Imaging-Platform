@@ -1,0 +1,435 @@
+<title>AxialScope Reading Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: a reading-room manual. Sticky contents rail on wide screens, one column of ~68ch prose,
+   depth badges (Quick / Know this / In depth) on every section, keycaps for every shortcut. */
+:root {
+  --bg: #f4f6f8;
+  --surface: #ffffff;
+  --ink: #18212b;
+  --muted: #56636f;
+  --line: #d9e0e6;
+  --accent: #c8264c;        /* AxialScope red, deepened for text on light */
+  --accent-soft: #fbe8ed;
+  --tip: #0f6e6a;
+  --tip-soft: #e3f3f1;
+  --warn: #8a5a00;
+  --warn-soft: #fff3d6;
+  --key-bg: #eef1f4;
+  --key-edge: #b9c3cc;
+  --font-display: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'Source Sans 3', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11161c; --surface: #18202a; --ink: #e6ebf0; --muted: #9aa7b3; --line: #2a3542;
+    --accent: #ff6b8a; --accent-soft: #3a1a24; --tip: #5cc9c0; --tip-soft: #11302e;
+    --warn: #f3c25e; --warn-soft: #33290f; --key-bg: #222c38; --key-edge: #3d4a59;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11161c; --surface: #18202a; --ink: #e6ebf0; --muted: #9aa7b3; --line: #2a3542;
+  --accent: #ff6b8a; --accent-soft: #3a1a24; --tip: #5cc9c0; --tip-soft: #11302e;
+  --warn: #f3c25e; --warn-soft: #33290f; --key-bg: #222c38; --key-edge: #3d4a59;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 17px; line-height: 1.6;
+  padding-inline: 16px; padding-block: 0 64px;
+}
+.wrap { max-width: 1120px; margin: 0 auto; display: grid; grid-template-columns: 1fr; gap: 40px; }
+@media (min-width: 960px) { .wrap { grid-template-columns: 230px minmax(0, 1fr); } }
+
+header.top { max-width: 1120px; margin: 0 auto; padding-block: 48px 28px; border-bottom: 1px solid var(--line); margin-bottom: 32px; }
+.eyebrow { font-family: var(--font-display); font-weight: 700; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(32px, 5vw, 48px); line-height: 1.05; margin: 8px 0 14px; text-wrap: balance; letter-spacing: -.01em; }
+.lede { max-width: 68ch; color: var(--muted); font-size: 19px; margin: 0; }
+.legend { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 20px; font-size: 15px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+
+nav.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 20px); align-self: start; font-size: 15px; display: none; }
+@media (min-width: 960px) { nav.toc { display: block; } }
+nav.toc p { font-family: var(--font-display); font-weight: 700; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+nav.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; counter-reset: toc; }
+nav.toc a { display: flex; gap: 10px; padding: 5px 8px; border-radius: 6px; color: var(--ink); text-decoration: none; counter-increment: toc; }
+nav.toc a::before { content: counter(toc); color: var(--muted); font-variant-numeric: tabular-nums; min-width: 1.2em; }
+nav.toc a:hover, nav.toc a:focus-visible { background: var(--surface); outline: none; box-shadow: 0 0 0 1px var(--line); }
+
+main { min-width: 0; display: grid; gap: 56px; }
+section { min-width: 0; scroll-margin-top: 20px; }
+.sec-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 14px; border-bottom: 2px solid var(--ink); padding-bottom: 8px; margin-bottom: 18px; }
+h2 { font-family: var(--font-display); font-weight: 800; font-size: 28px; margin: 0; text-wrap: balance; }
+h3 { font-family: var(--font-display); font-weight: 700; font-size: 20px; margin: 30px 0 8px; text-wrap: balance; }
+h4 { font-family: var(--font-display); font-weight: 700; font-size: 16px; margin: 22px 0 6px; }
+p, li { max-width: 68ch; }
+p { margin: 0 0 12px; }
+ul, ol { margin: 0 0 12px; padding-left: 22px; }
+li { margin-bottom: 5px; }
+strong { font-weight: 700; }
+a { color: var(--accent); }
+
+.depth { font-family: var(--font-display); font-weight: 700; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; border: 1px solid currentColor; }
+.d-quick { color: var(--muted); }
+.d-know { color: var(--warn); }
+.d-deep { color: var(--accent); }
+
+kbd { font-family: var(--font-mono); font-size: .8em; background: var(--key-bg); border: 1px solid var(--key-edge); border-bottom-width: 2px; border-radius: 4px; padding: 1px 6px; white-space: nowrap; }
+.ui { font-weight: 600; }  /* a label exactly as shown on screen */
+
+.callout { border-radius: 8px; padding: 14px 16px; margin: 16px 0; max-width: 72ch; }
+.callout p:last-child, .callout ul:last-child { margin-bottom: 0; }
+.callout .lbl { display: block; font-family: var(--font-display); font-weight: 700; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 4px; }
+.miss { background: var(--warn-soft); }
+.miss .lbl { color: var(--warn); }
+.tip { background: var(--tip-soft); }
+.tip .lbl { color: var(--tip); }
+.care { background: var(--accent-soft); }
+.care .lbl { color: var(--accent); }
+
+.table-scroll { overflow-x: auto; margin: 12px 0 18px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 15px; }
+th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--font-display); font-weight: 700; font-size: 13px; letter-spacing: .04em; color: var(--muted); background: var(--bg); }
+tr:last-child td { border-bottom: none; }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.steps { counter-reset: step; list-style: none; padding-left: 0; }
+.steps > li { counter-increment: step; position: relative; padding-left: 40px; margin-bottom: 12px; }
+.steps > li::before { content: counter(step); position: absolute; left: 0; top: 1px; width: 26px; height: 26px; border-radius: 50%; background: var(--ink); color: var(--bg); font-family: var(--font-display); font-weight: 700; font-size: 14px; display: grid; place-items: center; }
+
+.screen { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 14px 0 18px; }
+@media (min-width: 640px) { .screen { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.screen div { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; min-width: 0; }
+.screen b { display: block; font-family: var(--font-display); font-size: 15px; margin-bottom: 2px; }
+.screen span { color: var(--muted); font-size: 15px; }
+
+footer { max-width: 1120px; margin: 56px auto 0; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+
+<header class="top">
+  <div class="eyebrow">AxialScope viewer</div>
+  <h1>Reading Guide</h1>
+  <p class="lede">How to read studies in AxialScope, from the everyday tools to segmentation and PET/CT tumor volume. Mouse and keys follow RadiAnt, so most of it will feel familiar.</p>
+  <div class="legend">
+    <span><span class="depth d-quick">Quick</span> the basics, at a glance</span>
+    <span><span class="depth d-know">Know this</span> what not to miss</span>
+    <span><span class="depth d-deep">In depth</span> step by step</span>
+  </div>
+</header>
+
+<div class="wrap">
+<nav class="toc" aria-label="Contents">
+  <p>Contents</p>
+  <ol>
+    <li><a href="#screen">The screen</a></li>
+    <li><a href="#mouse">Mouse and keyboard</a></li>
+    <li><a href="#tools">Everyday tools</a></li>
+    <li><a href="#compare">Priors and syncing</a></li>
+    <li><a href="#mpr">MPR, MIP and 3D</a></li>
+    <li><a href="#seg">Segmentation</a></li>
+    <li><a href="#pet">PET/CT</a></li>
+    <li><a href="#other">Other workflows</a></li>
+    <li><a href="#settings">Settings and help</a></li>
+  </ol>
+</nav>
+
+<main>
+
+<!-- 1 -->
+<section id="screen">
+  <div class="sec-head"><h2>The screen</h2><span class="depth d-quick">Quick</span></div>
+  <div class="screen">
+    <div><b>Left panel</b><span>Patient name and ID at the top, then the current study and its priors. Each tile shows series number, modality, image count and description.</span></div>
+    <div><b>Toolbar</b><span>Grouped as Navigate, Measure, Image, Layout, Sync and Output. Menus open when you hover them. Tools that don't fit go under <span class="ui">•••</span>.</span></div>
+    <div><b>Image area</b><span>One or more views. The study opens in a layout that suits it (for example CT axial + coronal, PET/CT side by side, or an MR grid).</span></div>
+    <div><b>Right panel</b><span>Tabs for <span class="ui">Paint</span>, <span class="ui">Outline</span>, <span class="ui">Measurements</span> and <span class="ui">Curves</span>.</span></div>
+  </div>
+  <ul>
+    <li><strong>To show a series</strong>, double-click its tile, or drag it onto a view.</li>
+    <li><strong>View corners</strong> show the study date and series (top left), the patient (top right), the pixel value under the mouse with W/L and zoom (bottom left), and slice thickness, location and image number (bottom right).</li>
+    <li><strong>Settings</strong> is the gear at the bottom left.</li>
+    <li><strong>The workflow menu</strong> (top right, e.g. <span class="ui">Standard reading</span>) appears when the study fits more than one workflow, such as PET/CT tumor volume or Segmentation.</li>
+  </ul>
+</section>
+
+<!-- 2 -->
+<section id="mouse">
+  <div class="sec-head"><h2>Mouse and keyboard</h2><span class="depth d-quick">Quick</span></div>
+  <p>The mouse works the same whichever tool is selected. Choosing a tool only changes what the <strong>left</strong> button does.</p>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Mouse</th><th>Does</th></tr></thead>
+    <tbody>
+      <tr><td>Left drag</td><td>Browse slices, or the selected tool</td></tr>
+      <tr><td>Middle drag, or <kbd>Ctrl</kbd> + left drag</td><td>Window / level</td></tr>
+      <tr><td>Right drag</td><td>Zoom (drag up to zoom in)</td></tr>
+      <tr><td>Left + right drag, back button, or <kbd>Shift</kbd> + left drag</td><td>Pan</td></tr>
+      <tr><td>Wheel</td><td>Browse slices</td></tr>
+      <tr><td><kbd>Ctrl</kbd> + wheel</td><td>Zoom</td></tr>
+      <tr><td>Tilt wheel / sideways swipe</td><td>Previous / next series</td></tr>
+      <tr><td>Double-click</td><td>Maximize or restore the view</td></tr>
+      <tr><td>Right-click a measurement</td><td><span class="ui">Edit label…</span> or <span class="ui">Delete</span></td></tr>
+    </tbody>
+  </table></div>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Keys</th><th>Does</th></tr></thead>
+    <tbody>
+      <tr><td><kbd>↑</kbd> <kbd>↓</kbd> &nbsp; <kbd>PgUp</kbd> <kbd>PgDn</kbd></td><td>Previous / next image; 10 images back / forward</td></tr>
+      <tr><td><kbd>←</kbd> <kbd>→</kbd> &nbsp; <kbd>Home</kbd> <kbd>End</kbd></td><td>Previous / next series; first / last series</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>Home</kbd> / <kbd>Ctrl</kbd>+<kbd>End</kbd></td><td>First / last image</td></tr>
+      <tr><td><kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Next / previous view</td></tr>
+      <tr><td><kbd>0</kbd> – <kbd>9</kbd></td><td>Window presets (table below)</td></tr>
+      <tr><td><kbd>I</kbd></td><td>Invert</td></tr>
+      <tr><td><kbd>Space</kbd></td><td>Start / stop cine</td></tr>
+      <tr><td><kbd>F5</kbd> &nbsp; <kbd>Shift</kbd>+<kbd>F5</kbd></td><td>Sync scrolling on / off; Auto-align (CT)</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>M</kbd> &nbsp; <kbd>F</kbd></td><td>Maximize view; full screen</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>1</kbd> &nbsp; <kbd>F3</kbd></td><td>MPR; 3D volume rendering</td></tr>
+      <tr><td><kbd>B</kbd> <kbd>W</kbd> <kbd>M</kbd> <kbd>Z</kbd></td><td>Browse, Window, Pan, Zoom</td></tr>
+      <tr><td><kbd>L</kbd> <kbd>E</kbd> <kbd>A</kbd> <kbd>C</kbd> <kbd>Y</kbd></td><td>Length, Ellipse, Angle, Cobb, Arrow</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>0</kbd> &nbsp; <kbd>Ctrl</kbd>+<kbd>=</kbd> / <kbd>Ctrl</kbd>+<kbd>−</kbd></td><td>Fit image; zoom in / out</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>[</kbd> / <kbd>Ctrl</kbd>+<kbd>]</kbd></td><td>Rotate left / right</td></tr>
+      <tr><td><kbd>Del</kbd> &nbsp; <kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Y</kbd></td><td>Delete the selected measurement; undo / redo</td></tr>
+    </tbody>
+  </table></div>
+  <p>Every shortcut can be changed under Settings › Keyboard.</p>
+</section>
+
+<!-- 3 -->
+<section id="tools">
+  <div class="sec-head"><h2>Everyday tools</h2><span class="depth d-quick">Quick</span></div>
+
+  <h3>Window presets</h3>
+  <p>Hover the window/level button for the list, or press the number key. Each view's top-left menu (it shows when the mouse is over the view) also has Soft tissue, Liver and the PET SUV presets.</p>
+  <div class="table-scroll"><table>
+    <thead><tr><th>Key</th><th>Preset</th><th>Width / Level</th></tr></thead>
+    <tbody>
+      <tr><td><kbd>0</kbd></td><td>Default window (from the image)</td><td class="num">—</td></tr>
+      <tr><td><kbd>1</kbd></td><td>Full dynamic range</td><td class="num">—</td></tr>
+      <tr><td><kbd>2</kbd></td><td>Abdomen</td><td class="num">400 / 50</td></tr>
+      <tr><td><kbd>3</kbd></td><td>Angio</td><td class="num">600 / 300</td></tr>
+      <tr><td><kbd>4</kbd></td><td>Bone</td><td class="num">2500 / 480</td></tr>
+      <tr><td><kbd>5</kbd></td><td>Brain</td><td class="num">80 / 40</td></tr>
+      <tr><td><kbd>6</kbd></td><td>Chest (mediastinum)</td><td class="num">350 / 50</td></tr>
+      <tr><td><kbd>7</kbd></td><td>Lung</td><td class="num">1500 / −600</td></tr>
+      <tr><td><kbd>8</kbd></td><td>Stroke</td><td class="num">40 / 40</td></tr>
+      <tr><td><kbd>9</kbd></td><td>Subdural</td><td class="num">200 / 75</td></tr>
+    </tbody>
+  </table></div>
+  <p><span class="ui">Window from area</span> (under •••) sets the window from a box you drag. <span class="ui">Manual window/level</span>, in the view's bottom menu, lets you type exact values.</p>
+
+  <h3>Measurements</h3>
+  <ul>
+    <li><span class="ui">Length</span>, <span class="ui">Angle</span>, <span class="ui">Bidirectional</span> (longest diameter and perpendicular width, for RECIST), and <span class="ui">Cobb angle</span>.</li>
+    <li><span class="ui">Ellipse</span>, <span class="ui">Rectangle</span>, <span class="ui">Circle</span>: area, mean, min and max (HU on CT, SUV on PET).</li>
+    <li><span class="ui">Freehand ROI</span>, <span class="ui">Spline ROI</span>, and <span class="ui">Edge-snap ROI</span>. Edge-snap is for irregular structures: click points around the structure and the outline snaps to the edges between them.</li>
+    <li><span class="ui">Arrow</span> (with a text label) and <span class="ui">Pixel value</span>.</li>
+    <li><span class="ui">Calibrate</span> sets the true length of a line, for images that have no pixel spacing (e.g. some scanned films).</li>
+  </ul>
+  <p>Hover a measurement to grab and move it. Right-click it to relabel or delete it.</p>
+  <p>The <span class="ui">Measurements</span> tab lists every measurement. <span class="ui">Copy findings</span> copies them as a table you can paste straight into the report. <span class="ui">Download CSV</span> saves them as a spreadsheet.</p>
+
+  <h3>Image tools</h3>
+  <ul>
+    <li>Rotate left / right, flip horizontal / vertical, and invert.</li>
+    <li><span class="ui">Magnifier</span> and <span class="ui">Reset view</span> (resets zoom, pan, rotation and window).</li>
+    <li><span class="ui">Cine</span> plays the series.</li>
+    <li><span class="ui">Save image</span> saves or copies the view as a picture, with or without the annotations.</li>
+    <li><span class="ui">DICOM tags</span> shows the image header.</li>
+  </ul>
+</section>
+
+<!-- 4 -->
+<section id="compare">
+  <div class="sec-head"><h2>Priors and syncing</h2><span class="depth d-know">Know this</span></div>
+  <p>Priors are listed under the current study as "Prior · description". Drag a prior series beside the current one, or use the study menu's <span class="ui">Compare with current</span> to open a side-by-side layout.</p>
+  <div class="callout miss"><span class="lbl">Don't miss</span>
+    <ul>
+      <li><strong>Series from the same scan link by themselves.</strong> Put CT and PET of one PET/CT, or axial T1 and FLAIR, side by side and they scroll, zoom and pan together without <kbd>F5</kbd>. A newly dropped series lines up with the view you are reading. Your current view doesn't jump.</li>
+      <li><strong>Priors link where you are looking.</strong> Scroll both to the same anatomy, then press <kbd>F5</kbd>. They stay together from then on. Press <kbd>F5</kbd> again to unlink, re-align by hand, and press it once more.</li>
+      <li><strong>Auto-align (CT)</strong> (<kbd>Shift</kbd>+<kbd>F5</kbd>) does that alignment for you on CT. Put the current study on a landmark and press it: other CT views jump to the matching anatomy and stay linked. It works even when the two scans cover different ranges. If there's no clear match it says so and moves nothing.</li>
+      <li><span class="ui">Reference lines</span> show where the other views cut the current image. <span class="ui">Sync window/level</span> shares windowing between views.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 5 -->
+<section id="mpr">
+  <div class="sec-head"><h2>MPR, MIP and 3D</h2><span class="depth d-know">Know this</span></div>
+  <p>Hover <span class="ui">Layout</span> for a viewport grid and, below it, the reconstructions this series can open: MPR (3 planes), MIP + MPR, 3D + MPR and others. A layout only appears if the series can be built into a volume, so a scout or a set of mixed-orientation images won't offer it.</p>
+  <div class="callout miss"><span class="lbl">Don't miss</span>
+    <ul>
+      <li><strong>MPR opens at the level you were reading</strong>, not at the top of the volume. A CT MIP opens in the angio window.</li>
+      <li><strong>Crosshairs are on as soon as MPR opens.</strong> Drag a line to rotate the planes. Drag the centre to move the cross point; at the centre the mouse moves the crosshair instead of scrolling. Drag a line's end handles to thicken it into a slab MIP.</li>
+      <li><strong>Slab projections</strong> are in the MIP menu: MIP 10 mm, 20 mm or full volume; <strong>MinIP 10 mm for airways</strong>; AvgIP 5 mm. <span class="ui">Thin slice</span> turns the slab off. While a slab is on, a bar on the view lets you switch MIP / MinIP / AvgIP and drag the thickness.</li>
+      <li><strong>Rotating MIP:</strong> the wheel rotates the MIP. Click a hot spot and the MPR views jump to it, which makes it quick to find a lesion in the planes.</li>
+      <li><strong>Dropping a 2D series</strong> onto a 3D or MPR view turns that view into a normal 2D view rather than refusing it.</li>
+      <li><strong>3D:</strong> left drag rotates, right drag zooms, the back button pans. <span class="ui">Crop 3D</span> (under •••) has coloured handles to cut away the table or overlying bone.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 6 -->
+<section id="seg">
+  <div class="sec-head"><h2>Segmentation</h2><span class="depth d-deep">In depth</span></div>
+  <p>Segmentation means marking which voxels belong to a structure (a tumour, an organ, a bleed) so the viewer can measure its volume and statistics in 3D. It takes some understanding to get numbers you can trust.</p>
+
+  <h3>Two kinds of segmentation</h3>
+  <div class="table-scroll"><table>
+    <thead><tr><th></th><th>Paint (labelmap)</th><th>Outline (contour)</th></tr></thead>
+    <tbody>
+      <tr><td><strong>What it stores</strong></td><td>Every voxel inside the structure</td><td>A drawn outline on each slice</td></tr>
+      <tr><td><strong>Best for</strong></td><td>Volumes, statistics, thresholds, tumours, PET lesions</td><td>Precise borders, radiotherapy-style structures</td></tr>
+      <tr><td><strong>Volume and stats</strong></td><td>Shown when you hover the segment</td><td>First use <span class="ui">•••</span> › <span class="ui">Show in All Planes</span>, then hover the segment in the Paint tab</td></tr>
+      <tr><td><strong>Export</strong></td><td>DICOM SEG, CSV report</td><td>DICOM RTSS, CSV report</td></tr>
+    </tbody>
+  </table></div>
+  <p>You can segment in <span class="ui">Standard reading</span> through the <span class="ui">Paint</span> and <span class="ui">Outline</span> tabs. For a longer job, switch to the <span class="ui">Segmentation</span> workflow in the workflow menu, which puts the image views and tools first. Switching workflows closes the current one, and its measurements and segmentations don't carry over. The viewer asks before switching.</p>
+
+  <h3>A typical session</h3>
+  <ol class="steps">
+    <li><strong>Pick the series to segment</strong> and make it the active view. Use the thinnest reconstructable series for volumes; tools that work in 3D need a series that builds into a volume.</li>
+    <li><strong>Create it.</strong> In the Paint tab, choose <span class="ui">New segmentation</span>. It starts with one segment. Add more with <span class="ui">New segment</span> (<kbd>Shift</kbd>+<kbd>A</kbd>), one segment per structure.</li>
+    <li><strong>Name it now.</strong> Use the segment's menu › <span class="ui">Rename</span> (e.g. "RUL nodule"). The names go into the export and the CSV.</li>
+    <li><strong>Paint.</strong> Pick the tool that suits the structure (below). Work slice by slice, or paint key slices and fill the gaps.</li>
+    <li><strong>Check every slice.</strong> Scroll through the whole structure with the overlay on. Cut away leaks with the eraser (<kbd>Shift</kbd>+<kbd>E</kbd>).</li>
+    <li><strong>Read the result.</strong> Hover the segment in the panel for volume and statistics. Use <span class="ui">Longest diameters (RECIST)</span> for the long and short axis.</li>
+    <li><strong>Export</strong> if needed: segmentation menu › <span class="ui">Save as</span> › <span class="ui">Download</span> as CSV report, DICOM SEG or DICOM RTSS.</li>
+  </ol>
+
+  <h3>Paint tools: which to use</h3>
+  <h4>Brush and Eraser</h4>
+  <p>Radius is in <strong>millimetres</strong> (0.5–99.5, default 25), so it means the same size on any series. <kbd>]</kbd> and <kbd>[</kbd> make it bigger and smaller. <span class="ui">Circle</span> paints on this slice only. <span class="ui">Sphere</span> paints through neighbouring slices too, which is fast but leaks easily. Use Circle near other structures.</p>
+  <h4>Threshold brush</h4>
+  <p>Paints only the pixels within a value range, so you can brush roughly over a structure and only the right tissue is filled. <span class="ui">Range</span> uses fixed values (default 50–600, HU on CT). <span class="ui">Dynamic</span> takes the range from the tissue under the cursor.</p>
+  <div class="callout tip"><span class="lbl">Ranges that work on CT</span>
+    <ul>
+      <li>Contrast-enhanced vessels: about 150–600 HU</li>
+      <li>Bone: above about 200 HU</li>
+      <li>Acute blood: about 50–90 HU (check the edges by eye; partial volume blurs them)</li>
+      <li>Lung nodule against aerated lung: about −400 and above</li>
+    </ul>
+  </div>
+  <h4>One-click region</h4>
+  <p>Click inside a lesion and the region grows to its edge. It works best on <strong>PET</strong>. On CT the lesion needs strong contrast with its surroundings (roughly 100 HU or more) and a clear edge. Wait for the <strong>+</strong> cursor before clicking; <strong>⊘</strong> means it can't segment at that point.</p>
+  <h4>Shape fill and Edit with outline</h4>
+  <p><span class="ui">Shape fill</span> fills a circle, sphere or rectangle in one drag, for rough ROIs. <span class="ui">Edit with outline</span> draws a contour that adds to or cuts from the painted region, which is the cleanest way to trim a leak.</p>
+  <h4>Fill between slices</h4>
+  <p>Paint the structure on a few key slices (every 3–5 slices, plus the first and last), then use <span class="ui">Fill between slices</span> to interpolate the rest. <kbd>N</kbd> scrolls to the slices it filled so you can check them. It needs a series that builds into a volume.</p>
+  <h4>Labelmap Assist and Marker Guided Labelmap</h4>
+  <p>These are AI-assisted tools, available in the Segmentation workflow only. With Marker Guided Labelmap you place include and exclude markers and the model draws the region. The first use downloads a model, so expect a wait. Always check the result slice by slice.</p>
+
+  <h3>Outline tools</h3>
+  <ul>
+    <li><span class="ui">Freehand outline</span>, <span class="ui">Spline outline</span> (smooth curve through clicked points), and <span class="ui">Edge-snap outline</span> (snaps to edges).</li>
+    <li><span class="ui">Sculpt outline</span> pushes an existing border in or out.</li>
+    <li>Each outline tool can interpolate between the slices you drew.</li>
+    <li><span class="ui">Combine outlines</span> (merge, intersect, subtract), <span class="ui">Simplify outline</span> and <span class="ui">Smooth outline</span> tidy up.</li>
+  </ul>
+
+  <h3>Managing segments</h3>
+  <ul>
+    <li><strong>Segment row:</strong> the eye shows or hides the segment. Its menu has rename, duplicate, delete, change colour and lock. Lock a finished segment so other painting can't change it.</li>
+    <li><strong>Display:</strong> fill and outline, outline only or fill only; opacity and border width; whether other segmentations show.</li>
+    <li><span class="ui">Preview edits before creating</span> (in the tool settings) shows each edit as a preview. <kbd>Enter</kbd> accepts it and <kbd>Esc</kbd> rejects it.</li>
+  </ul>
+
+  <div class="callout care"><span class="lbl">Before you trust a volume</span>
+    <ul>
+      <li>Scroll the whole extent. Most errors are a leak into a neighbour or a missed first or last slice.</li>
+      <li>Thick slices overstate volume at the ends of a structure, so segment on thin slices when you can.</li>
+      <li><span class="ui">Show in All Planes</span> makes a snapshot of an outline. If you edit the outline afterwards, run it again.</li>
+      <li>Saving to the PACS is turned off here, because the PACS connection is read-only. Use <span class="ui">Download</span> to keep a copy.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 7 -->
+<section id="pet">
+  <div class="sec-head"><h2>PET/CT</h2><span class="depth d-deep">In depth</span></div>
+
+  <h3>Reading PET/CT in Standard reading</h3>
+  <ul>
+    <li>A PET/CT study opens as <strong>axial CT beside the attenuation-corrected PET</strong>, both at mid-body. NAC reconstructions are left out of the layout but stay in the series list.</li>
+    <li><strong>PET in 2D views is inverted</strong> (dark uptake on white), as most readers prefer. Press <kbd>I</kbd> to flip it.</li>
+    <li>CT and PET of one scan are linked: scrolling, zoom and pan stay matched in millimetres, so the same lesion sits under the cursor in both, even though PET pixels are much larger.</li>
+    <li>PET windows are in each view's top-left menu: SUV 0–3, 0–5, 0–7, 0–8, 0–10 and 0–15. When SUV can be calculated the default is SUV 0–5.</li>
+    <li>An <span class="ui">Ellipse</span> or <span class="ui">Circle</span> on PET gives SUV mean and max.</li>
+  </ul>
+
+  <h3>SUV only means what the header says</h3>
+  <p>SUV is calculated from the PET header: injected dose, injection time, radionuclide half-life, patient weight, acquisition time, decay correction and units. If any of these is missing or wrong, every SUV in the study is wrong too.</p>
+  <div class="callout care"><span class="lbl">Check first</span>
+    <p>In the PET/CT tumor volume workflow, open the <span class="ui">Patient Info</span> tab and check sex, weight (kg), total dose, half-life, injection time and acquisition time against the request or the technologist's sheet. Correct anything wrong and press <span class="ui">Reload Data</span>. A missing patient weight gives no warning on screen.</p>
+  </div>
+
+  <h3>Measuring total metabolic tumor volume</h3>
+  <p>Choose <span class="ui">PET/CT tumor volume</span> in the workflow menu. It appears when the study has both CT and PT.</p>
+  <h4>The layout</h4>
+  <ul>
+    <li>Row 1 is CT, row 2 is PET and row 3 is fusion. Each row has axial, sagittal and coronal views.</li>
+    <li>A full-height rotating MIP sits on the right.</li>
+    <li>All views open at mid-body.</li>
+    <li>Other stages are 2×2, 2×3 and 2×4 fusion layouts.</li>
+  </ul>
+  <div class="callout miss"><span class="lbl">The mouse is different here</span>
+    <p>In this workflow <strong>left drag is window/level</strong>, middle drag pans, right drag zooms and the wheel scrolls. In the MIP, the wheel rotates and a click jumps every view to that point.</p>
+  </div>
+  <ol class="steps">
+    <li><strong>Check SUV inputs</strong> in <span class="ui">Patient Info</span> (above).</li>
+    <li><strong>Survey the MIP.</strong> Rotate it with the wheel, then click each focus to bring it up in all planes. Decide which foci are disease and which are physiological: brain, heart, kidneys, ureters, bladder, bowel, brown fat, muscle, and injection-site or inflammatory uptake.</li>
+    <li><strong>Create the segmentation.</strong> In the Segmentation (TMTV) tab press <span class="ui">New segmentation</span>. It is built on the PET.</li>
+    <li><strong>Box each lesion.</strong> Choose the rectangle ROI threshold tool and drag a box around the lesion on an axial PET or fusion view. Set its first and last slices with the <span class="ui">Start</span> and <span class="ui">End</span> slice buttons, so the box covers the lesion's whole height and no neighbouring physiological uptake.</li>
+    <li><strong>Choose the threshold.</strong>
+      <ul>
+        <li><span class="ui">Max</span> (percentage of max SUV): default <strong>41% of SUVmax</strong> inside the box, the usual fixed-percentage method.</li>
+        <li><span class="ui">Range</span> (lower and upper limits): defaults are PET SUV 2.5–100 and CT −1024 to 1024. SUV ≥ 2.5 is the usual absolute threshold. The CT range can exclude air or bone from the mask.</li>
+      </ul>
+      Use the method your department reports, and keep to it on follow-up scans.</li>
+    <li><strong>Press Run</strong> and check the mask on every slice of the box. Fix leaks with the eraser. Add small lesions with the PET threshold brush (default SUV 2.5–50).</li>
+    <li><strong>Repeat</strong> for each lesion, then read <strong>TMTV (mL)</strong> in the panel. <span class="ui">CSV</span> exports the per-lesion results.</li>
+  </ol>
+  <div class="callout care"><span class="lbl">Common pitfalls</span>
+    <ul>
+      <li>A box that reaches the bladder, heart or kidney pulls their uptake into the mask, and with Max it also raises SUVmax, which shrinks every lesion's mask.</li>
+      <li>41% of SUVmax underestimates small or low-uptake lesions. An absolute SUV 2.5 threshold overestimates near high background (liver, marrow after G-CSF).</li>
+      <li>TMTV changes with the threshold method, so compare follow-up scans only when they used the same method.</li>
+      <li>Fusion opacity and colour map are in each view's corner menus (<span class="ui">Opacity</span>, <span class="ui">Color map</span>). If the fusion looks off, check the CT and PET are the same scan.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 8 -->
+<section id="other">
+  <div class="sec-head"><h2>Other workflows</h2><span class="depth d-quick">Quick</span></div>
+  <ul>
+    <li><strong>Slide viewer:</strong> whole-slide microscopy images open here automatically. Draw lines, points, polygons, circles, boxes or freehand shapes to annotate.</li>
+    <li><strong>US lung B-lines:</strong> annotate the pleura and B-lines frame by frame on lung ultrasound. It shows the pleura percentage and exports the annotations as JSON.</li>
+    <li><strong>Subtraction (MR):</strong> the <span class="ui">Subtraction</span> button makes a post-minus-pre contrast series (a new "SUB" series). For a dynamic series, choose which phases to subtract.</li>
+    <li><strong>Time–intensity curves:</strong> draw an ellipse, rectangle or circle on a multi-phase series and the <span class="ui">Curves</span> tab plots enhancement over time.</li>
+    <li><strong>Reports in the study:</strong> structured reports, including CT and PET dose reports, open as a readable document (DLP, CTDIvol, acquisition settings). Drag them onto a view like any series.</li>
+  </ul>
+</section>
+
+<!-- 9 -->
+<section id="settings">
+  <div class="sec-head"><h2>Settings and help</h2><span class="depth d-quick">Quick</span></div>
+  <ul>
+    <li><strong>Keyboard:</strong> search, view and rebind every shortcut. <span class="ui">Reset to Defaults</span> restores the RadiAnt-style keys.</li>
+    <li><strong>Mouse:</strong> a reference of the mouse bindings.</li>
+    <li><strong>General:</strong> language. Changing it reloads the viewer.</li>
+    <li><strong>About:</strong> the version number. Include it when you report a problem.</li>
+  </ul>
+  <p>If something fails to load, the message says what happened. "Image data could not be loaded" means the image server didn't send part of the study. The rest of the study stays usable, so try the series again before reporting it.</p>
+</section>
+
+</main>
+</div>
+
+<footer>AxialScope Reading Guide · matches the viewer on the development branch, October 2026.</footer>
