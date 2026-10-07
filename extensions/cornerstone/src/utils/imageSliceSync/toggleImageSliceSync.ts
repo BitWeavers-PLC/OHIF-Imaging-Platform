@@ -47,6 +47,22 @@ export default function toggleImageSliceSync({
   });
   // Fork: series from other studies (priors) stay aligned at the anatomy shown now.
   linkViewportsAtCurrentPosition(viewports.map(viewport => viewport.viewportOptions.viewportId));
+
+  // Fork: line up at once (a series of the same scan used to move only on the next scroll);
+  // priors linked at their current position do not move.
+  const activeId = viewportGridService.getActiveViewportId();
+  const source = viewports.some(viewport => viewport.viewportOptions.viewportId === activeId)
+    ? activeId
+    : viewports[0]?.viewportOptions.viewportId;
+  if (source) {
+    syncGroupService.getSynchronizer(syncId)?.fireEvent(
+      {
+        viewportId: source,
+        renderingEngineId: cornerstoneViewportService.getRenderingEngine().id,
+      },
+      {} as Event
+    );
+  }
 }
 
 function disableSync(servicesManager: AppTypes.ServicesManager) {
