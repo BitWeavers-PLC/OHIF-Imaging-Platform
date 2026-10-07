@@ -82,6 +82,8 @@ yarn --cwd platform/app run build:viewer   # QUICK_BUILD=true skips minification
 ```
 - **Build commands:** plain `yarn run build` in `platform/app` is a *development* build, which leaks HMR code and path-named chunks. Always verify with `build:viewer`. Clear `platform/app/dist` before a manual deploy, because webpack does not clean it.
 - **Workflows:** the header menu lists the modes valid for the open study (`extensions/imaging-platform/src/workflows.ts`: route, our label, preference order). Add a mode there to offer it; a mode that cannot show the study switches to the first valid one.
+- **PUBLIC_URL** must end with `/` (normalised in `.webpack/webpack.base.js`); templates and generated imports append file names directly.
+- **Versioning:** AxialScope's version is `extensions/imaging-platform/VERSION` (bump it per release). The build shows it with the git commit; Docker builds have no `.git`, so pass `AXIALSCOPE_COMMIT`. Don't edit OHIF's `version.txt` / `commit.txt` (upstream release files).
 - **Dev-server restarts:** restart after changing `pluginConfig.json` or adding a package, because plugin imports are generated at startup. If a new workspace package can't be resolved, run the install again.
 
 ## 8. Verifying in a browser
@@ -93,7 +95,6 @@ yarn --cwd platform/app run build:viewer   # QUICK_BUILD=true skips minification
   - A hidden pane has zero size, so views render blank.
   - Dispatch multi-step mouse events, or check the state through the services.
 
-- **Versioning:** AxialScope's version is `extensions/imaging-platform/VERSION` (bump it per release). The build shows it with the git commit; Docker builds have no `.git`, so pass `AXIALSCOPE_COMMIT`. Don't edit OHIF's `version.txt` / `commit.txt` (upstream release files).
 ## 9. Known limits (don't "fix" silently; they need a decision)
 - **Blocked outside the viewer:**
   - DICOMweb has no per-user auth; Traefik injects fixed credentials, which is a backend/Traefik fix.

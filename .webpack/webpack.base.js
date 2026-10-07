@@ -47,6 +47,9 @@ const ONNX_RUNTIME_DIST_DIR = path.resolve(__dirname, '../node_modules/onnxrunti
 
 //
 dotenv.config();
+// Fork: PUBLIC_URL always ends with '/'. Without it, paths built from it lose a separator
+// ("/pacs/viewerdicom-microscopy-viewer/…") and the slide viewer's library and worker 404.
+process.env.PUBLIC_URL = (process.env.PUBLIC_URL || '/').replace(/\/?$/, '/');
 
 const defineValues = {
   /* Application */
