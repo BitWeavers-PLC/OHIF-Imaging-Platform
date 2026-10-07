@@ -393,6 +393,7 @@ export const modeInstance = {
     '@ohif/hpMammo',
     '@ohif/dxTwoView',
     '@axialscope/ctBody',
+    '@axialscope/petCt',
     '@axialscope/mrBrain',
     '@axialscope/mrSpine',
     '@axialscope/mrGeneral',

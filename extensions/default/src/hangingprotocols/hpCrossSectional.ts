@@ -140,6 +140,65 @@ export const hpCtBody: Types.HangingProtocol.Protocol = {
   ],
 };
 
+const petCtSync = [sliceSync('petCtSlice')];
+const series = (value: string): Rule => ({
+  attribute: 'Modality',
+  required: true,
+  constraint: { equals: { value } },
+});
+// Mid-body: whole-body PET/CT starts at the skull vertex otherwise.
+const fromMiddle = (pane, syncGroups) => {
+  const view = stack(pane, syncGroups);
+  return {
+    ...view,
+    viewportOptions: { ...view.viewportOptions, initialImageOptions: { preset: 'middle' } },
+  };
+};
+
+/**
+ * PET/CT: axial CT beside the attenuation-corrected PET, one frame of reference, so they
+ * scroll together from the start (was: the scout alone, PET not linked).
+ */
+export const hpPetCt: Types.HangingProtocol.Protocol = {
+  ...base,
+  id: '@axialscope/petCt',
+  name: 'PET/CT',
+  description: 'PET/CT: axial CT and attenuation-corrected PET, scrolled together',
+  protocolMatchingRules: [
+    modality('CT'),
+    modality('PT'),
+    {
+      id: 'hasVolume',
+      attribute: 'hasReadableVolume',
+      constraint: { equals: { value: true } },
+      required: true,
+    },
+  ],
+  displaySetSelectors: {
+    anySeries,
+    ctMain: selector([
+      series('CT'),
+      { attribute: 'isReconstructable', constraint: { equals: { value: true } }, required: true },
+      plane('axial', 10),
+      { attribute: 'numImageFrames', weight: 3, constraint: { greaterThan: { value: 100 } } },
+    ]),
+    // Not the non-attenuation-corrected reconstruction (NAC): it is for artefact checks.
+    ptMain: selector([
+      series('PT'),
+      { attribute: 'isReconstructable', constraint: { equals: { value: true } }, required: true },
+      labelLacks(['nac', 'non ac', 'noac', 'uncorrected']),
+      plane('axial', 10),
+    ]),
+  },
+  stages: [
+    {
+      name: 'CT | PET',
+      viewportStructure: grid(1, 2),
+      viewports: [fromMiddle('ctMain', petCtSync), fromMiddle('ptMain', petCtSync)],
+    },
+  ],
+};
+
 const mrBrainSync = [sliceSync('mrBrainSlice')];
 
 /** MR brain: T1 | T2 / FLAIR | DWI, scrolled together. */
@@ -283,4 +342,4 @@ export const hpMrGeneral: Types.HangingProtocol.Protocol = {
   })),
 };
 
-export default [hpCtBody, hpMrBrain, hpMrSpine, hpMrGeneral];
+export default [hpCtBody, hpPetCt, hpMrBrain, hpMrSpine, hpMrGeneral];

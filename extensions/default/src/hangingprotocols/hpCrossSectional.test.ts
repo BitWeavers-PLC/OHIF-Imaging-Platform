@@ -10,6 +10,7 @@ const MODE_PROTOCOLS = [
   '@ohif/hpMammo',
   '@ohif/dxTwoView',
   '@axialscope/ctBody',
+  '@axialscope/petCt',
   '@axialscope/mrBrain',
   '@axialscope/mrSpine',
   '@axialscope/mrGeneral',
@@ -67,11 +68,15 @@ describe('CT/MR hanging protocols', () => {
     expect(byViewport).toEqual([main.displaySetInstanceUID, main.displaySetInstanceUID]);
   });
 
-  it('CT in a PET/CT study keeps the default layout', () => {
+  it('PET/CT: axial CT left, attenuation-corrected PET right (not the scout, not NAC)', () => {
     const study = { StudyInstanceUID: 'petct', ...ModalitiesInStudy(['CT', 'PT']) };
+    const scout = series(study, 'CT', 'SCOUT', 1);
     const ct = series(study, 'CT', 'CT IMAGES', 135);
-    const pt = series(study, 'PT', 'PET AC', 135);
-    expect(hang(study, [ct, pt]).protocolId).toBe('default');
+    const nac = series(study, 'PT', 'PET NAC', 135);
+    const ac = series(study, 'PT', 'PET AC', 135);
+    const { protocolId, byViewport } = hang(study, [scout, ct, nac, ac]);
+    expect(protocolId).toBe('@axialscope/petCt');
+    expect(byViewport).toEqual([ct.displaySetInstanceUID, ac.displaySetInstanceUID]);
   });
 
   it('MR brain: T1, T2, FLAIR, DWI in their panes', () => {
