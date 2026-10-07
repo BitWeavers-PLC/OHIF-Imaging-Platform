@@ -10,7 +10,7 @@ module.exports = {
   prefix: '',
   theme: {
     fontFamily: {
-      inter: ['Inter', 'sans-serif'],
+      inter: ['IBM Plex Sans', 'sans-serif'], // Fork: key kept for existing font-inter classes
     },
     fontSize: {
       xxs: '0.625rem', // 10px

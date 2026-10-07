@@ -235,7 +235,7 @@
 
 @layer base {
   html {
-    font-family: 'Inter', sans-serif;
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
   }
 
   body {

@@ -20,7 +20,7 @@ module.exports = {
   theme: {
     fontFamily: {
       sans: [
-        'Inter',
+        'IBM Plex Sans',
         'system-ui',
         '-apple-system',
         'BlinkMacSystemFont',
