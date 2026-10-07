@@ -5,5 +5,10 @@
   "Microscopy": "Microscopy",
   "Segmentation": "Segmentation",
   "Total Metabolic Tumor Volume": "Total Metabolic Tumor Volume",
-  "US Pleura B-line Annotations": "US Pleura B-line Annotations"
+  "US Pleura B-line Annotations": "US Pleura B-line Annotations",
+  "Workflow": "Workflow",
+  "Standard reading": "Standard reading",
+  "Slide viewer": "Slide viewer",
+  "PET/CT tumor volume": "PET/CT tumor volume",
+  "US lung B-lines": "US lung B-lines"
 }

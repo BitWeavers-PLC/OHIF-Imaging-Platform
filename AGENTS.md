@@ -81,6 +81,7 @@ npx jest
 yarn --cwd platform/app run build:viewer   # QUICK_BUILD=true skips minification (faster, 15 MB bundle)
 ```
 - **Build commands:** plain `yarn run build` in `platform/app` is a *development* build, which leaks HMR code and path-named chunks. Always verify with `build:viewer`. Clear `platform/app/dist` before a manual deploy, because webpack does not clean it.
+- **Workflows:** the header menu lists the modes valid for the open study (`extensions/imaging-platform/src/workflows.ts`: route, our label, preference order). Add a mode there to offer it; a mode that cannot show the study switches to the first valid one.
 - **Dev-server restarts:** restart after changing `pluginConfig.json` or adding a package, because plugin imports are generated at startup. If a new workspace package can't be resolved, run the install again.
 
 ## 8. Verifying in a browser

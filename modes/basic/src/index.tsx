@@ -15,7 +15,9 @@ const { structuredCloneWithFunctions } = utils;
  * This list used to include SM, for whole slide imaging, but this is now supported
  * by cornerstone.  Others of these may get added.
  */
-export const NON_IMAGE_MODALITIES = ['ECG', 'SEG', 'RTSTRUCT', 'RTPLAN', 'PR', 'SR'];
+// Fork: SM (whole-slide microscopy) added: this viewer cannot show slides, so a slides-only
+// study goes to the slide viewer (imaging-platform workflows) instead of an empty screen.
+export const NON_IMAGE_MODALITIES = ['ECG', 'SEG', 'RTSTRUCT', 'RTPLAN', 'PR', 'SR', 'SM'];
 
 export const ohif = {
   layout: '@ohif/extension-default.layoutTemplateModule.viewerLayout',
