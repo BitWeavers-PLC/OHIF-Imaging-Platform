@@ -349,26 +349,20 @@ const area = (d: string) => (
   />
 );
 const SWATH = 'M3 20 C5 15 8 14 10 12.5 L11.6 14.4 C9.6 16 7.5 17.5 6 21 Z';
+// Brush and eraser are drawn as the objects (a circle with +/- read as zoom in/out).
 const Brush = Glyph(
   <>
     {area(SWATH)}
-    <circle
-      cx="15"
-      cy="9"
-      r="5.5"
-    />
-    <path d="M15 6.8 v4.4 M12.8 9 h4.4" />
+    <path d="M21 3 L15.2 8.8" />
+    <path d="M13.5 7.2 L16.8 10.5 L14.6 12.7 L11.3 9.4 Z" />
+    <path d="M11.3 9.4 C9.2 10.6 8.8 12.9 10.4 14.4 C12 15.2 14 14.6 14.6 12.7" />
   </>
 );
 const Eraser = Glyph(
   <>
     {area(SWATH)}
-    <circle
-      cx="15"
-      cy="9"
-      r="5.5"
-    />
-    <path d="M12.8 9 h4.4" />
+    <path d="M16 3 L21 8 L13.5 15.5 L8.5 10.5 Z" />
+    <path d="M11.1 7.9 L16.1 12.9" />
   </>
 );
 // Threshold: HU histogram with the cut-off line.
