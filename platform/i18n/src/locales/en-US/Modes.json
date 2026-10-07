@@ -10,5 +10,6 @@
   "Standard reading": "Standard reading",
   "Slide viewer": "Slide viewer",
   "PET/CT tumor volume": "PET/CT tumor volume",
-  "US lung B-lines": "US lung B-lines"
+  "US lung B-lines": "US lung B-lines",
+  "Switching workflow closes this one. Its measurements and segmentations will not carry over. Continue?": "Switching workflow closes this one. Its measurements and segmentations will not carry over. Continue?"
 }
