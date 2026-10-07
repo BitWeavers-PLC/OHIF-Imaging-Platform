@@ -128,9 +128,10 @@ export function bestShift(a: Profile, b: Profile): { shiftMm: number; score: num
 }
 
 /**
- * Fork: CT-vs-CT auto-align. The active viewport stays put; every other CT stack viewport
- * with a different frame of reference is registered by the anatomy match and jumped to it,
- * then slice sync keeps them together.
+ * Fork: CT-vs-CT auto-align. The active viewport stays put; every other CT viewport showing
+ * axial slices (stack, or MPR in the acquisition plane) is aligned and jumped to it, then
+ * slice sync keeps them together. Another frame of reference (prior) is registered by the
+ * anatomy match; the same one (pre-contrast and CTA of one exam) already shares positions.
  */
 export default async function alignByAnatomy({
   servicesManager,
@@ -149,10 +150,12 @@ export default async function alignByAnatomy({
     const displaySet = displaySetService.getDisplaySetByUID(
       viewportGridService.getDisplaySetsUIDsForViewport(viewportId)?.[0]
     );
-    if (viewport?.type !== Enums.ViewportType.STACK || displaySet?.Modality !== 'CT') {
+    const types = [Enums.ViewportType.STACK, Enums.ViewportType.ORTHOGRAPHIC];
+    if (!types.includes(viewport?.type) || displaySet?.Modality !== 'CT') {
       return null;
     }
-    const imageId = viewport.getCurrentImageId();
+    // Volume viewports only have one in the acquisition plane (not sagittal/coronal).
+    const imageId = viewport.getCurrentImageId?.();
     return imageId && { viewportId, viewport, displaySet, imageId };
   };
 
@@ -161,7 +164,7 @@ export default async function alignByAnatomy({
   const source = info(sourceId);
   if (!source) {
     uiNotificationService.show({
-      message: i18n.t('Messages:Auto-align works on a CT stack viewport'),
+      message: i18n.t('Messages:Auto-align works on an axial CT view'),
       type: 'warning',
     });
     return;
@@ -173,44 +176,70 @@ export default async function alignByAnatomy({
     .map(info)
     .filter(Boolean)
     .filter(t => Math.abs(vec3.dot(normalOf(t.imageId), normal)) > 0.99);
+  if (!others.length) {
+    uiNotificationService.show({
+      message: i18n.t('Messages:No other axial CT view to align'),
+      type: 'warning',
+    });
+    return;
+  }
 
   // Offset (target frame − source frame) per frame of reference; the source's own is zero.
   const offsets = new Map<string, vec3>([[sourceFoR, vec3.create()]]);
   // Uncached priors download ~1 image per 5 mm first, which can take seconds.
-  const aligningId = uiNotificationService.show({
-    message: i18n.t('Messages:Aligning anatomy…'),
-    type: 'info',
-  });
-  const sourceProfile = await seriesProfile(source.viewport.getImageIds(), normal);
+  const needsMatch = others.some(t => t.viewport.getFrameOfReferenceUID() !== sourceFoR);
+  const aligningId =
+    needsMatch &&
+    uiNotificationService.show({
+      message: i18n.t('Messages:Aligning anatomy…'),
+      type: 'info',
+      // Stays up until the match is done: a slow PACS can take many seconds per image.
+      duration: Infinity,
+    });
   let weakest = 1;
-  for (const target of others) {
-    const frameOfReferenceUID = target.viewport.getFrameOfReferenceUID();
-    if (offsets.has(frameOfReferenceUID)) {
-      continue;
+  try {
+    const sourceProfile =
+      needsMatch && (await seriesProfile(source.viewport.getImageIds(), normal));
+    for (const target of others) {
+      const frameOfReferenceUID = target.viewport.getFrameOfReferenceUID();
+      if (offsets.has(frameOfReferenceUID)) {
+        continue;
+      }
+      const targetIds = target.viewport.getImageIds();
+      const { shiftMm, score } = bestShift(sourceProfile, await seriesProfile(targetIds, normal));
+      if (score < MIN_SCORE) {
+        uiNotificationService.show({
+          message: i18n.t('Messages:No matching anatomy in {{series}}', {
+            series: target.displaySet.SeriesDescription || target.displaySet.SeriesNumber,
+          }),
+          type: 'warning',
+        });
+        continue;
+      }
+      weakest = Math.min(weakest, score);
+      // Any target slice, moved along the normal to the level matching source position 0.
+      const ipp = metaData.get('imagePlaneModule', targetIds[0]).imagePositionPatient;
+      const level = positionOf(targetIds[0], normal) - shiftMm;
+      offsets.set(frameOfReferenceUID, vec3.scaleAndAdd(vec3.create(), ipp, normal, -level));
     }
-    const targetIds = target.viewport.getImageIds();
-    const { shiftMm, score } = bestShift(sourceProfile, await seriesProfile(targetIds, normal));
-    if (score < MIN_SCORE) {
-      uiNotificationService.show({
-        message: i18n.t('Messages:No matching anatomy in {{series}}', {
-          series: target.displaySet.SeriesDescription || target.displaySet.SeriesNumber,
-        }),
-        type: 'warning',
-      });
-      continue;
-    }
-    weakest = Math.min(weakest, score);
-    // Any target slice, moved along the normal to the level matching source position 0.
-    const ipp = metaData.get('imagePlaneModule', targetIds[0]).imagePositionPatient;
-    const level = positionOf(targetIds[0], normal) - shiftMm;
-    offsets.set(frameOfReferenceUID, vec3.scaleAndAdd(vec3.create(), ipp, normal, -level));
-  }
-  uiNotificationService.hide(aligningId);
-  if (offsets.size < 2) {
+  } catch (error) {
+    console.error('Auto-align failed', error);
+    uiNotificationService.show({
+      message: i18n.t('Messages:Auto-align could not load the images'),
+      type: 'warning',
+    });
     return;
+  } finally {
+    if (aligningId) {
+      uiNotificationService.hide(aligningId);
+    }
   }
 
+  // Same frame of reference as the source (offset zero) counts as aligned.
   const aligned = [source, ...others].filter(v => offsets.has(v.viewport.getFrameOfReferenceUID()));
+  if (aligned.length < 2) {
+    return;
+  }
   // The same group the sync button uses. Join it directly: after a compare swap the viewports
   // may each sit in a different group (or none), so "source has sync" is not enough.
   const renderingEngineId = source.viewport.getRenderingEngine().id;
@@ -227,7 +256,8 @@ export default async function alignByAnatomy({
     for (const t of aligned) {
       const sFoR = s.viewport.getFrameOfReferenceUID();
       const tFoR = t.viewport.getFrameOfReferenceUID();
-      if (sFoR !== tFoR) {
+      // Same frame too (identity): replaces any offset an earlier F5 link left behind.
+      if (s !== t) {
         utilities.spatialRegistrationMetadataProvider.add(
           [t.viewportId, s.viewportId],
           registrationBetween(offsets.get(tFoR) as number[], offsets.get(sFoR) as number[])
@@ -243,9 +273,13 @@ export default async function alignByAnatomy({
 
   // Say it was automatic and how sure, so the reader knows to check the level.
   uiNotificationService.show({
-    message: i18n.t('Messages:Aligned by anatomy (match {{score}}%)', {
-      score: Math.round(weakest * 100),
-    }),
+    message:
+      offsets.size > 1
+        ? i18n.t('Messages:Aligned by anatomy (match {{score}}%)', {
+            score: Math.round(weakest * 100),
+          })
+        : i18n.t('Messages:Aligned by position (same scan)'),
     type: 'success',
+    duration: 6000,
   });
 }
