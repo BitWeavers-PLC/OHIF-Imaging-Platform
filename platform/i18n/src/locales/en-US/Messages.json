@@ -41,5 +41,9 @@
   "Aligned by anatomy (match {{score}}%)": "Aligned by anatomy (match {{score}}%)",
   "Draw contours first": "Draw contours first",
   "Open the series in a 2D view to convert its contours": "Open the series in a 2D view to convert its contours",
-  "Contours shown in all planes as {{label}}": "Contours shown in all planes as {{label}}"
+  "Contours shown in all planes as {{label}}": "Contours shown in all planes as {{label}}",
+  "Drag and drop": "Drag and drop",
+  "This series is not a 3D volume, so it cannot be shown in this view. Drop it on a 2D view instead.": "This series is not a 3D volume, so it cannot be shown in this view. Drop it on a 2D view instead.",
+  "This series does not fit this view in the current layout.": "This series does not fit this view in the current layout.",
+  "The series could not be shown here. Please try again.": "The series could not be shown here. Please try again."
 }

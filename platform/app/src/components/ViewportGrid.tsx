@@ -4,6 +4,8 @@ import { ViewportGrid, ViewportPane } from '@ohif/ui-next';
 import { useViewportGrid } from '@ohif/ui-next';
 import EmptyViewport from './EmptyViewport';
 import { useAppConfig } from '@state';
+import i18n from '@ohif/i18n';
+import dropFitsViewport from './dropFitsViewport';
 
 function ViewerViewportGrid(props: withAppTypes) {
   const { servicesManager, viewportComponents = [], dataSource, commandsManager } = props;
@@ -102,6 +104,24 @@ function ViewerViewportGrid(props: withAppTypes) {
         return [];
       }
 
+      // Fork: a 3D (volume) view can only show a series that builds into a volume; a scout or
+      // other 2D series was accepted (allowUnmatchedView) and rendered as streaks.
+      const targetType = servicesManager.services.viewportGridService
+        .getState()
+        .viewports.get(viewportId)?.viewportOptions?.viewportType;
+      const dropped = displaySetService.getDisplaySetByUID(displaySetInstanceUID);
+      if (!dropFitsViewport(targetType, dropped)) {
+        uiNotificationService.show({
+          title: i18n.t('Messages:Drag and drop'),
+          message: i18n.t(
+            'Messages:This series is not a 3D volume, so it cannot be shown in this view. Drop it on a 2D view instead.'
+          ),
+          type: 'warning',
+          duration: 4000,
+        });
+        return [];
+      }
+
       let updatedViewports = [];
       try {
         updatedViewports = hangingProtocolService.getViewportsRequireUpdate(
@@ -111,18 +131,24 @@ function ViewerViewportGrid(props: withAppTypes) {
         );
       } catch (error) {
         console.warn(error);
+        // Fork: plain wording (was "…mismatch in the Hanging Protocol rules").
         uiNotificationService.show({
-          title: 'Drag and Drop',
-          message:
-            'The selected display sets could not be added to the viewport due to a mismatch in the Hanging Protocol rules.',
-          type: 'error',
-          duration: 3000,
+          title: i18n.t('Messages:Drag and drop'),
+          message: i18n.t('Messages:This series does not fit this view in the current layout.'),
+          type: 'warning',
+          duration: 4000,
         });
       }
 
       return updatedViewports;
     },
-    [hangingProtocolService, uiNotificationService, isHangingProtocolLayout]
+    [
+      hangingProtocolService,
+      uiNotificationService,
+      isHangingProtocolLayout,
+      servicesManager,
+      displaySetService,
+    ]
   );
 
   // Using Hanging protocol engine to match the displaySets
@@ -158,13 +184,27 @@ function ViewerViewportGrid(props: withAppTypes) {
       displaySetInstanceUID,
       appConfig,
     });
-    dropHandlerPromise.then(({ handled }) => {
-      if (!handled) {
-        const updatedViewports = _getUpdatedViewports(viewportId, displaySetInstanceUID);
-
-        commandsManager.run('setDisplaySetsForViewports', { viewportsToUpdate: updatedViewports });
-      }
-    });
+    dropHandlerPromise
+      .then(({ handled }) => {
+        if (!handled) {
+          const updatedViewports = _getUpdatedViewports(viewportId, displaySetInstanceUID);
+          if (updatedViewports.length) {
+            commandsManager.run('setDisplaySetsForViewports', {
+              viewportsToUpdate: updatedViewports,
+            });
+          }
+        }
+      })
+      // Fork: a failed drop used to vanish silently (no catch); say so.
+      .catch(error => {
+        console.error('Drop failed', error);
+        uiNotificationService.show({
+          title: i18n.t('Messages:Drag and drop'),
+          message: i18n.t('Messages:The series could not be shown here. Please try again.'),
+          type: 'error',
+          duration: 4000,
+        });
+      });
     viewportGridService.publishViewportOnDropHandled({ displaySetInstanceUID });
   };
 
