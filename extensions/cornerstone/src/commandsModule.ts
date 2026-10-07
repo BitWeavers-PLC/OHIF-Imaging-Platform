@@ -36,6 +36,7 @@ import {
 import { vec3, mat4 } from 'gl-matrix';
 import toggleImageSliceSync from './utils/imageSliceSync/toggleImageSliceSync';
 import alignByAnatomy from './utils/imageSliceSync/alignByAnatomy';
+import openAtReadingPosition from './utils/openAtReadingPosition';
 import showContourInAllPlanes from './utils/contourToLabelmap';
 import { imageAtPoint, planeNormal } from './utils/bidirectionalPlacement';
 import linkViewportsAtCurrentPosition from './utils/imageSliceSync/linkViewportsAtCurrentPosition';
@@ -1476,6 +1477,7 @@ function commandsModule({
       showContourInAllPlanes({ servicesManager, segmentationId }),
     alignByAnatomy: ({ sourceViewportId }: { sourceViewportId?: string } = {}) =>
       alignByAnatomy({ servicesManager, sourceViewportId }),
+    openAtReadingPosition: () => openAtReadingPosition({ servicesManager, commandsManager }),
     toggleSynchronizer: ({ type, viewports, syncId }) => {
       const synchronizer = syncGroupService.getSynchronizer(syncId);
 
@@ -2768,6 +2770,9 @@ function commandsModule({
     },
     alignByAnatomy: {
       commandFn: actions.alignByAnatomy,
+    },
+    openAtReadingPosition: {
+      commandFn: actions.openAtReadingPosition,
     },
     showContourInAllPlanes: {
       commandFn: actions.showContourInAllPlanes,

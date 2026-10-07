@@ -72,7 +72,8 @@ export const mip: Types.HangingProtocol.Protocol = {
             initialImageOptions: {
               preset: 'middle',
             },
-            syncGroups: [VOI_SYNC_GROUP, HYDRATE_SEG_SYNC_GROUP],
+            // Own window (CT angio, openAtReadingPosition): the MPR views keep soft tissue.
+            syncGroups: [HYDRATE_SEG_SYNC_GROUP],
           },
           displaySets: [
             {

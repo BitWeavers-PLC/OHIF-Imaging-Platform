@@ -503,6 +503,8 @@ const commandsModule = ({
           protocolId: protocol.id,
           stageIndex: desiredStageIndex,
         });
+        // Fork: MPR / MIP open at the level being read (reads it before the layout changes).
+        commandsManager.run('openAtReadingPosition');
         return actions.setHangingProtocol({
           protocolId,
           stageIndex,
