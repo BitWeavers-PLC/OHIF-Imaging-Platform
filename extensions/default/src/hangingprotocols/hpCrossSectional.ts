@@ -309,7 +309,12 @@ export const hpMrSpine: Types.HangingProtocol.Protocol = {
     {
       name: 'Sag T2, Sag T1, Ax T2',
       viewportStructure: grid(1, 3),
-      viewports: [stack('sagT2', spineSagSync), stack('sagT1', spineSagSync), stack('axT2')],
+      // Sagittals open at the midline (image 1 is the far lateral slice); the axial at its top.
+      viewports: [
+        fromMiddle('sagT2', spineSagSync),
+        fromMiddle('sagT1', spineSagSync),
+        stack('axT2'),
+      ],
     },
   ],
 };

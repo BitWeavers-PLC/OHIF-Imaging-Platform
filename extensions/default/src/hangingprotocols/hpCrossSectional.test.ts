@@ -1,6 +1,7 @@
 import HangingProtocolService from '../../../../platform/core/src/services/HangingProtocolService/HangingProtocolService';
 import getHangingProtocolModule from '../getHangingProtocolModule';
 import registerCrossSectionalAttributes, { getImagePlane } from './utils/crossSectionalAttributes';
+import { hpMrSpine } from './hpCrossSectional';
 
 const AXIAL = [1, 0, 0, 0, 1, 0];
 const CORONAL = [1, 0, 0, 0, 0, -1];
@@ -107,6 +108,12 @@ describe('CT/MR hanging protocols', () => {
     const { protocolId, byViewport } = hang(study, [axT2, sagT1, sagT2]);
     expect(protocolId).toBe('@axialscope/mrSpine');
     expect(byViewport).toEqual([sagT2, sagT1, axT2].map(ds => ds.displaySetInstanceUID));
+  });
+
+  it('MR spine: sagittals open at the midline, the axial at its first image', () => {
+    const [stage] = hpMrSpine.stages;
+    const start = stage.viewports.map(v => v.viewportOptions.initialImageOptions?.preset);
+    expect(start).toEqual(['middle', 'middle', undefined]);
   });
 
   it('other MR: first four image series 2x2', () => {
