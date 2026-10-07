@@ -1,25 +1,34 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import ProgressLoadingBar from '../ProgressLoadingBar';
+import './LoadingIndicatorProgress.css';
+
 /**
  *  A React component that renders a loading indicator.
- * if progress is not provided, it will render an infinite loading indicator
- * if progress is provided, it will render a progress bar
+ * Fork: AxialScope's own scan-sweep mark; a progress line shows only when progress is known.
  * Optionally a textBlock can be provided to display a message
  */
 function LoadingIndicatorProgress({ className, textBlock, progress }) {
+  const known = progress !== undefined && progress !== null;
   return (
     <div
       className={classNames(
-        'absolute top-0 left-0 z-50 flex flex-col items-center justify-center space-y-5',
+        'absolute top-0 left-0 z-50 flex flex-col items-center justify-center space-y-4',
         className
       )}
+      role="status"
     >
-      <div className="h-11 w-11 animate-spin rounded-full border-2 border-primary/40 border-t-primary" />
-      <div className="w-48">
-        <ProgressLoadingBar progress={progress} />
+      <div className="axialscope-loader">
+        <div className="axialscope-loader-scan" />
       </div>
+      {known && (
+        <div className="bg-primary/20 h-0.5 w-40 overflow-hidden rounded-full">
+          <div
+            className="bg-primary h-full transition-[width] duration-300"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      )}
       {textBlock}
     </div>
   );
