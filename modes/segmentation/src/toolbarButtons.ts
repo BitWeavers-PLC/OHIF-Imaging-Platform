@@ -473,8 +473,10 @@ export const toolbarButtons: Button[] = [
     uiType: 'ohif.toolBoxButton',
     props: {
       icon: 'icon-tool-livewire',
-      label: i18n.t('Buttons:Livewire Contour'),
-      tooltip: i18n.t('Buttons:Livewire Contour'),
+      label: i18n.t('Buttons:Edge-snap outline'),
+      tooltip: i18n.t(
+        'Buttons:Click points around a structure; the outline snaps to the edges between them (livewire)'
+      ),
       evaluate: [
         {
           name: 'evaluate.cornerstone.segmentation',
@@ -559,7 +561,11 @@ export const toolbarButtons: Button[] = [
               value: 'CatmullRomSplineROI',
               label: i18n.t('Buttons:Catmull Rom Spline'),
             },
-            { id: 'LinearSplineROI', value: 'LinearSplineROI', label: i18n.t('Buttons:Linear Spline') },
+            {
+              id: 'LinearSplineROI',
+              value: 'LinearSplineROI',
+              label: i18n.t('Buttons:Linear Spline'),
+            },
             { id: 'BSplineROI', value: 'BSplineROI', label: i18n.t('Buttons:B-Spline') },
           ],
           commands: {

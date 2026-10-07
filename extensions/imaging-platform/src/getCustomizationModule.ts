@@ -1,3 +1,4 @@
+import i18n from '@ohif/i18n';
 import radiantHotkeys from './radiantHotkeys';
 import SettingsDialog from './panels/SettingsDialog';
 
@@ -22,6 +23,22 @@ export default function getCustomizationModule() {
         'ohif.hotkeyBindings': { $set: radiantHotkeys },
         // Settings dialog (gear menu) with sections instead of the flat preferences list.
         'ohif.userPreferencesModal': { $set: SettingsDialog },
+        // Right-click on a measurement: RadiAnt wording, label first (OHIF: "Delete measurement / Add Label").
+        measurementsContextMenu: {
+          $set: {
+            inheritsFrom: 'ohif.contextMenu',
+            menus: [
+              {
+                id: 'forExistingMeasurement',
+                selector: ({ nearbyToolData }) => !!nearbyToolData,
+                items: [
+                  { label: i18n.t('Common:Edit label…'), commands: 'setMeasurementLabel' },
+                  { label: i18n.t('Common:Delete'), commands: 'removeMeasurement' },
+                ],
+              },
+            ],
+          },
+        },
       },
     },
   ];

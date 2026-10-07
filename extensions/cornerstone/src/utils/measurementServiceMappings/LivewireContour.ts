@@ -151,13 +151,13 @@ function getDisplayText(annotation, displaySet, displaySetService) {
     InstanceNumber = instance.InstanceNumber;
   }
 
-  const instanceText = InstanceNumber ? ` I: ${InstanceNumber}` : '';
-  const frameText = displaySet.isMultiFrame ? ` F: ${frameNumber}` : '';
+  const instanceText = InstanceNumber ? `, image ${InstanceNumber}` : '';
+  const frameText = displaySet.isMultiFrame ? `, frame ${frameNumber}` : '';
 
   const { SeriesNumber } = displaySet;
   let seriesText = null;
   if (SeriesNumber !== undefined) {
-    seriesText = `S: ${SeriesNumber}${instanceText}${frameText}`;
+    seriesText = `Series ${SeriesNumber}${instanceText}${frameText}`;
   }
 
   if (area) {

@@ -1,3 +1,5 @@
+import measurementToolLabel from './measurementToolLabel';
+
 const escapeHtml = (value: string) =>
   value.replace(
     /[&<>"']/g,
@@ -16,7 +18,7 @@ type Measurement = {
  */
 export default function measurementsToFindings(measurements: Measurement[]) {
   const rows = measurements.map(({ label, toolName, displayText }) => [
-    label || toolName || 'Measurement',
+    label || measurementToolLabel(toolName),
     (displayText?.primary || []).join('; '),
     (displayText?.secondary || []).join('; '),
   ]);

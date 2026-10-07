@@ -131,8 +131,8 @@ function getDisplayText(mappedAnnotations, displaySet) {
     InstanceNumber = instance.InstanceNumber;
   }
 
-  const instanceText = InstanceNumber ? ` I: ${InstanceNumber}` : '';
-  const frameText = displaySet.isMultiFrame ? ` F: ${frameNumber}` : '';
+  const instanceText = InstanceNumber ? `, image ${InstanceNumber}` : '';
+  const frameText = displaySet.isMultiFrame ? `, frame ${frameNumber}` : '';
 
   // Add the annotation text to the primary array
   if (text) {
@@ -140,7 +140,7 @@ function getDisplayText(mappedAnnotations, displaySet) {
   }
 
   // Add the series information to the secondary array
-  displayText.secondary.push(`S: ${SeriesNumber}${instanceText}${frameText}`);
+  displayText.secondary.push(`Series ${SeriesNumber}${instanceText}${frameText}`);
 
   return displayText;
 }

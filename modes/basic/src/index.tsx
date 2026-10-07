@@ -213,7 +213,13 @@ export const toolbarSections = {
   // Order and groups live in toolbarButtons.ts (primaryToolbarGroups).
   [TOOLBAR_SECTIONS.primary]: Object.values(primaryToolbarGroups).flat(),
 
-  [TOOLBAR_SECTIONS.viewportActionMenu.topLeft]: ['orientationMenu', 'dataOverlayMenu'],
+  // Fork: one top-left group (window/level was alone in the bottom-left, as in OHIF), so the
+  // image corners hold only the overlay text.
+  [TOOLBAR_SECTIONS.viewportActionMenu.topLeft]: [
+    'windowLevelMenu',
+    'orientationMenu',
+    'dataOverlayMenu',
+  ],
 
   // Fork: segmentation editing, shown inside the segmentation panels (as in the segmentation mode).
   [TOOLBAR_SECTIONS.labelMapSegmentationToolbox]: ['LabelMapTools'],
@@ -249,7 +255,7 @@ export const toolbarSections = {
     'navigationComponent',
   ],
 
-  [TOOLBAR_SECTIONS.viewportActionMenu.bottomLeft]: ['windowLevelMenu'],
+  [TOOLBAR_SECTIONS.viewportActionMenu.bottomLeft]: [],
 
   // Less-used measurements; the common ones are on the bar.
   MeasurementTools: [

@@ -189,9 +189,9 @@ function getDisplayText(mappedAnnotations, displaySet, customizationService) {
     InstanceNumber = instance.InstanceNumber;
   }
 
-  const instanceText = InstanceNumber ? ` I: ${InstanceNumber}` : '';
-  const frameText = displaySet.isMultiFrame ? ` F: ${frameNumber}` : '';
-  const seriesText = `S: ${SeriesNumber}${instanceText}${frameText}`;
+  const instanceText = InstanceNumber ? `, image ${InstanceNumber}` : '';
+  const frameText = displaySet.isMultiFrame ? `, frame ${frameNumber}` : '';
+  const seriesText = `Series ${SeriesNumber}${instanceText}${frameText}`;
 
   if (xValues === undefined || yValues === undefined) {
     return displayText;

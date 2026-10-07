@@ -63,7 +63,7 @@ export default {
     {
       id: 'SliceThickness',
       inheritsFrom: 'ohif.overlayItem',
-      label: 'ST:',
+      label: 'Thick:',
       title: 'Slice thickness (mm)',
       contentF: ({ instance, referenceInstance }) => {
         const thickness = Number((instance ?? referenceInstance)?.SliceThickness);
@@ -73,7 +73,7 @@ export default {
     {
       id: 'SliceLocation',
       inheritsFrom: 'ohif.overlayItem',
-      label: 'SL:',
+      label: 'Loc:',
       title: 'Slice location (mm)',
       // Per-image value, only meaningful on stack viewports (not reformatted MPR).
       contentF: ({ instance, viewportData }) => {

@@ -23,8 +23,10 @@
   "Save": "Save",
   "localDateFormat": "DD-MMM-YYYY",
   "Back": "Back",
-  "Foreground": "Foreground",
-  "SELECT A FOREGROUND": "SELECT A FOREGROUND",
-  "SELECT A SEGMENTATION": "SELECT A SEGMENTATION",
+  "Foreground": "Overlay series",
+  "SELECT A FOREGROUND": "Choose an overlay series",
+  "SELECT A SEGMENTATION": "Choose a segmentation",
+  "Edit label…": "Edit label…",
+  "Delete": "Delete",
   "Multiple patients loaded": "Multiple patients loaded"
 }

@@ -190,15 +190,15 @@ function getDisplayText(mappedAnnotations, displaySet) {
     InstanceNumber = instance.InstanceNumber;
   }
 
-  const instanceText = InstanceNumber ? ` I: ${InstanceNumber}` : '';
-  const frameText = displaySet.isMultiFrame ? ` F: ${frameNumber}` : '';
+  const instanceText = InstanceNumber ? `, image ${InstanceNumber}` : '';
+  const frameText = displaySet.isMultiFrame ? `, frame ${frameNumber}` : '';
   if (angle === undefined) {
     return displayText;
   }
   const roundedAngle = utils.roundNumber(angle, 2);
 
   displayText.primary.push(`${roundedAngle} ${getDisplayUnit(unit)}`);
-  displayText.secondary.push(`S: ${SeriesNumber}${instanceText}${frameText}`);
+  displayText.secondary.push(`Series ${SeriesNumber}${instanceText}${frameText}`);
 
   return displayText;
 }

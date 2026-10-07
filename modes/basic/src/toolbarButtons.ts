@@ -653,8 +653,10 @@ const toolbarButtons: Button[] = [
     uiType: 'ohif.toolButton',
     props: {
       icon: 'icon-tool-livewire',
-      label: i18n.t('Buttons:Livewire tool'),
-      tooltip: i18n.t('Buttons:Livewire tool'),
+      label: i18n.t('Buttons:Edge-snap ROI'),
+      tooltip: i18n.t(
+        'Buttons:Click points around a structure; the outline snaps to the edges between them (livewire)'
+      ),
       commands: setToolActiveToolbar,
       evaluate: 'evaluate.cornerstoneTool',
     },
@@ -896,7 +898,8 @@ const toolbarButtons: Button[] = [
   },
   {
     id: 'Layout',
-    uiType: 'ohif.layoutSelector',
+    // Fork: our layout menu (extensions/imaging-platform LayoutMenu), not OHIF's panel.
+    uiType: 'imagingPlatform.layoutMenu',
     props: {
       rows: 3,
       columns: 4,
@@ -995,6 +998,133 @@ if (oneClick) {
       'Buttons:One Click Segment works best on PET. On CT the lesion must differ from its surroundings by roughly 100 HU or more, with a clear edge. Rest the mouse on it until a + cursor appears, then click; a ⊘ cursor means it cannot segment there.'
     ),
   };
+}
+
+// Fork: AxialScope tool names (clinical wording, one name per tool; tooltips say what you get).
+// Applied here so the upstream button definitions, including the segmentation mode's, stay as-is.
+export const toolNames: Record<string, [string, string?]> = {
+  ArrowAnnotate: [i18n.t('Buttons:Arrow'), i18n.t('Buttons:Arrow with a text label')],
+  Probe: [i18n.t('Buttons:Pixel value'), i18n.t('Buttons:Value at a point (HU on CT)')],
+  Length: [i18n.t('Buttons:Length'), i18n.t('Buttons:Distance between two points')],
+  Bidirectional: [
+    i18n.t('Buttons:Bidirectional'),
+    i18n.t('Buttons:Longest diameter and perpendicular width (RECIST)'),
+  ],
+  Angle: [i18n.t('Buttons:Angle'), i18n.t('Buttons:Angle at a vertex between two lines')],
+  CobbAngle: [i18n.t('Buttons:Cobb angle'), i18n.t('Buttons:Angle between two separate lines')],
+  EllipticalROI: [
+    i18n.t('Buttons:Ellipse'),
+    i18n.t('Buttons:Ellipse ROI: area, mean, min and max'),
+  ],
+  RectangleROI: [
+    i18n.t('Buttons:Rectangle'),
+    i18n.t('Buttons:Rectangle ROI: area, mean, min and max'),
+  ],
+  CircleROI: [i18n.t('Buttons:Circle'), i18n.t('Buttons:Circle ROI: area, mean, min and max')],
+  PlanarFreehandROI: [
+    i18n.t('Buttons:Freehand ROI'),
+    i18n.t('Buttons:Draw an outline by hand: area and mean'),
+  ],
+  SplineROI: [
+    i18n.t('Buttons:Spline ROI'),
+    i18n.t('Buttons:Smooth outline through clicked points: area and mean'),
+  ],
+  CalibrationLine: [
+    i18n.t('Buttons:Calibrate'),
+    i18n.t('Buttons:Set the true length of a line (images without pixel spacing)'),
+  ],
+  WindowLevel: [i18n.t('Buttons:Window/level')],
+  windowLevelMenu: [i18n.t('Buttons:Window/level'), i18n.t('Buttons:Window presets and color map')],
+  windowLevelMenuEmbedded: [
+    i18n.t('Buttons:Window/level'),
+    i18n.t('Buttons:Window presets and color map'),
+  ],
+  voiManualControlMenu: [
+    i18n.t('Buttons:Manual window/level'),
+    i18n.t('Buttons:Type window and level values'),
+  ],
+  dataOverlayMenu: [
+    i18n.t('Buttons:Overlay'),
+    i18n.t('Buttons:Overlay another series or a segmentation'),
+  ],
+  invert: [i18n.t('Buttons:Invert'), i18n.t('Buttons:Invert grayscale (negative)')],
+  Magnify: [i18n.t('Buttons:Magnifier'), i18n.t('Buttons:Magnify the area under the mouse')],
+  AdvancedMagnify: [
+    i18n.t('Buttons:Magnifier window'),
+    i18n.t('Buttons:A movable magnified window'),
+  ],
+  WindowLevelRegion: [
+    i18n.t('Buttons:Window from area'),
+    i18n.t('Buttons:Drag a box; the window fits the values inside it'),
+  ],
+  'rotate-left': [i18n.t('Buttons:Rotate left'), i18n.t('Buttons:Rotate 90° counter-clockwise')],
+  'rotate-right': [i18n.t('Buttons:Rotate right'), i18n.t('Buttons:Rotate 90° clockwise')],
+  flipHorizontal: [i18n.t('Buttons:Flip horizontal'), i18n.t('Buttons:Mirror left to right')],
+  flipVertical: [i18n.t('Buttons:Flip vertical'), i18n.t('Buttons:Mirror top to bottom')],
+  Reset: [i18n.t('Buttons:Reset view'), i18n.t('Buttons:Reset zoom, pan, rotation and window')],
+  ReferenceLines: [
+    i18n.t('Buttons:Reference lines'),
+    i18n.t('Buttons:Show where the other views cut this image'),
+  ],
+  ImageOverlayViewer: [
+    i18n.t('Buttons:DICOM overlay'),
+    i18n.t('Buttons:Show the overlay graphics stored in the image'),
+  ],
+  TagBrowser: [i18n.t('Buttons:DICOM tags'), i18n.t('Buttons:Show the DICOM header of this image')],
+  Capture: [i18n.t('Buttons:Save image'), i18n.t('Buttons:Save the viewport as an image file')],
+  UltrasoundDirectionalTool: [
+    i18n.t('Buttons:US distance'),
+    i18n.t('Buttons:Ultrasound directional distance'),
+  ],
+  SegmentLabelTool: [
+    i18n.t('Buttons:Show segment names'),
+    i18n.t('Buttons:Show the segment name when the mouse is over it'),
+  ],
+  ImageSliceSync: [
+    i18n.t('Buttons:Sync scrolling'),
+    i18n.t('Buttons:Scroll linked series together (F5)'),
+  ],
+  VOISync: [
+    i18n.t('Buttons:Sync window/level'),
+    i18n.t('Buttons:Link window/level across viewports of the same modality'),
+  ],
+  MIP: [i18n.t('Buttons:Rotating MIP')],
+  TrackballRotate: [i18n.t('Buttons:Rotate 3D'), i18n.t('Buttons:Drag to rotate the 3D volume')],
+  VolumeCropping: [i18n.t('Buttons:Crop 3D')],
+  // Segmentation (Paint / Outline, as the panel tabs are named)
+  Threshold: [
+    i18n.t('Buttons:Threshold brush'),
+    i18n.t('Buttons:Paint only pixels within a value range (HU on CT)'),
+  ],
+  Shapes: [i18n.t('Buttons:Shape fill'), i18n.t('Buttons:Fill a circle, sphere or rectangle')],
+  RegionSegmentPlus: [i18n.t('Buttons:One-click region')],
+  LabelMapEditWithContour: [
+    i18n.t('Buttons:Edit with outline'),
+    i18n.t('Buttons:Draw an outline to add to or cut from the painted region'),
+  ],
+  InterpolateLabelmap: [i18n.t('Buttons:Fill between slices')],
+  SegmentBidirectional: [i18n.t('Buttons:Longest diameters (RECIST)')],
+  PlanarFreehandContourSegmentationTool: [
+    i18n.t('Buttons:Freehand outline'),
+    i18n.t('Buttons:Draw an outline by hand'),
+  ],
+  SculptorTool: [
+    i18n.t('Buttons:Sculpt outline'),
+    i18n.t('Buttons:Push the outline with a round tool'),
+  ],
+  SplineContourSegmentationTool: [
+    i18n.t('Buttons:Spline outline'),
+    i18n.t('Buttons:Smooth outline through clicked points'),
+  ],
+  LogicalContourOperations: [i18n.t('Buttons:Combine outlines')],
+  SimplifyContours: [i18n.t('Buttons:Simplify outline')],
+  SmoothContours: [i18n.t('Buttons:Smooth outline')],
+};
+for (const [id, [label, tooltip]] of Object.entries(toolNames)) {
+  const button = toolbarButtons.find(b => b.id === id);
+  if (button) {
+    button.props = { ...button.props, label, ...(tooltip ? { tooltip } : {}) };
+  }
 }
 
 export default toolbarButtons;

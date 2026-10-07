@@ -200,8 +200,8 @@ function getDisplayText(mappedAnnotations, displaySet, customizationService) {
     InstanceNumber = instance.InstanceNumber;
   }
 
-  const instanceText = InstanceNumber ? ` I: ${InstanceNumber}` : '';
-  const frameText = displaySet.isMultiFrame ? ` F: ${frameNumber}` : '';
+  const instanceText = InstanceNumber ? `, image ${InstanceNumber}` : '';
+  const frameText = displaySet.isMultiFrame ? `, frame ${frameNumber}` : '';
 
   // Area sometimes becomes undefined if `preventHandleOutsideImage` is off.
   const roundedArea = utils.roundNumber(area || 0, 2);
@@ -216,7 +216,7 @@ function getDisplayText(mappedAnnotations, displaySet, customizationService) {
 
       displayText.primary.push(maxStr);
     }
-    displayText.secondary.push(`S: ${SeriesNumber}${instanceText}${frameText}`);
+    displayText.secondary.push(`Series ${SeriesNumber}${instanceText}${frameText}`);
   });
 
   return displayText;

@@ -5,5 +5,16 @@
   "Custom": "Custom",
   "Hover to select": "Hover to select",
   "rows and columns": "rows and columns",
-  "Click to apply": "Click to apply"
+  "Click to apply": "Click to apply",
+  "Viewports and layouts": "Viewports and layouts",
+  "Viewports": "Viewports",
+  "Reconstruction": "Reconstruction",
+  "MPR (3 planes)": "MPR (3 planes)",
+  "MIP + MPR": "MIP + MPR",
+  "3D + MPR": "3D + MPR",
+  "3D large, MPR below": "3D large, MPR below",
+  "Axial large, MPR right": "Axial large, MPR right",
+  "3D": "3D",
+  "3D large, MPR right": "3D large, MPR right",
+  "All images": "All images"
 }

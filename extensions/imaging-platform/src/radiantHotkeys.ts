@@ -67,8 +67,8 @@ const radiantHotkeys = [
   preset('7', 'ct-lung', 'Lung Window'),
   preset('8', 'ct-stroke', 'Stroke Window'),
   preset('9', 'ct-subdural', 'Subdural Window'),
-  cmd('i', 'invertViewport', 'Negative'),
-  cmd('f11', 'invertViewport', 'Negative (F11)', { alias: 'f11' }),
+  cmd('i', 'invertViewport', 'Invert'),
+  cmd('f11', 'invertViewport', 'Invert (F11)', { alias: 'f11' }),
 
   // Zoom, pan, orientation
   cmd('ctrl+=', 'scaleUpViewport', 'Zoom In'),

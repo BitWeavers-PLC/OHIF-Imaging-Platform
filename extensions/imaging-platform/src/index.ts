@@ -4,6 +4,7 @@ import { id } from './id';
 import registerIcons from './icons';
 import getPanelModule from './getPanelModule';
 import getCommandsModule from './commandsModule';
+import getToolbarModule from './getToolbarModule';
 import registerTiltWheelSeries from './tiltWheelSeries';
 
 const imagingPlatformExtension: Types.Extensions.Extension = {
@@ -22,6 +23,7 @@ const imagingPlatformExtension: Types.Extensions.Extension = {
   getCommandsModule,
   getCustomizationModule,
   getPanelModule,
+  getToolbarModule,
 };
 
 export default imagingPlatformExtension;

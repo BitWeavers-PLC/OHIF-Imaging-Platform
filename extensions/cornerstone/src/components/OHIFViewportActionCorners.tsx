@@ -12,7 +12,10 @@ function OHIFViewportActionCornersComponent({ viewportId }: OHIFViewportActionCo
   // Use the viewport hover hook to track if viewport is hovered or active
   const { isHovered, isActive } = useViewportHover(viewportId);
 
-  const shouldShowCorners = isHovered || isActive;
+  // Fork: only under the mouse (OHIF also kept them on the active viewport), so a reading
+  // view shows just the image and its text. Touch screens can't hover: keep the active one.
+  const canHover = typeof window !== 'undefined' && window.matchMedia?.('(hover: hover)').matches;
+  const shouldShowCorners = isHovered || (isActive && !canHover);
 
   if (!shouldShowCorners) {
     return null;

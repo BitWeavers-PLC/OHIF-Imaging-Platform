@@ -198,8 +198,8 @@ function getDisplayText(mappedAnnotations, displaySet) {
     InstanceNumber = instance.InstanceNumber;
   }
 
-  const instanceText = InstanceNumber ? ` I: ${InstanceNumber}` : '';
-  const frameText = displaySet.isMultiFrame ? ` F: ${frameNumber}` : '';
+  const instanceText = InstanceNumber ? `, image ${InstanceNumber}` : '';
+  const frameText = displaySet.isMultiFrame ? `, frame ${frameNumber}` : '';
 
   // Area sometimes becomes undefined if `preventHandleOutsideImage` is off.
   if (!isNaN(area)) {
@@ -218,7 +218,7 @@ function getDisplayText(mappedAnnotations, displaySet) {
       const perimeterStr = getStatisticDisplayString(perimeter, radiusUnit, 'perimeter');
       displayText.primary.push(perimeterStr);
     }
-    displayText.secondary.push(`S: ${SeriesNumber}${instanceText}${frameText}`);
+    displayText.secondary.push(`Series ${SeriesNumber}${instanceText}${frameText}`);
   });
 
   return displayText;

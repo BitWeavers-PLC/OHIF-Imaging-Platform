@@ -413,10 +413,11 @@ function VOIOverlayItem({ voi, customization }: OverlayItemProps) {
       className="overlay-item flex flex-row"
       style={{ color: customization?.color }}
     >
-      <span className="mr-0.5 shrink-0 opacity-[0.70]">W:</span>
-      <span className="mr-2.5 shrink-0">{windowWidth.toFixed(0)}</span>
-      <span className="mr-0.5 shrink-0 opacity-[0.70]">L:</span>
-      <span className="shrink-0">{windowCenter.toFixed(0)}</span>
+      {/* Fork: RadiAnt order and labels (level first); OHIF showed "W: … L: …". */}
+      <span className="mr-0.5 shrink-0 opacity-[0.70]">WL:</span>
+      <span className="mr-2.5 shrink-0">{windowCenter.toFixed(0)}</span>
+      <span className="mr-0.5 shrink-0 opacity-[0.70]">WW:</span>
+      <span className="shrink-0">{windowWidth.toFixed(0)}</span>
     </div>
   );
 }
@@ -431,7 +432,7 @@ function ZoomOverlayItem({ scale, customization }: OverlayItemProps) {
       style={{ color: (customization && customization.color) || undefined }}
     >
       <span className="mr-0.5 shrink-0 opacity-[0.70]">Zoom:</span>
-      <span>{scale.toFixed(2)}x</span>
+      <span>{Math.round(scale * 100)}%</span>
     </div>
   );
 }
@@ -480,11 +481,7 @@ function PixelValueOverlayItem({ element, customization }: OverlayItemProps) {
 /**
  * Instance Number Overlay Item
  */
-function InstanceNumberOverlayItem({
-  instanceNumber,
-  imageSliceData,
-  customization,
-}: OverlayItemProps) {
+function InstanceNumberOverlayItem({ imageSliceData, customization }: OverlayItemProps) {
   const { imageIndex, numberOfSlices } = imageSliceData;
 
   return (
@@ -492,16 +489,10 @@ function InstanceNumberOverlayItem({
       className="overlay-item flex flex-row"
       style={{ color: (customization && customization.color) || undefined }}
     >
-      <span>
-        {instanceNumber !== undefined && instanceNumber !== null ? (
-          <>
-            <span className="mr-0.5 shrink-0 opacity-[0.70]">I:</span>
-            <span>{`${instanceNumber} (${imageIndex + 1}/${numberOfSlices})`}</span>
-          </>
-        ) : (
-          `${imageIndex + 1}/${numberOfSlices}`
-        )}
-      </span>
+      {/* Fork: position in the series as RadiAnt shows it ("Im: 53/167"). OHIF added the
+          DICOM instance number, which runs the other way in reformatted views. */}
+      <span className="mr-0.5 shrink-0 opacity-[0.70]">Im:</span>
+      <span>{`${imageIndex + 1}/${numberOfSlices}`}</span>
     </div>
   );
 }

@@ -207,8 +207,8 @@ function getDisplayText(mappedAnnotations, displaySet) {
     InstanceNumber = instance.InstanceNumber;
   }
 
-  const instanceText = InstanceNumber ? ` I: ${InstanceNumber}` : '';
-  const frameText = displaySet.isMultiFrame ? ` F: ${frameNumber}` : '';
+  const instanceText = InstanceNumber ? `, image ${InstanceNumber}` : '';
+  const frameText = displaySet.isMultiFrame ? `, frame ${frameNumber}` : '';
 
   const roundedArea = utils.roundNumber(area || 0, 2);
   displayText.primary.push(`${roundedArea} ${getDisplayUnit(areaUnit)}`);
@@ -219,7 +219,7 @@ function getDisplayText(mappedAnnotations, displaySet) {
     const maxStr = getStatisticDisplayString(max, unit, 'max');
 
     displayText.primary.push(maxStr);
-    displayText.secondary.push(`S: ${SeriesNumber}${instanceText}${frameText}`);
+    displayText.secondary.push(`Series ${SeriesNumber}${instanceText}${frameText}`);
   });
 
   return displayText;

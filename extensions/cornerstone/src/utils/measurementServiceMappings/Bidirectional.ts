@@ -180,12 +180,12 @@ function getDisplayText(mappedAnnotations, displaySet) {
     InstanceNumber = instance.InstanceNumber;
   }
 
-  const instanceText = InstanceNumber ? ` I: ${InstanceNumber}` : '';
-  const frameText = displaySet.isMultiFrame ? ` F: ${frameNumber}` : '';
+  const instanceText = InstanceNumber ? `, image ${InstanceNumber}` : '';
+  const frameText = displaySet.isMultiFrame ? `, frame ${frameNumber}` : '';
 
   displayText.primary.push(`L: ${roundedLength} ${getDisplayUnit(unit)}`);
   displayText.primary.push(`W: ${roundedWidth} ${getDisplayUnit(unit)}`);
-  displayText.secondary.push(`S: ${SeriesNumber}${instanceText}${frameText}`);
+  displayText.secondary.push(`Series ${SeriesNumber}${instanceText}${frameText}`);
 
   return displayText;
 }

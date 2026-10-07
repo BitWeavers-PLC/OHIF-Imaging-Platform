@@ -1,10 +1,10 @@
 {
   "Hide": "Hide",
   "Show": "Show",
-  "Rename": "Rename",
+  "Rename": "Rename…",
   "Duplicate": "Duplicate",
   "Delete": "Delete",
-  "Change Color": "Change Color",
+  "Change Color": "Color…",
   "Lock": "Lock",
   "Unlock": "Unlock"
 }

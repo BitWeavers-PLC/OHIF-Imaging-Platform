@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import debounce from 'lodash.debounce';
 import { useSystem } from '@ohif/core';
-import i18n from '@ohif/i18n';
+import measurementToolLabel from '../utils/measurementToolLabel';
 
 function mapMeasurementToDisplay(measurement, displaySetService) {
   const { referenceSeriesUID } = measurement;
@@ -16,7 +16,7 @@ function mapMeasurementToDisplay(measurement, displaySetService) {
 
   const firstSite = findingSites?.[0];
   const label =
-    baseLabel || finding?.text || firstSite?.text || i18n.t('MeasurementTable:empty');
+    baseLabel || finding?.text || firstSite?.text || measurementToolLabel(measurement.toolName);
 
   // Initialize displayText with the structure used in Length.ts and CobbAngle.ts
   const displayText = {
