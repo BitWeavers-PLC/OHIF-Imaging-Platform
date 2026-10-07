@@ -33,7 +33,6 @@ import MissingIcon from './Sources/MissingIcon';
 import More from './Sources/More';
 import MultiplePatients from './Sources/MultiplePatients';
 import NavigationPanelReveal from './Sources/NavigationPanelReveal';
-import OHIFLogo from './Sources/OHIFLogo';
 import Patient from './Sources/Patient';
 import Pin from './Sources/Pin';
 import PinFill from './Sources/PinFill';
@@ -220,9 +219,7 @@ import MRMIP from '../../../assets/images/MR-MIP.png';
 import MRT2Brain from '../../../assets/images/MR-T2-Brain.png';
 import VolumeRendering from '../../../assets/images/VolumeRendering.png';
 import ExternalLink from './Sources/ExternalLink';
-import OHIFLogoColorDarkBackground from './Sources/OHIFLogoColorDarkBackground';
 import Magnifier from './Sources/Magnifier';
-import LoadingOHIFMark from './Sources/LoadingOHIFMark';
 import ArrowLeftBold from './Sources/ArrowLeftBold';
 import Pencil from './Sources/Pencil';
 import NotificationWarning from './Sources/NotificationWarning';
@@ -505,7 +502,6 @@ export const Icons = {
   More,
   MultiplePatients,
   NavigationPanelReveal,
-  OHIFLogo,
   Patient,
   Pin,
   PinFill,
@@ -567,7 +563,6 @@ export const Icons = {
   Pause,
   Play,
   Link,
-  LoadingOHIFMark,
   ArrowLeft: ChevronClosed,
   ArrowRight,
   ArrowLeftBold,
@@ -614,7 +609,6 @@ export const Icons = {
   ToolContract,
   ToolExpand,
   ExternalLink,
-  OHIFLogoColorDarkBackground,
   Magnifier,
   Pencil,
   WindowLevelAdvanced,
@@ -644,10 +638,8 @@ export const Icons = {
   // Aliases
   'prev-arrow': (props: IconProps) => Icons.ArrowLeftBold(props),
   'next-arrow': (props: IconProps) => Icons.ArrowRightBold(props),
-  'loading-ohif-mark': (props: IconProps) => LoadingOHIFMark(props),
   magnifier: (props: IconProps) => Magnifier(props),
   'status-alert-warning': (props: IconProps) => StatusWarning(props),
-  'logo-dark-background': (props: IconProps) => OHIFLogoColorDarkBackground(props),
   'external-link': (props: IconProps) => ExternalLink(props),
   'checkbox-checked': (props: IconProps) => CheckBoxChecked(props),
   'checkbox-unchecked': (props: IconProps) => CheckBoxUnchecked(props),

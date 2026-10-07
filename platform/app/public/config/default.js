@@ -42,7 +42,6 @@ window.config = {
   imagingPlatform: {
     brand: {
       appName: 'AxialScope',
-      hideOHIFReferences: true,
       supportUrl: 'https://support.imagingplatform.local',
     },
     uiThemePreset: 'meddreamLike',
@@ -87,7 +86,6 @@ window.config = {
   headerToolsFirstCollapse: true,
   brand: {
     appName: 'AxialScope',
-    hideOHIFReferences: true,
     supportUrl: 'https://support.imagingplatform.local',
   },
   measurementTrackingMode: 'simplified',
@@ -115,7 +113,7 @@ window.config = {
       test: ({ multimonitor }) => multimonitor === 'split',
       screens: [
         {
-          id: 'ohif0',
+          id: 'screen0',
           screen: null,
           location: {
             screen: 0,
@@ -127,7 +125,7 @@ window.config = {
           options: 'location=no,menubar=no,scrollbars=no,status=no,titlebar=no',
         },
         {
-          id: 'ohif1',
+          id: 'screen1',
           screen: null,
           location: {
             width: 0.5,
@@ -145,7 +143,7 @@ window.config = {
       test: ({ multimonitor }) => multimonitor === '2',
       screens: [
         {
-          id: 'ohif0',
+          id: 'screen0',
           screen: 0,
           location: {
             width: 1,
@@ -156,7 +154,7 @@ window.config = {
           options: 'fullscreen=yes,location=no,menubar=no,scrollbars=no,status=no,titlebar=no',
         },
         {
-          id: 'ohif1',
+          id: 'screen1',
           screen: 1,
           location: {
             width: 1,
@@ -169,7 +167,7 @@ window.config = {
       ],
     },
   ],
-  defaultDataSourceName: 'ohif',
+  defaultDataSourceName: 'axialscope',
   /* Dynamic config allows user to pass "configUrl" query string this allows to load config without recompiling application. The regex will ensure valid configuration source */
   // dangerouslyUseDynamicConfig: {
   //   enabled: true,
@@ -183,9 +181,9 @@ window.config = {
   dataSources: [
     {
       namespace: '@ohif/extension-default.dataSourcesModule.dicomweb',
-      sourceName: 'ohif',
+      sourceName: 'axialscope',
       configuration: {
-        friendlyName: 'AWS S3 Static wado server',
+        friendlyName: 'AxialScope PACS',
         name: 'aws',
         wadoUriRoot: '/pacs/api',
         qidoRoot: '/pacs/api',
