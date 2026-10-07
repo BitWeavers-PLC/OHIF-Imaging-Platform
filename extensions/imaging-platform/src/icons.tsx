@@ -17,7 +17,6 @@ import {
   Circle,
   CircleAlert,
   CircleCheck,
-  CircleDot,
   CircleX,
   Columns2,
   Compass,
@@ -46,7 +45,6 @@ import {
   LocateFixed,
   Lock,
   Move,
-  MoveUpRight,
   Palette,
   PanelLeftClose,
   PanelLeftOpen,
@@ -105,10 +103,33 @@ const Glyph = (children: React.ReactNode) => (props: React.SVGProps<SVGSVGElemen
   </svg>
 );
 
+// Our signature: small square edit handles at the points you drag, as drawn on the image.
+// OHIF draws tools as objects (ruler, crossed rulers, shape + "plus"); these draw the measurement.
+const handle = (x: number, y: number) => (
+  <rect
+    key={`h${x}-${y}`}
+    x={x - 1.25}
+    y={y - 1.25}
+    width="2.5"
+    height="2.5"
+    fill="currentColor"
+    stroke="none"
+  />
+);
+const Length = Glyph(
+  <>
+    <path d="M5.5 18.5 L18.5 5.5" />
+    {handle(5.5, 18.5)}
+    {handle(18.5, 5.5)}
+  </>
+);
 const Angle = Glyph(
   <>
-    <path d="M4 20 L20 20 M4 20 L15 5" />
-    <path d="M10 20 A6 6 0 0 0 8 15.5" />
+    <path d="M5 19 L19 19 M5 19 L15 6" />
+    <path d="M10.5 19 A5.5 5.5 0 0 0 8.4 14.6" />
+    {handle(5, 19)}
+    {handle(19, 19)}
+    {handle(15, 6)}
   </>
 );
 const CobbAngle = Glyph(
@@ -118,59 +139,115 @@ const CobbAngle = Glyph(
       d="M8 7.5 L16 16"
       strokeDasharray="2 2"
     />
+    {handle(3, 6)}
+    {handle(21, 14)}
   </>
 );
 const Bidirectional = Glyph(
   <>
     <path d="M4 17 L20 7" />
-    <path d="M9 6 L15 18" />
-    <path d="M4 17 l1 -3 M20 7 l-3 -0.5 M9 6 l2.5 1.5 M15 18 l-2.5 -1.5" />
+    <path d="M9.9 8.6 L14.1 15.4" />
+    {handle(4, 17)}
+    {handle(20, 7)}
+    {handle(9.9, 8.6)}
+    {handle(14.1, 15.4)}
   </>
 );
 const Ellipse = Glyph(
-  <ellipse
-    cx="12"
-    cy="12"
-    rx="9"
-    ry="6"
-  />
+  <>
+    <ellipse
+      cx="12"
+      cy="12"
+      rx="8"
+      ry="5.5"
+    />
+    {handle(4, 12)}
+    {handle(20, 12)}
+    {handle(12, 6.5)}
+    {handle(12, 17.5)}
+  </>
 );
+const RectangleRoi = Glyph(
+  <>
+    <rect
+      x="4.5"
+      y="6.5"
+      width="15"
+      height="11"
+    />
+    {handle(4.5, 6.5)}
+    {handle(19.5, 6.5)}
+    {handle(4.5, 17.5)}
+    {handle(19.5, 17.5)}
+  </>
+);
+const CircleRoi = Glyph(
+  <>
+    <circle
+      cx="12"
+      cy="12"
+      r="7.5"
+    />
+    <path
+      d="M12 12 H19.5"
+      strokeDasharray="1.5 1.5"
+    />
+    <path d="M11 12 h2 M12 11 v2" />
+    {handle(19.5, 12)}
+  </>
+);
+// Pixel probe: one point with its value tag.
+const Probe = Glyph(
+  <>
+    <path d="M6 18 L11 13" />
+    <rect
+      x="11"
+      y="5"
+      width="9"
+      height="7"
+      rx="1"
+    />
+    <path d="M13.5 8.5 h4" />
+    {handle(6, 18)}
+  </>
+);
+// Arrow annotation: a label box pointing at a spot.
+const Annotate = Glyph(
+  <>
+    <rect
+      x="11"
+      y="3.5"
+      width="10"
+      height="6.5"
+      rx="1"
+    />
+    <path d="M13.5 6.75 h5" />
+    <path d="M11 10 L4.5 18.5 M4.5 18.5 l0.6 -4.2 M4.5 18.5 l4 -1.3" />
+  </>
+);
+// Hand-drawn outline: irregular, no handles.
 const Freehand = Glyph(
   <path d="M5 14 C3 8 9 3 14 5 C19 7 22 12 18 16 C15 19 11 17 9 19 C7 21 6 17 5 14 Z" />
 );
+// Spline: smooth closed outline through square control points.
 const Spline = Glyph(
   <>
-    <path d="M4 16 C6 6 12 4 14 10 S19 18 20 8" />
-    <circle
-      cx="4"
-      cy="16"
-      r="1.3"
-    />
-    <circle
-      cx="14"
-      cy="10"
-      r="1.3"
-    />
-    <circle
-      cx="20"
-      cy="8"
-      r="1.3"
-    />
+    <path d="M5 13 C4.5 7.5 9.5 4.5 14 5.5 C19 6.5 21 12 18 16 C15 19.5 6 19 5 13 Z" />
+    {handle(5, 13)}
+    {handle(14, 5.5)}
+    {handle(18, 16)}
   </>
 );
+// Livewire: an outline that snaps to the edge (dashed) between two placed points.
 const Livewire = Glyph(
   <>
-    <path d="M4 18 L7 12 L11 13 L13 7 L17 9 L20 5" />
-    <circle
-      cx="4"
-      cy="18"
-      r="1.3"
+    <path
+      d="M4 19 C7 12 13 15 20 5"
+      strokeDasharray="1.5 2"
     />
-    <circle
-      cx="20"
-      cy="5"
-      r="1.3"
-    />
+    <path d="M4 17 L6.5 13.5 L9.5 14 L12 12.5 L14.5 12 L17 8.5 L19 5.5" />
+    {handle(4, 17)}
+    {handle(19, 5.5)}
   </>
 );
 const Calibration = Glyph(
@@ -258,6 +335,180 @@ const SegmentLabel = Glyph(
       cx="8"
       cy="12"
       r="1.3"
+    />
+  </>
+);
+
+// Segmentation: painted area is a translucent fill; the tool is drawn on top of it.
+const area = (d: string) => (
+  <path
+    d={d}
+    fill="currentColor"
+    fillOpacity={0.3}
+    stroke="none"
+  />
+);
+const SWATH = 'M3 20 C5 15 8 14 10 12.5 L11.6 14.4 C9.6 16 7.5 17.5 6 21 Z';
+const Brush = Glyph(
+  <>
+    {area(SWATH)}
+    <circle
+      cx="15"
+      cy="9"
+      r="5.5"
+    />
+    <path d="M15 6.8 v4.4 M12.8 9 h4.4" />
+  </>
+);
+const Eraser = Glyph(
+  <>
+    {area(SWATH)}
+    <circle
+      cx="15"
+      cy="9"
+      r="5.5"
+    />
+    <path d="M12.8 9 h4.4" />
+  </>
+);
+// Threshold: HU histogram with the cut-off line.
+const ThresholdTool = Glyph(
+  <>
+    <path d="M4 20 h16" />
+    <path d="M6 20 v-5 M9 20 v-9 M12 20 v-12 M15 20 v-7 M18 20 v-3" />
+    <path
+      d="M3 10 h18"
+      strokeDasharray="2 1.5"
+    />
+  </>
+);
+// Fill a drawn shape (sphere / rectangle scissors).
+const ShapeFill = Glyph(
+  <>
+    <rect
+      x="4"
+      y="5"
+      width="16"
+      height="14"
+      strokeDasharray="2 1.5"
+    />
+    {area('M12 7.5 a4.5 4.5 0 1 0 0.01 0 Z')}
+    <circle
+      cx="12"
+      cy="12"
+      r="4.5"
+    />
+  </>
+);
+// One click: a seed point growing into a region.
+const ClickSegment = Glyph(
+  <>
+    {area('M12 7 a5 5 0 1 0 0.01 0 Z')}
+    <circle
+      cx="12"
+      cy="12"
+      r="8.5"
+      strokeDasharray="2 2"
+    />
+    {handle(12, 12)}
+  </>
+);
+const EditWithContour = Glyph(
+  <>
+    {area('M4 15 C4 9 9 5 14 6 C18 7 20 11 19 15 C18 19 6 20 4 15 Z')}
+    <path d="M3 12 C8 8 13 15 21 10" />
+    {handle(21, 10)}
+  </>
+);
+// Sculptor: a round tool pushing a dent into the outline.
+const Sculptor = Glyph(
+  <>
+    <path d="M3 17 C7 17 8 13 12 13 C16 13 17 17 21 17" />
+    <circle
+      cx="12"
+      cy="8"
+      r="3.5"
+    />
+  </>
+);
+// Interpolate: slices drawn at top and bottom, the ones between filled in (dashed).
+const Interpolate = Glyph(
+  <>
+    <path d="M4 4.5 h16 M4 19.5 h16" />
+    <path
+      d="M6 9.5 h12 M6 14.5 h12"
+      strokeDasharray="1.5 1.5"
+    />
+    {handle(4, 4.5)}
+    {handle(20, 4.5)}
+    {handle(4, 19.5)}
+    {handle(20, 19.5)}
+  </>
+);
+const TwoCircles = (fill: React.ReactNode, dashRight = false) =>
+  Glyph(
+    <>
+      {fill}
+      <circle
+        cx="9"
+        cy="12"
+        r="5.5"
+      />
+      <circle
+        cx="15"
+        cy="12"
+        r="5.5"
+        strokeDasharray={dashRight ? '1.5 1.5' : undefined}
+      />
+    </>
+  );
+const LENS = 'M12 7.4 A5.5 5.5 0 0 1 12 16.6 A5.5 5.5 0 0 1 12 7.4 Z';
+const CombineMerge = TwoCircles(area('M12 7.4 A5.5 5.5 0 1 0 12 16.6 A5.5 5.5 0 1 0 12 7.4 Z'));
+const CombineIntersect = TwoCircles(area(LENS));
+const CombineSubtract = TwoCircles(
+  area('M12 7.4 A5.5 5.5 0 1 0 12 16.6 A5.5 5.5 0 0 1 12 7.4 Z'),
+  true
+);
+// Simplify: a dense jagged outline becomes a few straight edges.
+const Simplify = Glyph(
+  <>
+    <path
+      d="M3 17 l2 -3 l1.5 1 l2 -4 l1.5 1 l2 -4 l1.5 1.5 l2 -3 l1.5 1 l2 -2"
+      strokeDasharray="1.2 1.2"
+    />
+    <path d="M3 19 L10 13 L21 6" />
+    {handle(3, 19)}
+    {handle(10, 13)}
+    {handle(21, 6)}
+  </>
+);
+const Smooth = Glyph(
+  <>
+    <path
+      d="M3 15 l2 -3 l2 3 l2 -4 l2 4 l2 -5 l2 5 l2 -4 l2 3"
+      strokeDasharray="1.2 1.2"
+    />
+    <path d="M3 18 C8 9 16 9 21 18" />
+  </>
+);
+// Auto-align: two series side by side, levelled on the same anatomy.
+const AutoAlign = Glyph(
+  <>
+    <rect
+      x="3"
+      y="3"
+      width="7"
+      height="14"
+    />
+    <rect
+      x="14"
+      y="7"
+      width="7"
+      height="14"
+    />
+    <path
+      d="M3 12 H21"
+      strokeDasharray="2 1.5"
     />
   </>
 );
@@ -517,23 +768,40 @@ export const iconOverrides: Record<string, React.ComponentType<any>> = {
   'toggle-dicom-overlay': line(Info),
   'dicom-tag-browser': line(Tags),
   // Measurements
-  'tool-length': line(Ruler),
+  'tool-length': Length,
   'tool-angle': Angle,
   'icon-tool-cobb-angle': CobbAngle,
   'tool-bidirectional': Bidirectional,
   ToolBidirectionalSegment: Bidirectional,
   'icon-tool-ultrasound-bidirectional': Bidirectional,
   'tool-ellipse': Ellipse,
-  'tool-rectangle': line(Square),
-  'tool-circle': line(Circle),
-  'tool-probe': line(CircleDot),
-  'icon-tool-probe': line(CircleDot),
-  'tool-annotate': line(MoveUpRight),
+  'tool-rectangle': RectangleRoi,
+  'tool-circle': CircleRoi,
+  'tool-probe': Probe,
+  'icon-tool-probe': Probe,
+  'tool-annotate': Annotate,
   'icon-tool-freehand-roi': Freehand,
   'icon-tool-spline-roi': Spline,
   'icon-tool-livewire': Livewire,
   'tool-calibration': Calibration,
   'tool-segment-label': SegmentLabel,
+  // Segmentation (were OHIF's own artwork)
+  'icon-tool-brush': Brush,
+  'icon-tool-eraser': Eraser,
+  'icon-tool-threshold': ThresholdTool,
+  'icon-tool-shape': ShapeFill,
+  'icon-tool-click-segment': ClickSegment,
+  'icon-tool-sculptor': Sculptor,
+  'tool-labelmap-edit-with-contour': EditWithContour,
+  'actions-interpolate': Interpolate,
+  'actions-bidirectional': Bidirectional,
+  'actions-combine': CombineMerge,
+  'actions-combine-merge': CombineMerge,
+  'actions-combine-intersect': CombineIntersect,
+  'actions-combine-subtract': CombineSubtract,
+  'actions-simplify': Simplify,
+  'actions-smooth': Smooth,
+  'tool-stack-image-sync': AutoAlign,
   // MPR / 3D / layout
   'icon-mpr': MPR,
   'tool-slab': Slab,

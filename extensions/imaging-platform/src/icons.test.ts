@@ -19,6 +19,27 @@ describe('imaging-platform icon overrides', () => {
     }
   });
 
+  it('draws our own segmentation and auto-align icons (they were OHIF artwork)', () => {
+    const names = [
+      'icon-tool-brush',
+      'icon-tool-eraser',
+      'icon-tool-threshold',
+      'icon-tool-shape',
+      'icon-tool-click-segment',
+      'icon-tool-sculptor',
+      'tool-labelmap-edit-with-contour',
+      'actions-interpolate',
+      'actions-bidirectional',
+      'actions-combine-merge',
+      'actions-combine-intersect',
+      'actions-combine-subtract',
+      'actions-simplify',
+      'actions-smooth',
+      'tool-stack-image-sync',
+    ];
+    expect(names.filter(name => !iconOverrides[name])).toEqual([]);
+  });
+
   it('leaves no toolbar icon missing', () => {
     registerIcons();
     const missing = toolbarButtons
