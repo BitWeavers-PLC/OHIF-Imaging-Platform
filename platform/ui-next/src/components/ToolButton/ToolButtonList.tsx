@@ -88,34 +88,42 @@ ToolButtonListDefault.displayName = 'ToolButtonListDefault';
 interface ToolButtonListDropDownProps {
   children: React.ReactNode;
   className?: string;
+  // Fork: passed to the DropdownMenu so a list can be opened on hover (More tools).
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  modal?: boolean;
+  // Fork: replaces the chevron as the menu's trigger (More tools is one button, no split).
+  trigger?: React.ReactNode;
 }
 
 const ToolButtonListDropDown = React.forwardRef<HTMLDivElement, ToolButtonListDropDownProps>(
-  ({ children, className, ...props }, ref) => (
+  ({ children, className, trigger, ...props }, ref) => (
     <DropdownMenu {...props}>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className={cn(
-            'inline-flex h-9 w-4 items-center justify-center text-current opacity-75',
-            'hover:bg-transparent hover:text-current hover:opacity-100',
-            '!rounded-tr-sm !rounded-br-sm !rounded-tl-none !rounded-bl-none',
-            'bg-transparent',
-            className
-          )}
-        >
-          <Icons.ByName
-            name="chevron-down"
-            className="h-3.5 w-3.5"
-          />
-        </Button>
+        {trigger ?? (
+          <Button
+            variant="ghost"
+            size="icon"
+            className={cn(
+              'inline-flex h-9 w-4 items-center justify-center text-current opacity-75',
+              'hover:bg-transparent hover:text-current hover:opacity-100',
+              '!rounded-tr-sm !rounded-br-sm !rounded-tl-none !rounded-bl-none',
+              'bg-transparent',
+              className
+            )}
+          >
+            <Icons.ByName
+              name="chevron-down"
+              className="h-3.5 w-3.5"
+            />
+          </Button>
+        )}
       </DropdownMenuTrigger>
       <DropdownMenuContent
         ref={ref}
         side="bottom"
         align="start"
-        alignOffset={-40}
+        alignOffset={trigger ? 0 : -40}
       >
         {children}
       </DropdownMenuContent>

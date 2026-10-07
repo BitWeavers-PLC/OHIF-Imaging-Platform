@@ -35,6 +35,14 @@ const BUTTON_GAP_PX = 4;
 const DEFAULT_BUFFER_TO_MORE_COUNT = 0;
 const WIDTH_CHANGE_TOLERANCE_PX = 1;
 
+// Fork: include margins (a group's first button has ml-1 before its separator); without them
+// the row came out ~12 px wider than planned and the More button was cut off.
+const outerWidth = (element: HTMLElement) => {
+  const style = window.getComputedStyle(element);
+  const margins = (parseFloat(style.marginLeft) || 0) + (parseFloat(style.marginRight) || 0);
+  return Math.ceil(element.getBoundingClientRect().width + margins);
+};
+
 function shallowArrayEqual(a: string[], b: string[]) {
   if (a.length !== b.length) {
     return false;
@@ -85,7 +93,7 @@ export function useResponsiveToolbarOverflow({
       }
 
       itemRefs.current.set(id, element);
-      const measuredWidth = Math.ceil(element.getBoundingClientRect().width);
+      const measuredWidth = outerWidth(element);
       if (measuredWidth > 0) {
         widthCacheRef.current.set(id, measuredWidth);
       }
@@ -99,7 +107,7 @@ export function useResponsiveToolbarOverflow({
 
   const refreshMeasuredWidths = useCallback(() => {
     itemRefs.current.forEach((element, id) => {
-      const width = Math.ceil(element.getBoundingClientRect().width);
+      const width = outerWidth(element);
       if (width > 0) {
         widthCacheRef.current.set(id, width);
       }

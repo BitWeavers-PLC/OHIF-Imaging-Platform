@@ -41,6 +41,8 @@ interface ToolButtonProps {
   children?: React.ReactNode;
   /** Fork: key bound to this button, shown in the tooltip. */
   shortcut?: string;
+  /** Fork: suppress the tooltip (e.g. while the button's hover menu is open over it). */
+  hideTooltip?: boolean;
 }
 
 function ToolButton(props: ToolButtonProps) {
@@ -58,6 +60,7 @@ function ToolButton(props: ToolButtonProps) {
     className,
     children,
     shortcut,
+    hideTooltip = false,
   } = props;
 
   const { className: iconClassName } = useIconPresentation();
@@ -77,7 +80,7 @@ function ToolButton(props: ToolButtonProps) {
   const showTooltip = hasSecondaryTooltip || defaultTooltip;
 
   return (
-    <Tooltip>
+    <Tooltip open={hideTooltip ? false : undefined}>
       <TooltipTrigger
         asChild
         className={cn(disabled && 'cursor-not-allowed')}

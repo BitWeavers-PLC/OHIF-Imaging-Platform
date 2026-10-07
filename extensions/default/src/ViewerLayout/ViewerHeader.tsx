@@ -2,17 +2,23 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import { Button, Header, Icons, useModal } from '@ohif/ui-next';
+import { Button, Header, Icons } from '@ohif/ui-next';
 import { useSystem } from '@ohif/core';
 import { Toolbar } from '../Toolbar/Toolbar';
 import HeaderPatientInfo from './HeaderPatientInfo';
 import { PatientInfoVisibility } from './HeaderPatientInfo/HeaderPatientInfo';
+import useOpenSettings from './useOpenSettings';
 import { preserveQueryParameters } from '@ohif/app';
-import { Types } from '@ohif/core';
 
-function ViewerHeader({ appConfig }: withAppTypes<{ appConfig: AppTypes.Config }>) {
+function ViewerHeader({
+  appConfig,
+  hasLeftPanel = false,
+}: withAppTypes<{ appConfig: AppTypes.Config; hasLeftPanel?: boolean }>) {
   const { servicesManager, extensionManager, commandsManager } = useSystem();
-  const { customizationService } = servicesManager.services;
+  // Fork: optional workflow switcher supplied by an extension (imaging-platform WorkflowMenu).
+  const WorkflowMenu = servicesManager.services.customizationService.getCustomization(
+    'viewerHeader.workflowMenu'
+  ) as React.ComponentType | undefined;
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -37,27 +43,15 @@ function ViewerHeader({ appConfig }: withAppTypes<{ appConfig: AppTypes.Config }
   };
 
   const { t } = useTranslation();
-  const { show } = useModal();
+  const settings = useOpenSettings();
   const viewerConfig = appConfig.imagingPlatform?.viewer ?? {};
-  const undoRedoPlacement = viewerConfig.undoRedoPlacement ?? appConfig.undoRedoPlacement ?? 'toolbar-responsive';
+  const undoRedoPlacement =
+    viewerConfig.undoRedoPlacement ?? appConfig.undoRedoPlacement ?? 'toolbar-responsive';
 
-  const UserPreferencesModal = customizationService.getCustomization(
-    'ohif.userPreferencesModal'
-  ) as Types.MenuComponentCustomization;
-
-  const menuOptions = [
-    {
-      title: UserPreferencesModal.menuTitle ?? t('Header:Preferences'),
-      icon: 'settings',
-      onClick: () =>
-        show({
-          content: UserPreferencesModal,
-          title: UserPreferencesModal.title ?? t('UserPreferencesModal:User preferences'),
-          containerClassName:
-            UserPreferencesModal?.containerClassName ?? 'flex max-w-4xl p-6 flex-col',
-        }),
-    },
-  ];
+  // Fork: settings live at the bottom of the left panel; here only when there is none.
+  const menuOptions = !hasLeftPanel
+    ? [{ title: settings.title, icon: 'settings', onClick: settings.open }]
+    : [];
 
   if (appConfig.oidc) {
     menuOptions.push({
@@ -72,11 +66,14 @@ function ViewerHeader({ appConfig }: withAppTypes<{ appConfig: AppTypes.Config }
   return (
     <Header
       menuOptions={menuOptions}
+      Workflow={WorkflowMenu ? <WorkflowMenu /> : null}
       isReturnEnabled={!!appConfig.showStudyList}
       onClickReturnButton={onClickReturnButton}
       WhiteLabeling={appConfig.whiteLabeling}
       Secondary={<Toolbar buttonSection="secondary" />}
+      // Fork: with a left panel the patient banner heads the study list instead.
       PatientInfo={
+        !hasLeftPanel &&
         appConfig.showPatientInfo !== PatientInfoVisibility.DISABLED && (
           <HeaderPatientInfo
             servicesManager={servicesManager}

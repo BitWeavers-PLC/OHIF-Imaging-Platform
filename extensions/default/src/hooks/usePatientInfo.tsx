@@ -12,6 +12,7 @@ function usePatientInfo() {
     PatientID: '',
     PatientSex: '',
     PatientDOB: '',
+    PatientAge: '',
   });
   const [isMixedPatients, setIsMixedPatients] = useState(false);
 
@@ -45,11 +46,15 @@ function usePatientInfo() {
       PatientName: instance.PatientName ? formatPN(instance.PatientName) : null,
       PatientSex: instance.PatientSex || null,
       PatientDOB: formatDate(instance.PatientBirthDate) || null,
+      // Fork: DICOM age ("065Y") without the padding, for the patient banner.
+      PatientAge: instance.PatientAge?.replace(/^0+(?=\d)/, '') || null,
     });
     checkMixedPatients(instance.PatientID || null);
   };
 
   useEffect(() => {
+    // Fork: a component mounted after the series loaded (e.g. a reopened panel) starts filled.
+    updatePatientInfo({ displaySetsAdded: displaySetService.getActiveDisplaySets() });
     const subscription = displaySetService.subscribe(
       displaySetService.EVENTS.DISPLAY_SETS_ADDED,
       props => updatePatientInfo(props)

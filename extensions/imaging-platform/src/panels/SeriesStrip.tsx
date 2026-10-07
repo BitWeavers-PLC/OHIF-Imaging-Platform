@@ -1,6 +1,8 @@
 import React from 'react';
 import { useDrag } from 'react-dnd';
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import { ChevronDown, ChevronRight, User, Users } from 'lucide-react';
+import i18n from '@ohif/i18n';
+import { usePatientInfo } from '@ohif/extension-default';
 
 /**
  * Fork: compact vertical series strip (MedDream / Syngo style) replacing the OHIF study
@@ -96,6 +98,47 @@ function SeriesTile({ ds, isActive, onDoubleClick, onClickUntrack, ThumbnailMenu
   );
 }
 
+/** "ID · 65Y M · DOB", leaving out whatever the study does not have. */
+export function patientDetails({ PatientID, PatientAge, PatientSex, PatientDOB }) {
+  return [PatientID, [PatientAge, PatientSex].filter(Boolean).join(' '), PatientDOB]
+    .filter(Boolean)
+    .join(' · ');
+}
+
+/**
+ * Fork: patient banner at the head of the study list (was in the toolbar header). The images
+ * keep the name in their corner text, so the patient stays identifiable with this panel closed.
+ */
+export function PatientBanner() {
+  const { patientInfo, isMixedPatients } = usePatientInfo();
+  const { PatientName, PatientID } = patientInfo;
+  if (!PatientName && !PatientID) {
+    return null;
+  }
+  const details = patientDetails(patientInfo);
+  const Icon = isMixedPatients ? Users : User;
+  return (
+    <div
+      data-cy="patient-banner"
+      className="bg-card border-background flex shrink-0 items-start gap-2 border-b-2 px-2 py-1.5"
+      title={[PatientName, details].filter(Boolean).join('\n')}
+    >
+      <Icon
+        className={`mt-0.5 h-4 w-4 shrink-0 ${isMixedPatients ? 'text-[hsl(var(--warning-text))]' : 'text-primary'}`}
+        strokeWidth={1.5}
+      />
+      <div className="min-w-0">
+        <div className="text-foreground truncate text-[13px] font-semibold">
+          {isMixedPatients ? i18n.t('Common:Multiple patients loaded') : PatientName || PatientID}
+        </div>
+        {!isMixedPatients && (
+          <div className="text-muted-foreground truncate text-[11px]">{details}</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function SeriesStrip({
   tabs,
   expandedStudyInstanceUIDs = [],
@@ -119,6 +162,7 @@ export default function SeriesStrip({
       className="bg-background ohif-scrollbar flex h-full flex-col gap-px overflow-y-auto text-xs"
       data-cy="series-strip"
     >
+      <PatientBanner />
       {ordered.map(study => {
         const isExpanded = expandedStudyInstanceUIDs.includes(study.studyInstanceUid);
         const isPrior = !primaryStudyInstanceUIDs.includes(study.studyInstanceUid);

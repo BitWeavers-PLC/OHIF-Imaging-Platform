@@ -194,7 +194,8 @@ const SidePanel = ({
   expandedInsideBorderSize = 4,
   collapsedInsideBorderSize = 8,
   collapsedOutsideBorderSize = 4,
-}: SidePanelProps) => {
+  footer,
+}: SidePanelProps & { footer?: React.ReactNode }) => {
   const [panelOpen, setPanelOpen] = useState(isExpanded);
   const [activeTabIndex, setActiveTabIndex] = useState(activeTabIndexProp ?? 0);
 
@@ -472,6 +473,18 @@ const SidePanel = ({
         </>
       ) : (
         <React.Fragment>{getCloseStateComponent()}</React.Fragment>
+      )}
+      {/* Fork: pinned to the bottom, open or collapsed (left panel: the settings button). */}
+      {footer && (
+        <div
+          className={classnames(
+            'mt-auto flex flex-shrink-0 p-1',
+            // Collapsed, only the edge next to the images is on screen.
+            panelOpen ? 'justify-start' : side === 'left' ? 'justify-end' : 'justify-start'
+          )}
+        >
+          {footer}
+        </div>
       )}
     </div>
   );

@@ -4,4 +4,4 @@ export * from './components';
 export * from './contextProviders';
 export * as Types from './types';
 export { utils, cn, formatDICOMDate };
-export { useSessionStorage, useDynamicMaxHeight } from './hooks';
+export { useSessionStorage, useDynamicMaxHeight, useHoverMenu } from './hooks';

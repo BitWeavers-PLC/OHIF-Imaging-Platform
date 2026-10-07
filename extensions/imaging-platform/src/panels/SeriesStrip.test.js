@@ -3,6 +3,9 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import SeriesStrip from './SeriesStrip';
 
 jest.mock('react-dnd', () => ({ useDrag: () => [{}, () => {}] }));
+jest.mock('@ohif/extension-default', () => ({
+  usePatientInfo: () => ({ patientInfo: {}, isMixedPatients: false }),
+}));
 
 const ds = (uid, seriesNumber, modality, numInstances, description) => ({
   displaySetInstanceUID: uid,

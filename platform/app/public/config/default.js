@@ -53,8 +53,8 @@ window.config = {
       bufferToMoreCount: 0,
       alwaysShowMore: true,
       leftGuardPx: 12,
-      // Full-width bar: tools start right after the logo, not at the image area.
-      alignToViewport: false,
+      // Tools start at the image area's left edge (follow the left panel).
+      alignToViewport: true,
       minRightActionsPx: 44,
       rightReservationMode: 'measured',
       maxVisibleButtons: null,
