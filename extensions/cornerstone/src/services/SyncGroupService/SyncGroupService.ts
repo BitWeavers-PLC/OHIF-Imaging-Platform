@@ -248,7 +248,8 @@ export default class SyncGroupService {
    * @param synchronizer
    */
   isImageSliceSyncronizer(synchronizer: Synchronizer) {
-    return this.getSynchronizerType(synchronizer).toLowerCase() === IMAGE_SLICE;
+    // Fork: synchronizers made outside this service (the same-scan camera link) have no type.
+    return this.getSynchronizerType(synchronizer)?.toLowerCase() === IMAGE_SLICE;
   }
   /**
    * Returns the syncronizer type

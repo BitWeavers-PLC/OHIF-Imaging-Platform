@@ -1,6 +1,8 @@
-import { lineUpSource, nextPosition, sameScanGroups } from './autoLinkSameScan';
+import { inPlaneShift, lineUpSource, nextPosition, sameScanGroups } from './autoLinkSameScan';
 
+jest.mock('@cornerstonejs/tools', () => ({ SynchronizerManager: {} }));
 jest.mock('@cornerstonejs/core', () => ({
+  getRenderingEngine: jest.fn(),
   Enums: { ViewportType: {} },
   metaData: {},
   eventTarget: {},
@@ -42,5 +44,10 @@ describe('sameScanGroups', () => {
   it('keeps where a view came from when the same move arrives twice', () => {
     const dragged = nextPosition({ index: 140, at: 1 }, 100, 2);
     expect(nextPosition(dragged, 100, 3)).toEqual({ index: 100, previous: 140, at: 3 });
+  });
+
+  it('centres a view on the other in its own plane, keeping its slice', () => {
+    // PET centred 40 mm right of the CT and on another slice: move right only.
+    expect(inPlaneShift([40, 0, -300], [0, 0, -350], [0, 0, 1])).toEqual([40, 0, 0]);
   });
 });

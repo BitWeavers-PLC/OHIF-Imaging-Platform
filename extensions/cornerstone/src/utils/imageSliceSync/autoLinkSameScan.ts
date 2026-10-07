@@ -1,7 +1,41 @@
-import { Enums, eventTarget, metaData, utilities } from '@cornerstonejs/core';
+import { Enums, eventTarget, getRenderingEngine, metaData, utilities } from '@cornerstonejs/core';
+import { SynchronizerManager } from '@cornerstonejs/tools';
 import { vec3 } from 'gl-matrix';
 
 const IMAGE_SLICE_SYNC = 'IMAGE_SLICE_SYNC';
+const SAME_SCAN_CAMERA = 'sameScanCamera';
+
+/**
+ * Move a view in its own plane to the other's centre, leaving its slice alone: the in-plane
+ * part of (source focal point − target focal point).
+ */
+export function inPlaneShift(source: number[], target: number[], normal: number[]): number[] {
+  const delta = vec3.sub(vec3.create(), source as vec3, target as vec3);
+  return [
+    ...vec3.scaleAndAdd(vec3.create(), delta, normal as vec3, -vec3.dot(delta, normal as vec3)),
+  ];
+}
+
+/**
+ * Same physical scale and centre (mm per pixel, not OHIF's relative zoom, which differs when
+ * the CT and PET fields of view differ), so a PET sits over the same anatomy as its CT.
+ */
+function matchCamera(_synchronizer, source, target) {
+  const engine = getRenderingEngine(target.renderingEngineId);
+  const from = engine?.getViewport(source.viewportId)?.getCamera();
+  const viewport = engine?.getViewport(target.viewportId);
+  const to = viewport?.getCamera();
+  if (!from?.parallelScale || !to?.viewPlaneNormal) {
+    return;
+  }
+  const shift = inPlaneShift(from.focalPoint, to.focalPoint, to.viewPlaneNormal) as vec3;
+  viewport.setCamera({
+    parallelScale: from.parallelScale,
+    focalPoint: [...vec3.add(vec3.create(), to.focalPoint as vec3, shift)],
+    position: [...vec3.add(vec3.create(), to.position as vec3, shift)],
+  });
+  viewport.render();
+}
 
 type View = { id: string; frameOfReferenceUID: string; normal: number[]; synced: boolean };
 
@@ -96,6 +130,18 @@ export default function registerAutoLinkSameScan({ servicesManager }: withAppTyp
       if (!normal) {
         return;
       }
+      // A layout that already links cameras (the PET/CT workflow) keeps its own linking.
+      const ownCameraLink = SynchronizerManager.getSynchronizersForViewport(
+        id,
+        viewport.getRenderingEngine().id
+      ).some(
+        synchronizer =>
+          (synchronizer as any)._eventName === Enums.Events.CAMERA_MODIFIED &&
+          !synchronizer.id.startsWith(SAME_SCAN_CAMERA)
+      );
+      if (ownCameraLink) {
+        return;
+      }
       views.push({
         id,
         frameOfReferenceUID: viewport.getFrameOfReferenceUID(),
@@ -120,6 +166,15 @@ export default function registerAutoLinkSameScan({ servicesManager }: withAppTyp
         );
       }
       const source = lineUpSource(ids, changed, activeId);
+      // Same scale and centre too; zooming or panning one keeps the other with it.
+      const cameraId = `${SAME_SCAN_CAMERA}:${group[0].frameOfReferenceUID}:${group[0].normal
+        .map(v => Math.round(v))
+        .join()}`;
+      const camera =
+        SynchronizerManager.getSynchronizer(cameraId) ??
+        SynchronizerManager.createSynchronizer(cameraId, Enums.Events.CAMERA_MODIFIED, matchCamera);
+      ids.forEach(viewportId => camera.add({ viewportId, renderingEngineId }));
+      camera.fireEvent({ viewportId: source, renderingEngineId }, {} as Event);
       const moved = positions.get(source);
       const dragged =
         !changed.has(source) &&

@@ -24,7 +24,7 @@ const ctAXIAL: AppTypes.HangingProtocol.Viewport = {
     toolGroupId: 'ctToolGroup',
     initialImageOptions: {
       // index: 5,
-      preset: 'first', // 'first', 'last', 'middle'
+      preset: 'middle', // Fork: mid-body; 'first' was the skull vertex
     },
     syncGroups: [
       cameraPositionSync('axialSync'),
@@ -110,7 +110,7 @@ const ptAXIAL: AppTypes.HangingProtocol.Viewport = {
     toolGroupId: 'ptToolGroup',
     initialImageOptions: {
       // index: 5,
-      preset: 'first', // 'first', 'last', 'middle'
+      preset: 'middle', // Fork: mid-body; 'first' was the skull vertex
     },
     syncGroups: [
       cameraPositionSync('axialSync'),
@@ -245,7 +245,7 @@ const fusionAXIAL: AppTypes.HangingProtocol.Viewport = {
     toolGroupId: 'fusionToolGroup',
     initialImageOptions: {
       // index: 5,
-      preset: 'first', // 'first', 'last', 'middle'
+      preset: 'middle', // Fork: mid-body; 'first' was the skull vertex
     },
     syncGroups: [
       cameraPositionSync('axialSync'),

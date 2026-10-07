@@ -36,6 +36,7 @@ import initContextMenu from './initContextMenu';
 import initDoubleClick from './initDoubleClick';
 import initViewTiming from './utils/initViewTiming';
 import registerAutoLinkSameScan from './utils/imageSliceSync/autoLinkSameScan';
+import registerInvertPetStacks from './utils/invertPetStacks';
 import { colormaps } from './utils/colormaps';
 import { SegmentationRepresentations } from '@cornerstonejs/tools/enums';
 import { useLutPresentationStore } from './stores/useLutPresentationStore';
@@ -357,6 +358,8 @@ export default async function init({
   initializeWebWorkerProgressHandler(servicesManager.services.uiNotificationService);
   // Fork: series of one scan side by side scroll together without F5.
   registerAutoLinkSameScan({ servicesManager });
+  // Fork: PET in 2D views opens black on white.
+  registerInvertPetStacks({ servicesManager });
 }
 
 /**

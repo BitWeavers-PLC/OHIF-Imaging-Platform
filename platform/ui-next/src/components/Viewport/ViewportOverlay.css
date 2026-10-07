@@ -23,7 +23,10 @@
 
 /* Dark shadow for light backgrounds */
 .shadow-dark {
-  text-shadow: 0.8px 0.8px 0.5px rgba(0, 0, 0, 0.65);
+  /* Fork: a halo, not an offset shadow, so light text also reads on white (inverted PET). */
+  text-shadow:
+    0 0 2px rgba(0, 0, 0, 0.9),
+    0 0 1px rgba(0, 0, 0, 0.9);
 }
 
 /* Light shadow for dark backgrounds */
