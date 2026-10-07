@@ -53,6 +53,7 @@ import registerJoinContourInterpolation from './utils/joinContourInterpolation';
 import registerAnnotationHoverCursor from './utils/annotationHoverCursor';
 
 import CalibrationLineTool from './tools/CalibrationLineTool';
+import CenterDragCrosshairsTool from './tools/CenterDragCrosshairsTool';
 import ImageOverlayViewerTool from './tools/ImageOverlayViewerTool';
 
 /**
@@ -113,7 +114,7 @@ export default function initCornerstoneTools(configuration = {}) {
   addTool(AngleTool);
   addTool(CobbAngleTool);
   addTool(MagnifyTool);
-  addTool(CrosshairsTool);
+  addTool(CenterDragCrosshairsTool);
   addTool(RectangleScissorsTool);
   addTool(SphereScissorsTool);
   addTool(CircleScissorsTool);

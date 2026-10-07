@@ -238,9 +238,8 @@ function initMPRToolGroup(extensionManager, toolGroupService, commandsManager) {
           displayOnePointAsCrosshairs: true,
         },
       },
-    ],
-    disabled: [
       {
+        // Fork: passive, so the lines show as soon as MPR opens (RadiAnt); drag a line to move it.
         toolName: toolNames.Crosshairs,
         configuration: {
           viewportIndicators: true,
@@ -249,7 +248,6 @@ function initMPRToolGroup(extensionManager, toolGroupService, commandsManager) {
             xOffset: 0.95,
             yOffset: 0.05,
           },
-          disableOnPassive: true,
           autoPan: {
             enabled: false,
             panSize: 10,
@@ -270,6 +268,8 @@ function initMPRToolGroup(extensionManager, toolGroupService, commandsManager) {
           },
         },
       },
+    ],
+    disabled: [
       {
         toolName: toolNames.AdvancedMagnify,
       },
