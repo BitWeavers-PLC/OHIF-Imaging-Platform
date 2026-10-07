@@ -6,6 +6,9 @@ import { registrationBetween } from './linkViewportsAtCurrentPosition';
 const STEP_MM = 5;
 const MIN_OVERLAP_MM = 100;
 const MIN_SCORE = 0.6;
+// One toast for the whole run: "Aligning…" turns into the result instead of stacking on it
+// (cached images finish before the first toast has animated away).
+const TOAST_ID = 'align-by-anatomy';
 
 /** Per-slice features sampled every STEP_MM along the slice normal, starting at `start` mm. */
 export type Profile = { start: number; values: number[][] };
@@ -188,14 +191,15 @@ export default async function alignByAnatomy({
   const offsets = new Map<string, vec3>([[sourceFoR, vec3.create()]]);
   // Uncached priors download ~1 image per 5 mm first, which can take seconds.
   const needsMatch = others.some(t => t.viewport.getFrameOfReferenceUID() !== sourceFoR);
-  const aligningId =
-    needsMatch &&
+  if (needsMatch) {
     uiNotificationService.show({
+      id: TOAST_ID,
       message: i18n.t('Messages:Aligning anatomy…'),
       type: 'info',
       // Stays up until the match is done: a slow PACS can take many seconds per image.
       duration: Infinity,
     });
+  }
   let weakest = 1;
   try {
     const sourceProfile =
@@ -225,19 +229,18 @@ export default async function alignByAnatomy({
   } catch (error) {
     console.error('Auto-align failed', error);
     uiNotificationService.show({
+      id: TOAST_ID,
       message: i18n.t('Messages:Auto-align could not load the images'),
       type: 'warning',
+      duration: 5000,
     });
     return;
-  } finally {
-    if (aligningId) {
-      uiNotificationService.hide(aligningId);
-    }
   }
 
   // Same frame of reference as the source (offset zero) counts as aligned.
   const aligned = [source, ...others].filter(v => offsets.has(v.viewport.getFrameOfReferenceUID()));
   if (aligned.length < 2) {
+    uiNotificationService.hide(TOAST_ID); // only "no matching anatomy" to say
     return;
   }
   // The same group the sync button uses. Join it directly: after a compare swap the viewports
@@ -273,6 +276,7 @@ export default async function alignByAnatomy({
 
   // Say it was automatic and how sure, so the reader knows to check the level.
   uiNotificationService.show({
+    id: TOAST_ID,
     message:
       offsets.size > 1
         ? i18n.t('Messages:Aligned by anatomy (match {{score}}%)', {
