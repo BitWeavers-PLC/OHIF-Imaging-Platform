@@ -5,7 +5,6 @@ import Editor from 'locize-editor';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 import customDebug from './debugger';
-import pkg from '../package.json';
 import { debugMode, detectionOptions } from './config';
 import { getLanguageLabel, getAvailableLanguagesInfo } from './utils.js';
 
@@ -133,7 +132,7 @@ function initI18n(
   });
 }
 
-customDebug(`version ${pkg.version} loaded.`, 'info');
+// Fork: no package version log; importing package.json shipped @ohif/i18n's name and version.
 
 i18n.initializing = initI18n();
 i18n.initI18n = initI18n;

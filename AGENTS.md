@@ -92,6 +92,7 @@ yarn --cwd platform/app run build:viewer   # QUICK_BUILD=true skips minification
   - A hidden pane has zero size, so views render blank.
   - Dispatch multi-step mouse events, or check the state through the services.
 
+- **Versioning:** AxialScope's version is `extensions/imaging-platform/VERSION` (bump it per release). The build shows it with the git commit; Docker builds have no `.git`, so pass `AXIALSCOPE_COMMIT`. Don't edit OHIF's `version.txt` / `commit.txt` (upstream release files).
 ## 9. Known limits (don't "fix" silently; they need a decision)
 - **Blocked outside the viewer:**
   - DICOMweb has no per-user auth; Traefik injects fixed credentials, which is a backend/Traefik fix.

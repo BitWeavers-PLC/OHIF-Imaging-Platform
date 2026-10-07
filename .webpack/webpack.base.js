@@ -28,10 +28,21 @@ const QUICK_BUILD = process.env.QUICK_BUILD;
 const BUILD_NUM = process.env.CIRCLE_BUILD_NUM || '0';
 const IS_COVERAGE = process.env.COVERAGE === 'true';
 
-// read from ../version.txt
-const VERSION_NUMBER = fs.readFileSync(path.join(__dirname, '../version.txt'), 'utf8') || '';
-
-const COMMIT_HASH = fs.readFileSync(path.join(__dirname, '../commit.txt'), 'utf8') || '';
+// Fork: AxialScope's own version and commit. OHIF's ../version.txt and ../commit.txt stay
+// for upstream syncs (lerna, version.mjs) but are not shipped: they name the OHIF release.
+const VERSION_NUMBER = fs
+  .readFileSync(path.join(__dirname, '../extensions/imaging-platform/VERSION'), 'utf8')
+  .trim();
+// Docker builds have no .git (.dockerignore): pass AXIALSCOPE_COMMIT, else it is left out.
+let COMMIT_HASH = process.env.AXIALSCOPE_COMMIT || '';
+try {
+  COMMIT_HASH ||= require('child_process')
+    .execSync('git rev-parse HEAD', { stdio: ['ignore', 'pipe', 'ignore'] })
+    .toString()
+    .trim();
+} catch (e) {
+  // not a git checkout
+}
 const ONNX_RUNTIME_DIST_DIR = path.resolve(__dirname, '../node_modules/onnxruntime-web/dist/esm');
 
 //
